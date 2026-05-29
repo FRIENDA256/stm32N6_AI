@@ -1,0 +1,65 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug: AppliNonSecure (STLink/OpenOCD)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            // 迁移工程时优先改 settings.json 的 stm32.elf.nonsecure
+            "executable": "${workspaceFolder}/${config:stm32.elf.nonsecure}",
+            "servertype": "openocd",
+            "serverpath": "${config:stm32.openocd.path}",
+            "searchDir": [
+                "${config:stm32.openocd.searchDir1}",
+                "${config:stm32.openocd.searchDir2}"
+            ],
+            // OpenOCD 脚本路径同样优先在 settings.json 维护
+            "configFiles": [
+                "${config:stm32.openocd.interfaceScript}",
+                "${config:stm32.openocd.targetScript}"
+            ],
+            "runToEntryPoint": "main",
+            // preLaunchTask 不建议改动；构建链顺序在 tasks.json 统一维护
+            "preLaunchTask": "Build: All"
+        },
+        {
+            "name": "Debug: AppliSecure (STLink/OpenOCD)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/${config:stm32.elf.secure}",
+            "servertype": "openocd",
+            "serverpath": "${config:stm32.openocd.path}",
+            "searchDir": [
+                "${config:stm32.openocd.searchDir1}",
+                "${config:stm32.openocd.searchDir2}"
+            ],
+            "configFiles": [
+                "${config:stm32.openocd.interfaceScript}",
+                "${config:stm32.openocd.targetScript}"
+            ],
+            "runToEntryPoint": "main",
+            "preLaunchTask": "Build: AppliSecure"
+        },
+        {
+            "name": "Debug: FSBL (STLink/OpenOCD)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/${config:stm32.elf.fsbl}",
+            "servertype": "openocd",
+            "serverpath": "${config:stm32.openocd.path}",
+            "searchDir": [
+                "${config:stm32.openocd.searchDir1}",
+                "${config:stm32.openocd.searchDir2}"
+            ],
+            "configFiles": [
+                "${config:stm32.openocd.interfaceScript}",
+                "${config:stm32.openocd.targetScript}"
+            ],
+            "runToEntryPoint": "main",
+            "preLaunchTask": "Build: FSBL"
+        }
+    ]
+}

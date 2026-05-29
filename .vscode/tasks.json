@@ -1,0 +1,464 @@
+{
+    "version": "2.0.0",
+
+    // Edit make parallel jobs only here, e.g. "-j8", "-j16"
+    "options": {
+        "env": {
+            "MAKEFLAGS": "-j16"
+        }
+    },
+
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "Build: AppliSecure",
+            "command": "${config:stm32.make.path}",
+            "args": [
+                "-C",
+                "${config:stm32.make.dir.secure}"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "detail": "Build secure image"
+        },
+        {
+            "type": "shell",
+            "label": "Build: FSBL",
+            "command": "${config:stm32.make.path}",
+            "args": [
+                "-C",
+                "${config:stm32.make.dir.fsbl}"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "detail": "Build first-stage bootloader image"
+        },
+        {
+            "type": "shell",
+            "label": "Build: AppliNonSecure",
+            "command": "${config:stm32.make.path}",
+            "args": [
+                "-C",
+                "${config:stm32.make.dir.nonsecure}"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "detail": "Build non-secure image"
+        },
+        {
+            "label": "Build: All",
+            // Keep this order for dependency generation: Secure -> FSBL -> NonSecure
+            "dependsOn": [
+                "Build: AppliSecure",
+                "Build: FSBL",
+                "Build: AppliNonSecure"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": [],
+            "group": "build",
+            "detail": "Build all images in the required order"
+        },
+        {
+            "type": "shell",
+            "label": "Clean: AppliSecure",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-Command",
+                "if (Test-Path 'build') { Remove-Item -Recurse -Force 'build' }"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/${config:stm32.make.dir.secure}"
+            },
+            "problemMatcher": [],
+            "detail": "Clean secure build output (without touching generated Makefile)"
+        },
+        {
+            "type": "shell",
+            "label": "Clean: FSBL",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-Command",
+                "if (Test-Path 'build') { Remove-Item -Recurse -Force 'build' }"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/${config:stm32.make.dir.fsbl}"
+            },
+            "problemMatcher": [],
+            "detail": "Clean FSBL build output (without touching generated Makefile)"
+        },
+        {
+            "type": "shell",
+            "label": "Clean: AppliNonSecure",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-Command",
+                "if (Test-Path 'build') { Remove-Item -Recurse -Force 'build' }"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/${config:stm32.make.dir.nonsecure}"
+            },
+            "problemMatcher": [],
+            "detail": "Clean non-secure build output (without touching generated Makefile)"
+        },
+        {
+            "label": "Clean: All",
+            "dependsOn": [
+                "Clean: AppliNonSecure",
+                "Clean: FSBL",
+                "Clean: AppliSecure"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": [],
+            "detail": "Clean all build outputs"
+        },
+        {
+            "label": "Rebuild: All",
+            "dependsOn": [
+                "Clean: All",
+                "Build: All"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": [],
+            "detail": "Clean and rebuild all images"
+        },
+        {
+            "type": "shell",
+            "label": "Sign: FSBL",
+            "command": "${config:stm32.signingtool.path}",
+            "args": [
+                "-bin",
+                "${config:stm32.bin.fsbl}",
+                "-nk",
+                "-of",
+                "0x80000000",
+                "-t",
+                "fsbl",
+                "-o",
+                "${config:stm32.trusted.fsbl}",
+                "-hv",
+                "2.3",
+                "-dump",
+                "${config:stm32.trusted.fsbl}",
+                "-align",
+                "-s"
+            ],
+            "problemMatcher": [],
+            "detail": "Add STM32N6 FSBL header to the FSBL binary"
+        },
+        {
+            "type": "shell",
+            "label": "Sign: AppliSecure",
+            "command": "${config:stm32.signingtool.path}",
+            "args": [
+                "-bin",
+                "${config:stm32.bin.secure}",
+                "-nk",
+                "-of",
+                "0x80000000",
+                "-t",
+                "fsbl",
+                "-o",
+                "${config:stm32.trusted.secure}",
+                "-hv",
+                "2.3",
+                "-dump",
+                "${config:stm32.trusted.secure}",
+                "-align",
+                "-s"
+            ],
+            "problemMatcher": [],
+            "detail": "Add STM32N6 FSBL header to the secure application binary"
+        },
+        {
+            "type": "shell",
+            "label": "Sign: AppliNonSecure",
+            "command": "${config:stm32.signingtool.path}",
+            "args": [
+                "-bin",
+                "${config:stm32.bin.nonsecure}",
+                "-nk",
+                "-of",
+                "0x80000000",
+                "-t",
+                "fsbl",
+                "-o",
+                "${config:stm32.trusted.nonsecure}",
+                "-hv",
+                "2.3",
+                "-dump",
+                "${config:stm32.trusted.nonsecure}",
+                "-align",
+                "-s"
+            ],
+            "problemMatcher": [],
+            "detail": "Add STM32N6 FSBL header to the non-secure application binary"
+        },
+        {
+            "label": "Sign: All",
+            "dependsOn": [
+                "Build: All",
+                "Sign: FSBL",
+                "Sign: AppliSecure",
+                "Sign: AppliNonSecure"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": [],
+            "detail": "Build all images and generate trusted binaries"
+        },
+        {
+            "type": "shell",
+            "label": "FlashOnly: FSBL (STLink, RAM)",
+            "command": "${config:stm32.openocd.path}",
+            "args": [
+                "-s",
+                "${config:stm32.openocd.searchDir1}",
+                "-s",
+                "${config:stm32.openocd.searchDir2}",
+                "-f",
+                "${config:stm32.openocd.interfaceScript}",
+                "-f",
+                "${config:stm32.openocd.targetScript}",
+                "-c",
+                "init; halt",
+                "-c",
+                "load_image ${config:stm32.elf.fsbl}",
+                "-c",
+                "verify_image ${config:stm32.elf.fsbl}",
+                "-c",
+                "reset run; exit"
+            ],
+            "problemMatcher": [],
+            "detail": "Load FSBL ELF to internal RAM without build step"
+        },
+        {
+            "type": "shell",
+            "label": "FlashOnly: AppliSecure (STLink, RAM)",
+            "command": "${config:stm32.openocd.path}",
+            "args": [
+                "-s",
+                "${config:stm32.openocd.searchDir1}",
+                "-s",
+                "${config:stm32.openocd.searchDir2}",
+                "-f",
+                "${config:stm32.openocd.interfaceScript}",
+                "-f",
+                "${config:stm32.openocd.targetScript}",
+                "-c",
+                "init; halt",
+                "-c",
+                "load_image ${config:stm32.elf.secure}",
+                "-c",
+                "verify_image ${config:stm32.elf.secure}",
+                "-c",
+                "reset run; exit"
+            ],
+            "problemMatcher": [],
+            "detail": "Load secure ELF to internal RAM without build step"
+        },
+        {
+            "type": "shell",
+            "label": "FlashOnly: AppliNonSecure (STLink, RAM)",
+            "command": "${config:stm32.openocd.path}",
+            "args": [
+                "-s",
+                "${config:stm32.openocd.searchDir1}",
+                "-s",
+                "${config:stm32.openocd.searchDir2}",
+                "-f",
+                "${config:stm32.openocd.interfaceScript}",
+                "-f",
+                "${config:stm32.openocd.targetScript}",
+                "-c",
+                "init; halt",
+                "-c",
+                "load_image ${config:stm32.elf.nonsecure}",
+                "-c",
+                "verify_image ${config:stm32.elf.nonsecure}",
+                "-c",
+                "reset run; exit"
+            ],
+            "problemMatcher": [],
+            "detail": "Load non-secure ELF to internal RAM without build step"
+        },
+        {
+            "type": "shell",
+            "label": "Flash: All Internal RAM (STLink)",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/.vscode/flash_internal_ram.ps1",
+                "-OpenOcdPath",
+                "${config:stm32.openocd.path}",
+                "-SearchDir1",
+                "${config:stm32.openocd.searchDir1}",
+                "-SearchDir2",
+                "${config:stm32.openocd.searchDir2}",
+                "-InterfaceScript",
+                "${config:stm32.openocd.interfaceScript}",
+                "-TargetScript",
+                "${config:stm32.openocd.targetScript}",
+                "-FsblElf",
+                "${config:stm32.elf.fsbl}",
+                "-SecureElf",
+                "${config:stm32.elf.secure}",
+                "-NonSecureElf",
+                "${config:stm32.elf.nonsecure}"
+            ],
+            "dependsOn": "Build: All",
+            "problemMatcher": [],
+            "detail": "Build once, load FSBL -> Secure -> NonSecure to RAM, then start the Secure vector entry"
+        },
+        {
+            "type": "shell",
+            "label": "Run: FSBL Internal RAM (Development mode)",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/.vscode/run_elf_ram.ps1",
+                "-OpenOcdPath",
+                "${config:stm32.openocd.path}",
+                "-SearchDir1",
+                "${config:stm32.openocd.searchDir1}",
+                "-SearchDir2",
+                "${config:stm32.openocd.searchDir2}",
+                "-InterfaceScript",
+                "${config:stm32.openocd.interfaceScript}",
+                "-TargetScript",
+                "${config:stm32.openocd.targetScript}",
+                "-Elf",
+                "${config:stm32.elf.fsbl}"
+            ],
+            "dependsOn": "Build: FSBL",
+            "problemMatcher": [],
+            "detail": "Load FSBL to internal RAM and run it; requires BOOT1=1-3 and Secure/NonSecure trusted images already in external Flash"
+        },
+        {
+            "type": "shell",
+            "label": "Flash: BootChain EXT (FSBL->Secure->NonSecure)",
+            "command": "${config:stm32.programmer.path}",
+            "args": [
+                "-c",
+                "port=SWD",
+                "mode=HOTPLUG",
+                "freq=3300",
+                "-el",
+                "${config:stm32.externalLoader}",
+                "-w",
+                "${config:stm32.trusted.fsbl}",
+                "${config:stm32.extflash.addr.fsbl}",
+                "-v",
+                "-w",
+                "${config:stm32.trusted.secure}",
+                "${config:stm32.extflash.addr.secure}",
+                "-v",
+                "-w",
+                "${config:stm32.trusted.nonsecure}",
+                "${config:stm32.extflash.addr.nonsecure}",
+                "-v",
+                "-rst"
+            ],
+            "dependsOn": "Sign: All",
+            "problemMatcher": [],
+            "detail": "Sign and program external flash with the STM32N6570-DK external loader"
+        },
+        {
+            "type": "shell",
+            "label": "Flash: AppliSecure (STLink)",
+            "command": "${config:stm32.openocd.path}",
+            "args": [
+                "-s",
+                "${config:stm32.openocd.searchDir1}",
+                "-s",
+                "${config:stm32.openocd.searchDir2}",
+                "-f",
+                "${config:stm32.openocd.interfaceScript}",
+                "-f",
+                "${config:stm32.openocd.targetScript}",
+                "-c",
+                "init; halt",
+                "-c",
+                "load_image ${config:stm32.elf.secure}",
+                "-c",
+                "verify_image ${config:stm32.elf.secure}",
+                "-c",
+                "reset run; exit"
+            ],
+            "dependsOn": "Build: All",
+            "problemMatcher": [],
+            "detail": "Build all and load secure ELF to internal RAM with OpenOCD"
+        },
+        {
+            "type": "shell",
+            "label": "Flash: FSBL (STLink)",
+            "command": "${config:stm32.openocd.path}",
+            "args": [
+                "-s",
+                "${config:stm32.openocd.searchDir1}",
+                "-s",
+                "${config:stm32.openocd.searchDir2}",
+                "-f",
+                "${config:stm32.openocd.interfaceScript}",
+                "-f",
+                "${config:stm32.openocd.targetScript}",
+                "-c",
+                "init; halt",
+                "-c",
+                "load_image ${config:stm32.elf.fsbl}",
+                "-c",
+                "verify_image ${config:stm32.elf.fsbl}",
+                "-c",
+                "reset run; exit"
+            ],
+            "dependsOn": "Build: All",
+            "problemMatcher": [],
+            "detail": "Build all and load FSBL ELF to internal RAM with OpenOCD"
+        },
+        {
+            "type": "shell",
+            "label": "Flash: AppliNonSecure (STLink)",
+            "command": "${config:stm32.openocd.path}",
+            "args": [
+                "-s",
+                "${config:stm32.openocd.searchDir1}",
+                "-s",
+                "${config:stm32.openocd.searchDir2}",
+                "-f",
+                "${config:stm32.openocd.interfaceScript}",
+                "-f",
+                "${config:stm32.openocd.targetScript}",
+                "-c",
+                "init; halt",
+                "-c",
+                "load_image ${config:stm32.elf.nonsecure}",
+                "-c",
+                "verify_image ${config:stm32.elf.nonsecure}",
+                "-c",
+                "reset run; exit"
+            ],
+            "dependsOn": "Build: All",
+            "problemMatcher": [],
+            "detail": "Build all and load non-secure ELF to internal RAM with OpenOCD"
+        }
+    ]
+}

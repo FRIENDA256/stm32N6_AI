@@ -1,0 +1,30 @@
+# Build outputs
+Makefile/**/build*/
+**/Debug/
+**/Release/
+*.o
+*.d
+*.lst
+*.elf
+*.hex
+*.bin
+*.map
+*.axf
+*.out
+*.su
+*.cyclo
+
+# Generated dependency/cache files
+.dep/
+.cache/
+
+# Local backups and archives
+*.zip
+*.bak
+*.orig
+
+# Editor/OS noise
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp

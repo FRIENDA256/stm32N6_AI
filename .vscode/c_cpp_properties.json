@@ -1,0 +1,38 @@
+{
+    "version": 4,
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                // 通常无需修改：以下为 STM32N6 TrustZone 三分工程的标准目录
+                "${workspaceFolder}/AppliSecure/Core/Inc",
+                "${workspaceFolder}/AppliNonSecure/Core/Inc",
+                "${workspaceFolder}/FSBL/Core/Inc",
+                "${workspaceFolder}/Secure_nsclib",
+                "${workspaceFolder}/Middlewares/ST/STM32_ExtMem_Manager",
+                "${workspaceFolder}/Middlewares/ST/STM32_ExtMem_Manager/boot",
+                "${workspaceFolder}/Middlewares/ST/STM32_ExtMem_Manager/nor_sfdp",
+                "${workspaceFolder}/Middlewares/ST/STM32_ExtMem_Manager/sal",
+                "${workspaceFolder}/Middlewares/ST/STM32_ExtMem_Manager/psram",
+                "${workspaceFolder}/Middlewares/ST/STM32_ExtMem_Manager/sdcard",
+                "${workspaceFolder}/Middlewares/ST/STM32_ExtMem_Manager/custom",
+                "${workspaceFolder}/Middlewares/ST/STM32_ExtMem_Manager/user",
+                "${workspaceFolder}/Drivers/CMSIS/Include",
+                "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32N6xx/Include",
+                "${workspaceFolder}/Drivers/STM32N6xx_HAL_Driver/Inc",
+                "${workspaceFolder}/Drivers/STM32N6xx_HAL_Driver/Inc/Legacy"
+                // 若你的新工程目录结构不同，请按实际路径调整本列表
+            ],
+            "defines": [
+                "USE_HAL_DRIVER",
+                "STM32N657xx",
+                "NO_OTP_FUSE"
+                // 更换 N6 子型号时，请同步检查/修改该芯片宏
+            ],
+            "compilerPath": "${config:stm32.gcc.path}",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-gcc-x64"
+        }
+    ]
+}

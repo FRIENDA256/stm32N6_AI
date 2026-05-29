@@ -1,0 +1,59 @@
+{
+    // ==========================================================
+    // STM32 VSCode template settings (Windows)
+    // For migration to another PC/project, edit this file first.
+    // ==========================================================
+
+    // [must update] Makefile sub-project folders (relative to workspace root)
+    "stm32.make.dir.secure": "Makefile/AppliSecure",
+    "stm32.make.dir.fsbl": "Makefile/FSBL",
+    "stm32.make.dir.nonsecure": "Makefile/AppliNonSecure",
+
+    // [must update] ELF artifacts (for debug and RAM-run flashing)
+    "stm32.elf.secure": "Makefile/AppliSecure/build/TEST_CMAKE_AppliSecure.elf",
+    "stm32.elf.fsbl": "Makefile/FSBL/build/TEST_CMAKE_FSBL.elf",
+    "stm32.elf.nonsecure": "Makefile/AppliNonSecure/build/TEST_CMAKE_AppliNonSecure.elf",
+
+    // [must update if project name changes] BIN artifacts (for external-flash boot tasks)
+    "stm32.bin.secure": "Makefile/AppliSecure/build/TEST_CMAKE_AppliSecure.bin",
+    "stm32.bin.fsbl": "Makefile/FSBL/build/TEST_CMAKE_FSBL.bin",
+    "stm32.bin.nonsecure": "Makefile/AppliNonSecure/build/TEST_CMAKE_AppliNonSecure.bin",
+
+    // [must update if project name changes] Signed BIN artifacts for official external-flash boot flow
+    "stm32.trusted.secure": "Makefile/AppliSecure/build/TEST_CMAKE_AppliSecure-trusted.bin",
+    "stm32.trusted.fsbl": "Makefile/FSBL/build/TEST_CMAKE_FSBL-trusted.bin",
+    "stm32.trusted.nonsecure": "Makefile/AppliNonSecure/build/TEST_CMAKE_AppliNonSecure-trusted.bin",
+
+    // [must update for production boot layout] External flash offsets
+    // Typical STM32N6 XIP base on many boards is 0x70000000.
+    // Update these three values to your real signed-image map.
+    "stm32.extflash.addr.fsbl": "0x70000000",
+    "stm32.extflash.addr.secure": "0x70100000",
+    "stm32.extflash.addr.nonsecure": "0x70180000",
+
+    // [optional] Tool commands (keep command names if already in PATH)
+    "stm32.make.path": "make",
+    "stm32.gcc.path": "arm-none-eabi-gcc",
+    "stm32.programmer.path": "D:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin/STM32_Programmer_CLI.exe",
+    "stm32.signingtool.path": "D:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin/STM32_SigningTool_CLI.exe",
+    "stm32.externalLoader": "D:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin/ExternalLoader/MX66UW1G45G_STM32N6570-DK.stldr",
+    "stm32.openocd.path": "D:/Program Files/STM32CubeIDE_2.0.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.openocd.win32_2.4.300.202509300731/tools/bin/openocd.exe",
+
+    // [optional] OpenOCD script search paths for STM32N6
+    // 1) Generic scripts (swj-dp.tcl, mem_helper.tcl, ...)
+    "stm32.openocd.searchDir1": "D:/VSCODE+STM32+GCC/OpenOCD-20240820-0.12.0/share/openocd/scripts",
+    // 2) ST extended scripts (stm32n6x.cfg, gdb_helper.tcl, ...)
+    "stm32.openocd.searchDir2": "D:/Program Files/STM32CubeIDE_2.0.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.debug.openocd_2.3.200.202510310951/resources/openocd/st_scripts",
+
+    // [optional] OpenOCD interface/target scripts
+    "stm32.openocd.interfaceScript": "interface/stlink-dap.cfg",
+    "stm32.openocd.targetScript": "target/stm32n6x.cfg",
+
+    // Editor settings
+    "C_Cpp.errorSquiggles": "enabled",
+    "files.associations": {
+        "*.ld": "ld",
+        "stm32n6xx_hal_conf.h": "c",
+        "stm32n6xx_it.h": "c"
+    }
+}
