@@ -53,7 +53,6 @@
   */
 
 #include "stm32n6xx.h"
-#include "secure_nsc.h"
 
 /**
   * @}

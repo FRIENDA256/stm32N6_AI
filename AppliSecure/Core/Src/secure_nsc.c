@@ -48,24 +48,24 @@ void *pSecureErrorCallback = NULL;   /* Pointer to secure error callback in Non-
   * @param  func        pointer to non-secure function
   * @retval None
   */
-CMSE_NS_ENTRY void SECURE_RegisterCallback(SECURE_CallbackIDTypeDef CallbackId, void *func)
-{
-  if(func != NULL)
+  CMSE_NS_ENTRY void SECURE_RegisterCallback(SECURE_CallbackIDTypeDef CallbackId, void *func)
   {
-    switch(CallbackId)
-    {
-      case SECURE_FAULT_CB_ID:           /* SecureFault Interrupt occurred */
-        pSecureFaultCallback = func;
-        break;
-      case GTZC_ERROR_CB_ID:             /* GTZC Interrupt occurred */
-        pSecureErrorCallback = func;
-        break;
-      default:
-        /* unknown */
-        break;
-    }
+      if(func != NULL)
+      {
+        switch(CallbackId)
+        {
+          case SECURE_FAULT_CB_ID:           /* SecureFault Interrupt occurred */
+          pSecureFaultCallback = func;
+          break;
+          case IAC_ERROR_CB_ID:             /* Illegal Access Interrupt occurred */
+          pSecureErrorCallback = func;
+          break;
+          default:
+          /* unknown */
+          break;
+        }
+      }
   }
-}
 
 /**
   * @}

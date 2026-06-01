@@ -10,19 +10,19 @@
     "stm32.make.dir.nonsecure": "Makefile/AppliNonSecure",
 
     // [must update] ELF artifacts (for debug and RAM-run flashing)
-    "stm32.elf.secure": "Makefile/AppliSecure/build/TEST_CMAKE_AppliSecure.elf",
-    "stm32.elf.fsbl": "Makefile/FSBL/build/TEST_CMAKE_FSBL.elf",
-    "stm32.elf.nonsecure": "Makefile/AppliNonSecure/build/TEST_CMAKE_AppliNonSecure.elf",
+    "stm32.elf.secure": "Makefile/AppliSecure/build/STM32N6_AI_AppliSecure.elf",
+    "stm32.elf.fsbl": "Makefile/FSBL/build/STM32N6_AI_FSBL.elf",
+    "stm32.elf.nonsecure": "Makefile/AppliNonSecure/build/STM32N6_AI_AppliNonSecure.elf",
 
     // [must update if project name changes] BIN artifacts (for external-flash boot tasks)
-    "stm32.bin.secure": "Makefile/AppliSecure/build/TEST_CMAKE_AppliSecure.bin",
-    "stm32.bin.fsbl": "Makefile/FSBL/build/TEST_CMAKE_FSBL.bin",
-    "stm32.bin.nonsecure": "Makefile/AppliNonSecure/build/TEST_CMAKE_AppliNonSecure.bin",
+    "stm32.bin.secure": "Makefile/AppliSecure/build/STM32N6_AI_AppliSecure.bin",
+    "stm32.bin.fsbl": "Makefile/FSBL/build/STM32N6_AI_FSBL.bin",
+    "stm32.bin.nonsecure": "Makefile/AppliNonSecure/build/STM32N6_AI_AppliNonSecure.bin",
 
     // [must update if project name changes] Signed BIN artifacts for official external-flash boot flow
-    "stm32.trusted.secure": "Makefile/AppliSecure/build/TEST_CMAKE_AppliSecure-trusted.bin",
-    "stm32.trusted.fsbl": "Makefile/FSBL/build/TEST_CMAKE_FSBL-trusted.bin",
-    "stm32.trusted.nonsecure": "Makefile/AppliNonSecure/build/TEST_CMAKE_AppliNonSecure-trusted.bin",
+    "stm32.trusted.secure": "Makefile/AppliSecure/build/STM32N6_AI_AppliSecure-trusted.bin",
+    "stm32.trusted.fsbl": "Makefile/FSBL/build/STM32N6_AI_FSBL-trusted.bin",
+    "stm32.trusted.nonsecure": "Makefile/AppliNonSecure/build/STM32N6_AI_AppliNonSecure-trusted.bin",
 
     // [must update for production boot layout] External flash offsets
     // Typical STM32N6 XIP base on many boards is 0x70000000.

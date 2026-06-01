@@ -41,7 +41,7 @@ _Min_Stack_Size = 0x800; /* required amount of stack */
 MEMORY
 {
   ROM    (xrw)    : ORIGIN = 0x70100400,   LENGTH = 511K
-  ROM    (xrw)    : ORIGIN = 0x90200400,   LENGTH = 511K
+  ROM2   (xrw)    : ORIGIN = 0x90200400,   LENGTH = 511K
   RAM    (xrw)    : ORIGIN = 0x34000000,   LENGTH = 2048K
   EXTRAM (rw)     : ORIGIN = 0x80000000,   LENGTH = 0x04000000
 }
@@ -134,10 +134,12 @@ SECTIONS
   /* Used by the startup to initialize data */
   .gnu.sgstubs ALIGN(32) :
   {
+    _sNSCVeneer = .;
     *(.gnu.sgstubs*)   /* Secure Gateway stubs */
     . = ALIGN(32);
     FILL(0x00);
   } >ROM
+  _eNSCVeneer = .; 
 
   /* Uninitialized data section into "RAM" Ram type memory */
   _sidata = LOADADDR(.data);

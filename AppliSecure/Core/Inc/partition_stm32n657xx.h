@@ -35,15 +35,22 @@
 
 #ifndef PARTITION_STM32N657XX_H
 #define PARTITION_STM32N657XX_H
+
 /*
 //-------- <<< Use Configuration Wizard in Context Menu >>> -----------------
 */
 /* USER CODE BEGIN 0 */
-#if defined(__GNUC__)
+#if defined(__ICCARM__)
+#pragma section="Veneer$$CMSE"
+#elif defined(__CC_ARM)
+extern uint32_t _sNSCVeneer;
+extern uint32_t _eNSCVeneer;
+#elif defined(__ARMCC_VERSION)
+
+#elif defined(__GNUC__)
 extern uint32_t _sNSCVeneer;
 extern uint32_t _eNSCVeneer;
 #endif
-/* USER CODE END 0 */
 /*
 // <e>Initialize Security Attribution Unit (SAU) CTRL register
 */
@@ -83,22 +90,48 @@ extern uint32_t _eNSCVeneer;
 */
 #define SAU_INIT_REGION0    1
 
+#if defined(__ICCARM__)
+/* if IAR is used, get the veneer address from the section symbol */
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
 */
-#if defined(__GNUC__)
-#define SAU_INIT_START0     ((uint32_t) &_sNSCVeneer)      /* start address of SAU region 0 */
-#else
-#define SAU_INIT_START0     0x34000000      /* start address of SAU region 0 */
-#endif
+#define SAU_INIT_START0     ((uint32_t) __sfb("Veneer$$CMSE"))      /* start address of SAU region 0 */
 
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
-#if defined(__GNUC__)
+#define SAU_INIT_END0       ((uint32_t) __sfe("Veneer$$CMSE"))      /* end address of SAU region 0 */
+#elif defined(__ARMCC_VERSION)
+/*
+//     <o>Start Address <0-0xFFFFFFE0>
+*/
+#define SAU_INIT_START0     0x34000000      /* start address of SAU region 0 */
+
+/*
+//     <o>End Address <0x1F-0xFFFFFFFF>
+*/
+#define SAU_INIT_END0       0x340FFFFF      /* end address of SAU region 0 */
+#elif defined(__GNUC__)
+/* if GCC is used, get the veneer start and end symbols from the linker script */
+/*
+//     <o>Start Address <0-0xFFFFFFE0>
+*/
+#define SAU_INIT_START0     ((uint32_t) &_sNSCVeneer)     /* start address of SAU region 0 */
+
+/*
+//     <o>End Address <0x1F-0xFFFFFFFF>
+*/
 #define SAU_INIT_END0       ((uint32_t) &_eNSCVeneer)      /* end address of SAU region 0 */
 #else
-#define SAU_INIT_END0       0x340FFFFF      /* end address of SAU region 0 */
+/*
+//     <o>Start Address <0-0xFFFFFFE0>
+*/
+#define SAU_INIT_START0     0x00000000      /* start address of SAU region 0 */
+
+/*
+//     <o>End Address <0x1F-0xFFFFFFFF>
+*/
+#define SAU_INIT_END0       0x00000000      /* end address of SAU region 0 */
 #endif
 
 /*
@@ -294,7 +327,6 @@ extern uint32_t _eNSCVeneer;
 /*
 // </h>
 */
-/* USER CODE BEGIN 0 */
 /*
 // <e>Setup behaviour of Sleep and Exception Handling
 */

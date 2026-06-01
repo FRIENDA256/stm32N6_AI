@@ -132,10 +132,12 @@ SECTIONS
   /* Used by the startup to initialize data */
   .gnu.sgstubs ALIGN(32) :
   {
+    _sNSCVeneer = .;
     *(.gnu.sgstubs*)   /* Secure Gateway stubs */
     . = ALIGN(32);
     FILL(0x00);
   } >ROM
+  _eNSCVeneer = .; 
 
   /* Uninitialized data section into "RAM" Ram type memory */
   _sidata = LOADADDR(.data);

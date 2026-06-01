@@ -84,9 +84,9 @@ endif
 
 # default action: build all
 all:
-	"$(MAKE)" -C AppliSecure
-	"$(MAKE)" -C FSBL
-	"$(MAKE)" -C AppliNonSecure
+	cd AppliSecure && $(MAKE)
+	cd FSBL && $(MAKE)
+	cd AppliNonSecure && $(MAKE)
 	
 
 

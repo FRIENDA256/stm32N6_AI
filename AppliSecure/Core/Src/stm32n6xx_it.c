@@ -31,25 +31,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define FAULT_LED_GPIO_PORT GPIOO
-#define FAULT_LED_GPIO_PIN  GPIO_PIN_1
-#define FAULT_LED_SHORT_ON_DELAY 20000000UL
-#define FAULT_LED_LONG_ON_DELAY  120000000UL
-#define FAULT_LED_GAP_DELAY      20000000UL
-#define FAULT_LED_REPEAT_DELAY   160000000UL
-#define FAULT_LED_NMI         5UL
-#define FAULT_LED_HARDFAULT   6UL
-#define FAULT_LED_MEMMANAGE   7UL
-#define FAULT_LED_BUSFAULT    8UL
-#define FAULT_LED_USAGEFAULT  9UL
-#define SECFAULT_LED_INVEP    1UL
-#define SECFAULT_LED_INVIS    2UL
-#define SECFAULT_LED_INVER    3UL
-#define SECFAULT_LED_AUVIOL   4UL
-#define SECFAULT_LED_INVTRAN  5UL
-#define SECFAULT_LED_LSPERR   6UL
-#define SECFAULT_LED_LSERR    7UL
-#define SECFAULT_LED_UNKNOWN  8UL
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -69,109 +51,6 @@
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-static void FaultDelay(uint32_t loop)
-{
-  volatile uint32_t delay = loop;
-
-  while (delay-- != 0U)
-  {
-    __NOP();
-  }
-}
-
-static void FaultLedInit(void)
-{
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-  __HAL_RCC_GPIOO_CLK_ENABLE();
-
-  GPIO_InitStruct.Pin = FAULT_LED_GPIO_PIN;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(FAULT_LED_GPIO_PORT, &GPIO_InitStruct);
-  HAL_GPIO_WritePin(FAULT_LED_GPIO_PORT, FAULT_LED_GPIO_PIN, GPIO_PIN_RESET);
-}
-
-static void FaultSignal(uint32_t on_delay)
-{
-  HAL_GPIO_WritePin(FAULT_LED_GPIO_PORT, FAULT_LED_GPIO_PIN, GPIO_PIN_SET);
-  FaultDelay(on_delay);
-  HAL_GPIO_WritePin(FAULT_LED_GPIO_PORT, FAULT_LED_GPIO_PIN, GPIO_PIN_RESET);
-  FaultDelay(FAULT_LED_GAP_DELAY);
-}
-
-static void FaultBlink(uint32_t pulses)
-{
-  FaultLedInit();
-
-  while (1)
-  {
-    uint32_t index;
-
-    for (index = 0U; index < pulses; index++)
-    {
-      FaultSignal(FAULT_LED_SHORT_ON_DELAY);
-    }
-
-    FaultDelay(FAULT_LED_REPEAT_DELAY);
-  }
-}
-
-static void SecureFaultBlinkCode(uint32_t code)
-{
-  FaultLedInit();
-
-  while (1)
-  {
-    uint32_t index;
-
-    FaultSignal(FAULT_LED_LONG_ON_DELAY);
-
-    for (index = 0U; index < code; index++)
-    {
-      FaultSignal(FAULT_LED_SHORT_ON_DELAY);
-    }
-
-    FaultDelay(FAULT_LED_REPEAT_DELAY);
-  }
-}
-
-static void SecureFaultBlink(void)
-{
-  uint32_t sfsr = SAU->SFSR;
-
-  if ((sfsr & SAU_SFSR_INVEP_Msk) != 0U)
-  {
-    SecureFaultBlinkCode(SECFAULT_LED_INVEP);
-  }
-  if ((sfsr & SAU_SFSR_INVIS_Msk) != 0U)
-  {
-    SecureFaultBlinkCode(SECFAULT_LED_INVIS);
-  }
-  if ((sfsr & SAU_SFSR_INVER_Msk) != 0U)
-  {
-    SecureFaultBlinkCode(SECFAULT_LED_INVER);
-  }
-  if ((sfsr & SAU_SFSR_AUVIOL_Msk) != 0U)
-  {
-    SecureFaultBlinkCode(SECFAULT_LED_AUVIOL);
-  }
-  if ((sfsr & SAU_SFSR_INVTRAN_Msk) != 0U)
-  {
-    SecureFaultBlinkCode(SECFAULT_LED_INVTRAN);
-  }
-  if ((sfsr & SAU_SFSR_LSPERR_Msk) != 0U)
-  {
-    SecureFaultBlinkCode(SECFAULT_LED_LSPERR);
-  }
-  if ((sfsr & SAU_SFSR_LSERR_Msk) != 0U)
-  {
-    SecureFaultBlinkCode(SECFAULT_LED_LSERR);
-  }
-
-  SecureFaultBlinkCode(SECFAULT_LED_UNKNOWN);
-}
 
 /* USER CODE END 0 */
 
@@ -190,7 +69,6 @@ static void SecureFaultBlink(void)
 void NMI_Handler(void)
 {
   /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
-  FaultBlink(FAULT_LED_NMI);
 
   /* USER CODE END NonMaskableInt_IRQn 0 */
   /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
@@ -206,7 +84,6 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
-  FaultBlink(FAULT_LED_HARDFAULT);
 
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
@@ -222,7 +99,6 @@ void HardFault_Handler(void)
 void MemManage_Handler(void)
 {
   /* USER CODE BEGIN MemoryManagement_IRQn 0 */
-  FaultBlink(FAULT_LED_MEMMANAGE);
 
   /* USER CODE END MemoryManagement_IRQn 0 */
   while (1)
@@ -238,7 +114,6 @@ void MemManage_Handler(void)
 void BusFault_Handler(void)
 {
   /* USER CODE BEGIN BusFault_IRQn 0 */
-  FaultBlink(FAULT_LED_BUSFAULT);
 
   /* USER CODE END BusFault_IRQn 0 */
   while (1)
@@ -254,7 +129,6 @@ void BusFault_Handler(void)
 void UsageFault_Handler(void)
 {
   /* USER CODE BEGIN UsageFault_IRQn 0 */
-  FaultBlink(FAULT_LED_USAGEFAULT);
 
   /* USER CODE END UsageFault_IRQn 0 */
   while (1)
@@ -270,7 +144,6 @@ void UsageFault_Handler(void)
 void SecureFault_Handler(void)
 {
   /* USER CODE BEGIN SecureFault_IRQn 0 */
-  SecureFaultBlink();
 
   /* USER CODE END SecureFault_IRQn 0 */
   while (1)

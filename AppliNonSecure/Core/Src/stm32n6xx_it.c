@@ -31,9 +31,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define FAULT_LED_GPIO_PORT GPIOO
-#define FAULT_LED_GPIO_PIN  GPIO_PIN_1
-#define FAULT_LED_DELAY     1000000UL
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -53,29 +51,6 @@
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-static void FaultBlink(void)
-{
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-  __HAL_RCC_GPIOO_CLK_ENABLE();
-
-  GPIO_InitStruct.Pin = FAULT_LED_GPIO_PIN;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(FAULT_LED_GPIO_PORT, &GPIO_InitStruct);
-
-  while (1)
-  {
-    volatile uint32_t delay = FAULT_LED_DELAY;
-
-    HAL_GPIO_TogglePin(FAULT_LED_GPIO_PORT, FAULT_LED_GPIO_PIN);
-    while (delay-- != 0U)
-    {
-      __NOP();
-    }
-  }
-}
 
 /* USER CODE END 0 */
 
@@ -89,44 +64,11 @@ static void FaultBlink(void)
 /*           Cortex Processor Interruption and Exception Handlers          */
 /******************************************************************************/
 /**
-  * @brief This function handles Non maskable interrupt.
-  */
-void NMI_Handler(void)
-{
-  /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
-  FaultBlink();
-
-  /* USER CODE END NonMaskableInt_IRQn 0 */
-  /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
-   while (1)
-  {
-  }
-  /* USER CODE END NonMaskableInt_IRQn 1 */
-}
-
-/**
-  * @brief This function handles Hard fault interrupt.
-  */
-void HardFault_Handler(void)
-{
-  /* USER CODE BEGIN HardFault_IRQn 0 */
-  FaultBlink();
-
-  /* USER CODE END HardFault_IRQn 0 */
-  while (1)
-  {
-    /* USER CODE BEGIN W1_HardFault_IRQn 0 */
-    /* USER CODE END W1_HardFault_IRQn 0 */
-  }
-}
-
-/**
   * @brief This function handles Memory management fault.
   */
 void MemManage_Handler(void)
 {
   /* USER CODE BEGIN MemoryManagement_IRQn 0 */
-  FaultBlink();
 
   /* USER CODE END MemoryManagement_IRQn 0 */
   while (1)
@@ -137,28 +79,11 @@ void MemManage_Handler(void)
 }
 
 /**
-  * @brief This function handles Prefetch fault, memory access fault.
-  */
-void BusFault_Handler(void)
-{
-  /* USER CODE BEGIN BusFault_IRQn 0 */
-  FaultBlink();
-
-  /* USER CODE END BusFault_IRQn 0 */
-  while (1)
-  {
-    /* USER CODE BEGIN W1_BusFault_IRQn 0 */
-    /* USER CODE END W1_BusFault_IRQn 0 */
-  }
-}
-
-/**
   * @brief This function handles Undefined instruction or illegal state.
   */
 void UsageFault_Handler(void)
 {
   /* USER CODE BEGIN UsageFault_IRQn 0 */
-  FaultBlink();
 
   /* USER CODE END UsageFault_IRQn 0 */
   while (1)
@@ -174,7 +99,6 @@ void UsageFault_Handler(void)
 void SecureFault_Handler(void)
 {
   /* USER CODE BEGIN SecureFault_IRQn 0 */
-  FaultBlink();
 
   /* USER CODE END SecureFault_IRQn 0 */
   while (1)
