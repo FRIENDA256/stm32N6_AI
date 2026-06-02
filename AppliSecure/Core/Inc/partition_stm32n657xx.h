@@ -447,13 +447,13 @@ extern uint32_t _eNSCVeneer;
 //   <o.25> EXTI5_IRQn          <0=> Secure state
 //   <o.26> EXTI6_IRQn          <0=> Secure state
 //   <o.27> EXTI7_IRQn          <0=> Secure state
-//   <o.28> EXTI8_IRQn          <0=> Secure state
+//   <o.28> EXTI8_IRQn          <1=> Non-Secure state
 //   <o.29> EXTI9_IRQn          <0=> Secure state
 //   <o.30> EXTI10_IRQn         <0=> Secure state
 //   <o.31> EXTI11_IRQn         <0=> Secure state
 */
 
-#define NVIC_INIT_ITNS0_VAL      0x00000000
+#define NVIC_INIT_ITNS0_VAL      0x10000000
 /*
 //   </e>
 */
@@ -542,11 +542,11 @@ extern uint32_t _eNSCVeneer;
 //   <o.27> GPDMA1_Channel7_IRQn      <0=> Secure state
 //   <o.28> GPDMA1_Channel8_IRQn      <0=> Secure state
 //   <o.29> GPDMA1_Channel9_IRQn      <0=> Secure state
-//   <o.30> GPDMA1_Channel10_IRQn     <0=> Secure state
-//   <o.31> GPDMA1_Channel11_IRQn     <0=> Secure state
+//   <o.30> GPDMA1_Channel10_IRQn     <1=> Non-Secure state
+//   <o.31> GPDMA1_Channel11_IRQn     <1=> Non-Secure state
 */
 
-#define NVIC_INIT_ITNS2_VAL      0x00000000
+#define NVIC_INIT_ITNS2_VAL      0xC0000000
 
 /*
 //   </e>
@@ -632,13 +632,13 @@ extern uint32_t _eNSCVeneer;
 //   <o.25> SPI1_IRQn         <0=> Secure state
 //   <o.26> SPI2_IRQn         <0=> Secure state
 //   <o.27> SPI3_IRQn         <0=> Secure state
-//   <o.28> SPI4_IRQn         <0=> Secure state
+//   <o.28> SPI4_IRQn         <1=> Non-Secure state
 //   <o.29> SPI5_IRQn         <0=> Secure state
 //   <o.30> SPI6_IRQn         <0=> Secure state
 //   <o.31> USART1_IRQn       <0=> Secure state
 */
 
-#define NVIC_INIT_ITNS4_VAL      0x00000000
+#define NVIC_INIT_ITNS4_VAL      0x10000000
 
 /*
 //   </e>

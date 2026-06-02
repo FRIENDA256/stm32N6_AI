@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "gpdma.h"
 #include "sau.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -84,6 +85,7 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
+  MX_GPDMA1_Init();
   MX_SAU_Init();
   SystemIsolation_Config();
   /* USER CODE BEGIN 2 */
@@ -152,8 +154,11 @@ static void NonSecure_Init(void)
   /*RISUP configuration*/
   HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_XSPI2 , RIF_ATTRIBUTE_SEC | RIF_ATTRIBUTE_NPRIV);
   HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_XSPIM , RIF_ATTRIBUTE_SEC | RIF_ATTRIBUTE_NPRIV);
+  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_SPI4, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
   HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_USART3, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
+  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RCC_PERIPH_INDEX_GPIOB, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
   HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RCC_PERIPH_INDEX_GPIOD, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
+  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RCC_PERIPH_INDEX_GPIOE, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
   HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RCC_PERIPH_INDEX_GPIOO, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
 
   /* RISAF Config */
@@ -184,14 +189,46 @@ static void NonSecure_Init(void)
 
   /* RIF-Aware IPs Config */
 
+  /* set up GPDMA configuration */
+  DMA_HandleTypeDef dma_ch10 = {0};
+  DMA_HandleTypeDef dma_ch11 = {0};
+
+  dma_ch10.Instance = GPDMA1_Channel10;
+  dma_ch11.Instance = GPDMA1_Channel11;
+
+  if (HAL_DMA_ConfigChannelAttributes(&dma_ch10,
+                                      DMA_CHANNEL_NSEC | DMA_CHANNEL_NPRIV |
+                                      DMA_CHANNEL_SRC_NSEC | DMA_CHANNEL_DEST_NSEC) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  if (HAL_DMA_ConfigChannelAttributes(&dma_ch11,
+                                      DMA_CHANNEL_NSEC | DMA_CHANNEL_NPRIV |
+                                      DMA_CHANNEL_SRC_NSEC | DMA_CHANNEL_DEST_NSEC) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
   /* set up GPIO configuration */
+  /* GPIOB Non Secure Ports Clock Enable */
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  HAL_GPIO_ConfigPinAttributes(GPIOB,GPIO_PIN_0,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
   /* GPIOD Non Secure Ports Clock Enable */
   __HAL_RCC_GPIOD_CLK_ENABLE();
   HAL_GPIO_ConfigPinAttributes(GPIOD,GPIO_PIN_8,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
   HAL_GPIO_ConfigPinAttributes(GPIOD,GPIO_PIN_9,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
+  /* GPIOE Non Secure Ports Clock Enable */
+  __HAL_RCC_GPIOE_CLK_ENABLE();
+  HAL_GPIO_ConfigPinAttributes(GPIOE,GPIO_PIN_8,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOE,GPIO_PIN_12,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOE,GPIO_PIN_13,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOE,GPIO_PIN_14,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
   /* GPIOO Non Secure Ports Clock Enable */
   __HAL_RCC_GPIOO_CLK_ENABLE();
   HAL_GPIO_ConfigPinAttributes(GPIOO,GPIO_PIN_1,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
+
+  HAL_EXTI_ConfigLineAttributes(EXTI_LINE_8, EXTI_LINE_NSEC | EXTI_LINE_NPRIV);
 
 /* USER CODE BEGIN RIF_Init 1 */
 
