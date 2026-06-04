@@ -57,6 +57,7 @@ extern DMA_HandleTypeDef handle_GPDMA1_Channel11 ;
 /* Private function prototypes -----------------------------------------------*/
 static void SystemIsolation_Config(void);
 /* USER CODE BEGIN PFP */
+static void App_BreathLed_Task(uint32_t now_tick);
 
 /* USER CODE END PFP */
 
@@ -65,6 +66,23 @@ static void SystemIsolation_Config(void);
 static void App_Print(const char *text)
 {
   (void)HAL_UART_Transmit(&huart3, (const uint8_t *)text, (uint16_t)strlen(text), HAL_MAX_DELAY);
+}
+
+static void App_BreathLed_Task(uint32_t now_tick)
+{
+  const uint32_t pwm_period_ms = 10U;
+  const uint32_t ramp_ms = 1600U;
+  uint32_t phase = now_tick % (ramp_ms * 2U);
+  uint32_t duty_ms;
+
+  if (phase > ramp_ms)
+  {
+    phase = (ramp_ms * 2U) - phase;
+  }
+
+  duty_ms = (phase * pwm_period_ms) / ramp_ms;
+  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin,
+                    ((now_tick % pwm_period_ms) < duty_ms) ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 
 /* USER CODE END 0 */
@@ -117,6 +135,7 @@ int main(void)
     uint32_t now_tick = HAL_GetTick();
 
     AD7606_SPI4_Task(now_tick);
+    App_BreathLed_Task(now_tick);
 
     if ((now_tick - heartbeat_tick) >= 1000U)
     {

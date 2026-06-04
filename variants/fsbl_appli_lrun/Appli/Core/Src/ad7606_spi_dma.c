@@ -562,7 +562,6 @@ static void SPI4_StatusLED_RecordError(void)
 static void SPI4_StatusLED_Set(uint8_t on)
 {
   ad_spi_led_on = (on != 0U) ? 1U : 0U;
-  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, (ad_spi_led_on != 0U) ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 
 static void AD7606_SPI4_StartDmaRead(uint32_t irq_count_snapshot)

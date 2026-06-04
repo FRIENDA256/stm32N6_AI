@@ -21,6 +21,7 @@
 
 #define FSBL_PSRAM_DUMMY_READ             6U
 #define FSBL_PSRAM_DUMMY_WRITE            6U
+#define FSBL_PSRAM_CLOCK_PRESCALER        3U
 #define FSBL_PSRAM_MM_DATA_LENGTH         10240U
 #define FSBL_PSRAM_MCE_BASE_ADDR          0x90000000UL
 #define FSBL_PSRAM_MCE_END_ADDR           0x91FFFFFFUL
@@ -98,7 +99,7 @@ static HAL_StatusTypeDef FSBL_PSRAM_EnterMemoryMapped(void)
   XSPI_RegularCmdTypeDef command = {0};
   XSPI_MemoryMappedTypeDef mem_mapped_cfg = {0};
 
-  if (HAL_XSPI_SetClockPrescaler(&hxspi1, 1U) != HAL_OK)
+  if (HAL_XSPI_SetClockPrescaler(&hxspi1, FSBL_PSRAM_CLOCK_PRESCALER) != HAL_OK)
   {
     FSBL_PSRAM_DiagSetFail(FSBL_PSRAM_STEP_MMAP_WRITE_CFG, FSBL_PSRAM_ERROR_HAL);
     return HAL_ERROR;
