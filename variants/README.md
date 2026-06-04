@@ -22,14 +22,26 @@ Use `variants/fsbl_appli_lrun/` for the new simplified boot chain:
 FSBL -> Appli
 ```
 
-This variant is intended for PSRAM memory-mapped bring-up and future AI
-deployment work. It should follow the official `VENC_RTSP_Server` style:
+This is the current clean interface-development baseline. It follows the
+official `VENC_RTSP_Server` style:
 
 - FSBL stored in external Flash at `0x70000000`
 - Appli stored in external Flash at `0x70100000`
 - FSBL loads Appli into internal RAM for LRUN
-- Appli initializes XSPI1 PSRAM and enables memory-mapped mode
-- Appli configures MPU for `0x90000000..0x91FFFFFF`
+- Appli initializes GPIO and USART3
+- PO1 LED runs a breathing pattern
+- USART3 prints startup and 1-second heartbeat logs
+
+Disabled in this baseline:
+
+- FSBL PSRAM diagnostics
+- XSPI1 PSRAM memory-mapped bring-up
+- Appli PSRAM sanity and large-buffer tests
+- SPI4, GPDMA, AD7606 receiver startup
+
+Use this variant as the starting point for adding other interface features.
+The last known stable PSRAM diagnostic version is available in git history at
+commit `2904513`.
 
 Do not create a nested Git repository inside this directory.
 
