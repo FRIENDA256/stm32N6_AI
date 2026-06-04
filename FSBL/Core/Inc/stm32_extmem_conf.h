@@ -100,36 +100,7 @@ EXTMEM_DefinitionTypeDef extmem_list_config[1] =
     {
       {0}
     }
-  },
-//////////  /* MEMORY_PSRAM_0 */
-//////////  {
-//////////    .MemType = EXTMEM_PSRAM,
-//////////    .Handle = (void*)&hxspi1,
-//////////    .ConfigType = EXTMEM_LINK_CONFIG_16LINES,
-//////////    .PsramObject =
-//////////    {
-//////////      .psram_public = {
-//////////        .MemorySize = HAL_XSPI_SIZE_256MB,  /* memory size is 256Mbit */
-//////////        .FreqMax = 200000000u, /* 200Mhz */
-//////////        .NumberOfConfig = 1,
-//////////        /* Config */
-//////////        {
-//////////          {.WriteMask = 0x40, .WriteValue = 0x40, .REGAddress = 8}
-//////////        },
-//////////        
-//////////        /* Memory command configuration */
-//////////        .ReadREG           = 0x40u,
-//////////        .WriteREG          = 0xC0u,
-//////////        .ReadREGSize       = 2u,
-//////////        .REG_DummyCycle    = 4u,
-//////////        
-//////////        .Write_command     = 0xA0u,
-//////////        .Write_DummyCycle  = 4u,
-//////////        .Read_command      = 0x20u,
-//////////        .Read_DummyCycle   = 4u,
-//////////      }
-//////////    }
-//////////  }
+  }
 };
 #endif /* EXTMEM_C */
 /**

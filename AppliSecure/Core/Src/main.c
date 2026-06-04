@@ -152,14 +152,9 @@ static void NonSecure_Init(void)
   __HAL_RCC_RIFSC_CLK_ENABLE();
 
   /*RISUP configuration*/
+  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_XSPI1 , RIF_ATTRIBUTE_SEC | RIF_ATTRIBUTE_NPRIV);
   HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_XSPI2 , RIF_ATTRIBUTE_SEC | RIF_ATTRIBUTE_NPRIV);
   HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_XSPIM , RIF_ATTRIBUTE_SEC | RIF_ATTRIBUTE_NPRIV);
-  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_SPI4, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
-  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_USART3, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
-  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RCC_PERIPH_INDEX_GPIOB, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
-  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RCC_PERIPH_INDEX_GPIOD, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
-  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RCC_PERIPH_INDEX_GPIOE, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
-  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RCC_PERIPH_INDEX_GPIOO, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
 
   /* RISAF Config */
   RISAF_BaseRegionConfig_t risaf_base_config;
@@ -176,6 +171,11 @@ static void NonSecure_Init(void)
   risaf_base_config.StartAddress = 0x0000;
   HAL_RIF_RISAF_ConfigBaseRegion(RISAF3, RISAF_REGION_1, &risaf_base_config);
 
+  /* set up base region configuration for XSPI1*/
+  /* region 1 is non-secure */
+  risaf_base_config.EndAddress = 0x1ffffff;
+  HAL_RIF_RISAF_ConfigBaseRegion(RISAF11, RISAF_REGION_1, &risaf_base_config);
+
   /* set up base region configuration for CPUAXI_RAM0*/
   /* region 1 is secure */
   risaf_base_config.EndAddress = 0x9bfff;
@@ -190,6 +190,79 @@ static void NonSecure_Init(void)
   /* RIF-Aware IPs Config */
 
   /* set up GPDMA configuration */
+
+  /* set up GPIO configuration */
+  /* GPIOB Non Secure Ports Clock Enable */
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  HAL_GPIO_ConfigPinAttributes(GPIOB,GPIO_PIN_0,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
+  /* GPIOD Non Secure Ports Clock Enable */
+  __HAL_RCC_GPIOD_CLK_ENABLE();
+  HAL_GPIO_ConfigPinAttributes(GPIOD,GPIO_PIN_8,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOD,GPIO_PIN_9,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
+  /* GPIOE Non Secure Ports Clock Enable */
+  __HAL_RCC_GPIOE_CLK_ENABLE();
+  HAL_GPIO_ConfigPinAttributes(GPIOE,GPIO_PIN_8,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOE,GPIO_PIN_12,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOE,GPIO_PIN_13,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOE,GPIO_PIN_14,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPION,GPIO_PIN_0,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPION,GPIO_PIN_1,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPION,GPIO_PIN_2,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPION,GPIO_PIN_3,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPION,GPIO_PIN_4,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPION,GPIO_PIN_5,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPION,GPIO_PIN_6,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPION,GPIO_PIN_8,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPION,GPIO_PIN_9,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPION,GPIO_PIN_10,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPION,GPIO_PIN_11,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOO,GPIO_PIN_0,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  /* GPIOO Non Secure Ports Clock Enable */
+  __HAL_RCC_GPIOO_CLK_ENABLE();
+  HAL_GPIO_ConfigPinAttributes(GPIOO,GPIO_PIN_1,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOO,GPIO_PIN_2,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOO,GPIO_PIN_3,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOO,GPIO_PIN_4,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOP,GPIO_PIN_0,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOP,GPIO_PIN_1,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOP,GPIO_PIN_2,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOP,GPIO_PIN_3,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOP,GPIO_PIN_4,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOP,GPIO_PIN_5,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOP,GPIO_PIN_6,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOP,GPIO_PIN_7,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOP,GPIO_PIN_8,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOP,GPIO_PIN_9,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOP,GPIO_PIN_10,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOP,GPIO_PIN_11,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOP,GPIO_PIN_12,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOP,GPIO_PIN_13,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOP,GPIO_PIN_14,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOP,GPIO_PIN_15,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+
+/* USER CODE BEGIN RIF_Init 1 */
+  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_XSPI1, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
+  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_XSPIM, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
+
+  /* Temporary PSRAM access probe: remove RISAF filtering while validating
+     the NonSecure memory-mapped access path at 0x90000000. */
+  RISAF_BaseRegionConfig_t psram_risaf_probe_config = {0};
+  psram_risaf_probe_config.StartAddress = 0x00000000U;
+  psram_risaf_probe_config.EndAddress = 0x01FFFFFFU;
+  psram_risaf_probe_config.Filtering = RISAF_FILTER_DISABLE;
+  psram_risaf_probe_config.ReadWhitelist = 255U;
+  psram_risaf_probe_config.WriteWhitelist = 255U;
+  psram_risaf_probe_config.Secure = RIF_ATTRIBUTE_NSEC;
+  psram_risaf_probe_config.PrivWhitelist = RIF_CID_NONE;
+  HAL_RIF_RISAF_ConfigBaseRegion(RISAF11, RISAF_REGION_1, &psram_risaf_probe_config);
+
+  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_SPI4, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
+  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_USART3, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
+  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RCC_PERIPH_INDEX_GPIOB, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
+  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RCC_PERIPH_INDEX_GPIOD, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
+  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RCC_PERIPH_INDEX_GPIOE, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
+  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RCC_PERIPH_INDEX_GPIOO, RIF_ATTRIBUTE_NSEC | RIF_ATTRIBUTE_NPRIV);
+
   DMA_HandleTypeDef dma_ch10 = {0};
   DMA_HandleTypeDef dma_ch11 = {0};
 
@@ -210,27 +283,7 @@ static void NonSecure_Init(void)
     Error_Handler();
   }
 
-  /* set up GPIO configuration */
-  /* GPIOB Non Secure Ports Clock Enable */
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-  HAL_GPIO_ConfigPinAttributes(GPIOB,GPIO_PIN_0,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
-  /* GPIOD Non Secure Ports Clock Enable */
-  __HAL_RCC_GPIOD_CLK_ENABLE();
-  HAL_GPIO_ConfigPinAttributes(GPIOD,GPIO_PIN_8,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
-  HAL_GPIO_ConfigPinAttributes(GPIOD,GPIO_PIN_9,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
-  /* GPIOE Non Secure Ports Clock Enable */
-  __HAL_RCC_GPIOE_CLK_ENABLE();
-  HAL_GPIO_ConfigPinAttributes(GPIOE,GPIO_PIN_8,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
-  HAL_GPIO_ConfigPinAttributes(GPIOE,GPIO_PIN_12,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
-  HAL_GPIO_ConfigPinAttributes(GPIOE,GPIO_PIN_13,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
-  HAL_GPIO_ConfigPinAttributes(GPIOE,GPIO_PIN_14,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
-  /* GPIOO Non Secure Ports Clock Enable */
-  __HAL_RCC_GPIOO_CLK_ENABLE();
-  HAL_GPIO_ConfigPinAttributes(GPIOO,GPIO_PIN_1,GPIO_PIN_NSEC|GPIO_PIN_NPRIV);
-
   HAL_EXTI_ConfigLineAttributes(EXTI_LINE_8, EXTI_LINE_NSEC | EXTI_LINE_NPRIV);
-
-/* USER CODE BEGIN RIF_Init 1 */
 
 /* USER CODE END RIF_Init 1 */
 /* USER CODE BEGIN RIF_Init 2 */

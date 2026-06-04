@@ -1,0 +1,245 @@
+{
+    "version": "2.0.0",
+    "options": {
+        "env": {
+            "MAKEFLAGS": "-j16"
+        }
+    },
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "Build: FSBL",
+            "command": "${config:stm32.make.path}",
+            "args": [
+                "-C",
+                "${config:stm32.make.dir.fsbl}"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "detail": "Build the first-stage bootloader image"
+        },
+        {
+            "type": "shell",
+            "label": "Build: Appli",
+            "command": "${config:stm32.make.path}",
+            "args": [
+                "-C",
+                "${config:stm32.make.dir.appli}"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "detail": "Build the secure application image"
+        },
+        {
+            "label": "Build: All",
+            "dependsOn": [
+                "Build: FSBL",
+                "Build: Appli"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": [],
+            "group": "build",
+            "detail": "Build FSBL and Appli"
+        },
+        {
+            "type": "shell",
+            "label": "Clean: FSBL",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-Command",
+                "if (Test-Path 'build') { Remove-Item -Recurse -Force 'build' }"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/${config:stm32.make.dir.fsbl}"
+            },
+            "problemMatcher": [],
+            "detail": "Clean FSBL build output"
+        },
+        {
+            "type": "shell",
+            "label": "Clean: Appli",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-Command",
+                "if (Test-Path 'build') { Remove-Item -Recurse -Force 'build' }"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/${config:stm32.make.dir.appli}"
+            },
+            "problemMatcher": [],
+            "detail": "Clean Appli build output"
+        },
+        {
+            "label": "Clean: All",
+            "dependsOn": [
+                "Clean: Appli",
+                "Clean: FSBL"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": [],
+            "detail": "Clean both build outputs"
+        },
+        {
+            "label": "Rebuild: All",
+            "dependsOn": [
+                "Clean: All",
+                "Build: All"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": [],
+            "detail": "Clean and rebuild FSBL and Appli"
+        },
+        {
+            "type": "shell",
+            "label": "Sign: FSBL",
+            "command": "${config:stm32.signingtool.path}",
+            "args": [
+                "-bin",
+                "${config:stm32.bin.fsbl}",
+                "-nk",
+                "-of",
+                "0x80000000",
+                "-t",
+                "fsbl",
+                "-o",
+                "${config:stm32.trusted.fsbl}",
+                "-hv",
+                "2.3",
+                "-dump",
+                "${config:stm32.trusted.fsbl}",
+                "-align",
+                "-s"
+            ],
+            "problemMatcher": [],
+            "detail": "Generate trusted FSBL binary"
+        },
+        {
+            "type": "shell",
+            "label": "Sign: Appli",
+            "command": "${config:stm32.signingtool.path}",
+            "args": [
+                "-bin",
+                "${config:stm32.bin.appli}",
+                "-nk",
+                "-of",
+                "0x80000000",
+                "-t",
+                "fsbl",
+                "-o",
+                "${config:stm32.trusted.appli}",
+                "-hv",
+                "2.3",
+                "-dump",
+                "${config:stm32.trusted.appli}",
+                "-align",
+                "-s"
+            ],
+            "problemMatcher": [],
+            "detail": "Generate trusted Appli binary"
+        },
+        {
+            "label": "Sign: All",
+            "dependsOn": [
+                "Build: All",
+                "Sign: FSBL",
+                "Sign: Appli"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": [],
+            "detail": "Build and generate trusted binaries"
+        },
+        {
+            "type": "shell",
+            "label": "Flash: BootChain EXT (FSBL->Appli)",
+            "command": "${config:stm32.programmer.path}",
+            "args": [
+                "-c",
+                "port=SWD",
+                "mode=HOTPLUG",
+                "freq=3300",
+                "-el",
+                "${config:stm32.externalLoader}",
+                "-w",
+                "${config:stm32.trusted.fsbl}",
+                "${config:stm32.extflash.addr.fsbl}",
+                "-v",
+                "-w",
+                "${config:stm32.trusted.appli}",
+                "${config:stm32.extflash.addr.appli}",
+                "-v",
+                "-rst"
+            ],
+            "dependsOn": "Sign: All",
+            "problemMatcher": [],
+            "detail": "Program external flash with FSBL and Appli trusted binaries"
+        },
+        {
+            "type": "shell",
+            "label": "Run: FSBL Internal RAM (Development mode)",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/.vscode/run_elf_ram.ps1",
+                "-OpenOcdPath",
+                "${config:stm32.openocd.path}",
+                "-ObjdumpPath",
+                "${config:stm32.objdump.path}",
+                "-SearchDir1",
+                "${config:stm32.openocd.searchDir1}",
+                "-SearchDir2",
+                "${config:stm32.openocd.searchDir2}",
+                "-InterfaceScript",
+                "${config:stm32.openocd.interfaceScript}",
+                "-TargetScript",
+                "${config:stm32.openocd.targetScript}",
+                "-Elf",
+                "${config:stm32.elf.fsbl}"
+            ],
+            "dependsOn": "Build: FSBL",
+            "problemMatcher": [],
+            "detail": "Load FSBL ELF to internal RAM and run it"
+        },
+        {
+            "type": "shell",
+            "label": "Run: Appli Internal RAM (Development mode)",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/.vscode/run_elf_ram.ps1",
+                "-OpenOcdPath",
+                "${config:stm32.openocd.path}",
+                "-ObjdumpPath",
+                "${config:stm32.objdump.path}",
+                "-SearchDir1",
+                "${config:stm32.openocd.searchDir1}",
+                "-SearchDir2",
+                "${config:stm32.openocd.searchDir2}",
+                "-InterfaceScript",
+                "${config:stm32.openocd.interfaceScript}",
+                "-TargetScript",
+                "${config:stm32.openocd.targetScript}",
+                "-Elf",
+                "${config:stm32.elf.appli}"
+            ],
+            "dependsOn": "Build: Appli",
+            "problemMatcher": [],
+            "detail": "Load Appli ELF to internal RAM and run it directly"
+        }
+    ]
+}

@@ -198,17 +198,17 @@ extern uint32_t _eNSCVeneer;
 //   <e>Initialize SAU Region 3
 //   <i> Setup SAU Region 3 memory attributes
 */
-#define SAU_INIT_REGION3    0
+#define SAU_INIT_REGION3    1
 
 /*
 //     <o>Start Address <0-0xFFFFFFE0>
 */
-#define SAU_INIT_START3     0x00000000      /* start address of SAU region 3 */
+#define SAU_INIT_START3     0x90000000      /* start address of SAU region 3 */
 
 /*
 //     <o>End Address <0x1F-0xFFFFFFFF>
 */
-#define SAU_INIT_END3       0x00000000      /* end address of SAU region 3 */
+#define SAU_INIT_END3       0x91FFFFFF      /* end address of SAU region 3 */
 
 /*
 //     <o>Region is

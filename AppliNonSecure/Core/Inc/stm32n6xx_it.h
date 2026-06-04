@@ -46,7 +46,9 @@ extern "C" {
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
+void HardFault_Handler(void);
 void MemManage_Handler(void);
+void BusFault_Handler(void);
 void UsageFault_Handler(void);
 void SecureFault_Handler(void);
 void SVC_Handler(void);

@@ -1,5 +1,26 @@
 # stm32N6_AI
 
+## Variants
+
+The repository root keeps the verified TrustZone boot-chain baseline:
+
+```text
+FSBL -> AppliSecure -> AppliNonSecure
+```
+
+The simplified LRUN variant should be placed under:
+
+```text
+variants/fsbl_appli_lrun/
+```
+
+That variant is intended for PSRAM memory-mapped bring-up and future AI
+deployment work, following the official `VENC_RTSP_Server` style:
+
+```text
+FSBL -> Appli
+```
+
 这是一个面向 `STM32N6570-DK` 的 VS Code + Makefile 测试工程，用来验证从 CubeMX 生成的最小配置工程，到 STM32N6 三段式外部 Flash 启动链路的完整开发流程。
 
 当前工程已经验证：
@@ -9,8 +30,9 @@
 - Secure 工程可以完成 SAU / RIF / RISAF 安全隔离配置。
 - Secure 可以跳转到 NonSecure。
 - NonSecure 主循环正常运行。
-- PO1 LED 每 500 ms 翻转。
 - USART3 通过 PD8 / PD9 输出心跳信息，波特率 `115200 8N1`。
+- SPI4 通过 GPDMA1 接收 AD7606 采集卡数据帧。
+- PO1 LED 已绑定 SPI4 采集状态，用作通信健康指示。
 
 ## 工程来源
 
@@ -26,6 +48,10 @@ Projects/STM32N6570-DK/Templates/Template_Isolation_LRUN
 - PO1 LED
 - 外部 Flash 相关 XSPI2 / XSPIM 引脚
 - USART3，PD8 TX / PD9 RX
+- SPI4，PE12 SCK / PE13 MISO / PE14 MOSI
+- AD_IRQ，PE8，上升沿 EXTI，用于采集卡数据就绪握手
+- AD_CS，PB0，由 NonSecure 软件控制
+- GPDMA1 Channel 10 / 11，用于 SPI4 TX / RX
 - 必要的 RIF / SAU / RISAF 配置
 
 ## 工程结构
@@ -45,7 +71,7 @@ docs/                 调试记录和注意事项
 
 - `FSBL`：初始化系统时钟、XSPI2 外部 Flash、ExtMem Manager，并调用 `BOOT_Application()`。
 - `AppliSecure`：配置 TrustZone、SAU、RIF、RISAF，然后跳入 NonSecure。
-- `AppliNonSecure`：当前作为功能验证区，负责 LED 闪烁和 USART3 心跳输出。
+- `AppliNonSecure`：当前作为功能验证区，负责 USART3 日志输出、SPI4 DMA 采集链路验证和 LED 状态指示。
 
 ## 当前验证信号
 
@@ -57,7 +83,6 @@ AppliNonSecure/Core/Src/main.c
 
 当前现象：
 
-- PO1 LED 每 500 ms 翻转。
 - 串口启动后输出：
 
 ```text
@@ -68,6 +93,32 @@ STM32N6_AI AppNS USART3 start
 
 ```text
 STM32N6_AI AppNS heartbeat
+```
+
+- SPI4 采集质量统计每 5 秒输出一次：
+
+```text
+SPI4 quality win=5000ms frame=250 crc_ok=250 crc_bad=0 dma_err=0 bad_hdr=0 bad_len=0 len_warn=0 Bps=412000
+SPI4 quality gap irq=0 max_irq_delta=0 seq=0 max_seq_delta=0 raw_gap=0 max_raw_gap=0 raw_bad=0 dt_ms=[7,15] sample_delta=[358,716]
+```
+
+当前稳定状态下，`crc_bad / dma_err / bad_hdr / bad_len / raw_gap` 应保持为 `0`。`frame` 约为 `250 frame / 5 s`，对应约 `50 frame/s`；单帧 `8240 bytes` 时，吞吐约 `412000 B/s`。
+
+PO1 LED 当前含义：
+
+```text
+熄灭       超过 1.5 s 没有收到有效 CRC_OK 采集帧
+慢闪       持续收到有效 SPI4 采集帧，通信健康
+快闪 3 s   最近出现过 CRC 错、坏头、坏长度、DMA/HAL 异常
+```
+
+LED 参数位于 `AppliNonSecure/Core/Src/main.c`：
+
+```c
+#define AD_SPI_LED_NO_FRAME_TIMEOUT_MS 1500U
+#define AD_SPI_LED_ERROR_HOLD_MS      3000U
+#define AD_SPI_LED_GOOD_TOGGLE_MS     500U
+#define AD_SPI_LED_ERROR_TOGGLE_MS    100U
 ```
 
 串口参数：
@@ -87,6 +138,27 @@ No flow control
 
 ```c
 PeriphClkInitStruct.Usart3ClockSelection = RCC_USART3CLKSOURCE_PCLK1;
+```
+
+SPI4 参数：
+
+```text
+SPI4 master
+SCK:  PE12
+MISO: PE13
+MOSI: PE14
+CS:   PB0, AD_CS, software GPIO
+IRQ:  PE8, AD_IRQ, rising edge EXTI
+Clock source: HSI, 64 MHz
+Prescaler: /8, about 8 Mbit/s
+DMA RX: GPDMA1 Channel 11
+DMA TX: GPDMA1 Channel 10
+```
+
+注意：`STM32N6_AI.ioc` 中 SPI4 prescaler 可能仍显示 CubeMX 生成时的值；当前源码在 `AppliNonSecure/Core/Src/spi.c` 中手工调为：
+
+```c
+hspi4.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
 ```
 
 ## 构建
@@ -219,10 +291,15 @@ AppliSecure/Core/Src/main.c
 当前策略：
 
 - XSPI2 / XSPIM：Secure，用于 FSBL / Secure 配置外部 Flash。
+- SPI4：NonSecure。
 - USART3：NonSecure。
+- GPDMA1 Channel 10 / 11：NonSecure / NonPrivileged，用于 SPI4 TX / RX DMA。
+- GPIOB：NonSecure，供 AD_CS PB0 使用。
 - GPIOD：NonSecure，供 USART3 PD8 / PD9 使用。
+- GPIOE：NonSecure，供 AD_IRQ PE8 和 SPI4 PE12 / PE13 / PE14 使用。
 - GPIOO：NonSecure，供 PO1 LED 使用。
-- PO1 / PD8 / PD9 pin attribute：NonSecure。
+- EXTI Line 8：NonSecure / NonPrivileged，用于 AD_IRQ。
+- PB0 / PD8 / PD9 / PE8 / PE12 / PE13 / PE14 / PO1 pin attribute：NonSecure。
 - RISAF3 CPU AXI RAM1：NonSecure 区域，用于 AppNS。
 - RISAF2 / RISAF7：保持 Secure。
 
@@ -273,6 +350,39 @@ LED 已正常闪烁后，USART3 初次输出是乱码。原因不是程序未运
 
 修复后串口正常输出 AppNS start / heartbeat。
 
+### 5. SPI4 DMA 采集链路
+
+在 AppNS 中加入 SPI4 主机接收 AD7606 采集卡数据帧，使用 PE8 `AD_IRQ` 作为数据就绪握手，PB0 `AD_CS` 由软件控制。最初使用阻塞式 `HAL_SPI_TransmitReceive()` 验证帧头和 CRC，确认可以稳定收到：
+
+```text
+magic=0xAD76
+frame_type=0x01
+total_len=8240
+payload_len=8212
+CRC_OK
+```
+
+随后切换为 SPI4 + GPDMA1 双通道状态机：
+
+- `AD_IRQ` 上升沿置 pending 标志。
+- 主循环在 SPI 空闲时拉低 `AD_CS`，先 DMA 读取 24 字节帧头。
+- 帧头合法后继续 DMA 读取剩余 payload + CRC。
+- payload 完成后拉高 `AD_CS`，主循环解析帧、校验 CRC、统计质量。
+
+DMA 初期曾偶发坏头：
+
+```text
+SPI4 DMA bad header magic_le=0x5AED bytes=ED 5A 02 02 60 40 28 40 ...
+```
+
+该坏头不是随机噪声：`0x4060 / 0x4028` 分别接近期望总长/载荷长度的 2 倍，说明更像是主机在采集卡端 SPI DMA 或发送缓冲尚未稳定时开始读。最终在 `AD_IRQ` 后、拉低 `AD_CS` 前加入 1 ms settle 时间：
+
+```c
+#define AD_SPI_IRQ_TO_CS_SETTLE_MS 1U
+```
+
+加入该延时后，长时间统计中 `dma_err / bad_hdr / crc_bad / raw_gap` 均保持为 0，帧率约 `50 frame/s`，吞吐约 `412000 B/s`。
+
 ## 常用检查清单
 
 如果代码改了但板子现象没变，先检查：
@@ -297,6 +407,16 @@ LED 已正常闪烁后，USART3 初次输出是乱码。原因不是程序未运
 - TX/RX 是否接反。
 - USART3 是否使用 `PCLK1`。
 - USART3 / GPIOD 是否在 RIF 中配置为 NonSecure。
+
+如果 SPI4 采集异常，先检查：
+
+- AD7606 采集卡是否已经启动并持续拉起 `AD_IRQ`。
+- PE8 `AD_IRQ` 是否配置为 NonSecure EXTI rising edge。
+- PB0 `AD_CS` 是否配置为 NonSecure GPIO output，并且空闲为高。
+- PE12 / PE13 / PE14 是否为 SPI4 SCK / MISO / MOSI，且 RIF/pin attribute 为 NonSecure。
+- SPI4 / GPDMA1 Channel 10 / 11 / EXTI Line 8 是否在 Secure RIF 中放给 NonSecure。
+- `AD_SPI_IRQ_TO_CS_SETTLE_MS` 是否保留为当前验证过的 `1U`。
+- 串口质量统计里 `crc_bad / dma_err / bad_hdr / bad_len / raw_gap` 是否持续为 0。
 
 ## 文档
 

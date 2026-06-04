@@ -22,6 +22,8 @@
 #include "stm32n6xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "usart.h"
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,11 +48,59 @@
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
+static void FaultLed_Blink(uint32_t pulse_count);
+static void FaultReport(const char *fault_name);
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+static void FaultReport(const char *fault_name)
+{
+  char line[192];
+  uint32_t cfsr = SCB->CFSR;
+  uint32_t hfsr = SCB->HFSR;
+  uint32_t mmfar = SCB->MMFAR;
+  uint32_t bfar = SCB->BFAR;
+  uint32_t shcsr = SCB->SHCSR;
+  int len = snprintf(line, sizeof(line),
+                     "\r\nFAULT %s CFSR=0x%08lX HFSR=0x%08lX MMFAR=0x%08lX BFAR=0x%08lX SHCSR=0x%08lX\r\n",
+                     fault_name,
+                     (unsigned long)cfsr,
+                     (unsigned long)hfsr,
+                     (unsigned long)mmfar,
+                     (unsigned long)bfar,
+                     (unsigned long)shcsr);
+
+  if (len > 0)
+  {
+    (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 1000U);
+  }
+}
+
+static void FaultLed_Blink(uint32_t pulse_count)
+{
+  __disable_irq();
+
+  while (1)
+  {
+    for (uint32_t pulse = 0; pulse < pulse_count; pulse++)
+    {
+      HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+      for (volatile uint32_t delay = 0; delay < 80000U; delay++)
+      {
+      }
+      HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+      for (volatile uint32_t delay = 0; delay < 80000U; delay++)
+      {
+      }
+    }
+
+    for (volatile uint32_t delay = 0; delay < 900000U; delay++)
+    {
+    }
+  }
+}
 
 /* USER CODE END 0 */
 
@@ -66,11 +116,30 @@ extern SPI_HandleTypeDef hspi4;
 /*           Cortex Processor Interruption and Exception Handlers          */
 /******************************************************************************/
 /**
+  * @brief This function handles Hard fault interrupt.
+  */
+void HardFault_Handler(void)
+{
+  /* USER CODE BEGIN HardFault_IRQn 0 */
+  FaultReport("HardFault");
+  FaultLed_Blink(4U);
+
+  /* USER CODE END HardFault_IRQn 0 */
+  while (1)
+  {
+    /* USER CODE BEGIN W1_HardFault_IRQn 0 */
+    /* USER CODE END W1_HardFault_IRQn 0 */
+  }
+}
+
+/**
   * @brief This function handles Memory management fault.
   */
 void MemManage_Handler(void)
 {
   /* USER CODE BEGIN MemoryManagement_IRQn 0 */
+  FaultReport("MemManage");
+  FaultLed_Blink(1U);
 
   /* USER CODE END MemoryManagement_IRQn 0 */
   while (1)
@@ -81,11 +150,30 @@ void MemManage_Handler(void)
 }
 
 /**
+  * @brief This function handles Prefetch fault, memory access fault.
+  */
+void BusFault_Handler(void)
+{
+  /* USER CODE BEGIN BusFault_IRQn 0 */
+  FaultReport("BusFault");
+  FaultLed_Blink(5U);
+
+  /* USER CODE END BusFault_IRQn 0 */
+  while (1)
+  {
+    /* USER CODE BEGIN W1_BusFault_IRQn 0 */
+    /* USER CODE END W1_BusFault_IRQn 0 */
+  }
+}
+
+/**
   * @brief This function handles Undefined instruction or illegal state.
   */
 void UsageFault_Handler(void)
 {
   /* USER CODE BEGIN UsageFault_IRQn 0 */
+  FaultReport("UsageFault");
+  FaultLed_Blink(2U);
 
   /* USER CODE END UsageFault_IRQn 0 */
   while (1)
@@ -101,6 +189,8 @@ void UsageFault_Handler(void)
 void SecureFault_Handler(void)
 {
   /* USER CODE BEGIN SecureFault_IRQn 0 */
+  FaultReport("SecureFault");
+  FaultLed_Blink(3U);
 
   /* USER CODE END SecureFault_IRQn 0 */
   while (1)

@@ -26,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "extmem.h"
+#include "psram_diag.h"
 
 /* USER CODE END Includes */
 
@@ -90,8 +91,18 @@ int main(void)
   MX_GPIO_Init();
   MX_GPDMA1_Init();
   MX_XSPI2_Init();
+  MX_XSPI1_Init();
   /* USER CODE BEGIN 2 */
   MX_EXTMEM_Init();
+
+#if FSBL_PSRAM_TEST_ENABLE
+  if (FSBL_PSRAM_InitAndTest() != HAL_OK)
+  {
+#if FSBL_PSRAM_BLOCK_ON_FAIL
+    Error_Handler();
+#endif
+  }
+#endif
 
   if (BOOT_OK != BOOT_Application())
   {

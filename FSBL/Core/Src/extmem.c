@@ -22,6 +22,7 @@
 #include "extmem.h"
 
 /* USER CODE BEGIN Includes */
+#include "main.h"
 
 /* USER CODE END Includes */
 
@@ -60,8 +61,10 @@ void MX_EXTMEM_Init(void)
     
   /* USER CODE END MX_EXTMEM_Init_PreTreatment */
 
-  EXTMEM_Init(EXTMEMORY_1, HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_XSPI2));
-//  EXTMEM_Init(EXTMEMORY_2, HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_XSPI1));
+  if (EXTMEM_OK != EXTMEM_Init(EXTMEMORY_1, HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_XSPI2)))
+  {
+    Error_Handler();
+  }
 
   /* USER CODE BEGIN MX_EXTMEM_Init_PostTreatment */
 

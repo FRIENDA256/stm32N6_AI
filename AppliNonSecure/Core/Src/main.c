@@ -76,6 +76,79 @@ typedef struct
   uint8_t have_last_sample;
   uint8_t have_last_raw_block;
 } AD_SPI_QualityStats_t;
+
+typedef struct
+{
+  uint32_t magic;
+  uint32_t version;
+  uint32_t diag_level;
+  uint32_t result;
+  uint32_t step;
+  uint32_t error_code;
+  uint32_t hal_error;
+  uint32_t test_words;
+  uint32_t fail_index;
+  uint32_t expected;
+  uint32_t actual;
+  uint8_t mr0_w[2];
+  uint8_t mr0_r[2];
+  uint8_t mr4_w[2];
+  uint8_t mr4_r[2];
+  uint8_t mr8_w[2];
+  uint8_t mr8_r[2];
+  uint32_t indirect_len;
+  uint8_t indirect_tx[16];
+  uint8_t indirect_rx[16];
+  uint32_t xspi_cr_before_mmap;
+  uint32_t xspi_sr_before_mmap;
+  uint32_t xspi_dcr1_before_mmap;
+  uint32_t xspi_dcr2_before_mmap;
+  uint32_t xspi_dcr3_before_mmap;
+  uint32_t xspi_dcr4_before_mmap;
+  uint32_t xspi_ccr_before_mmap;
+  uint32_t xspi_tcr_before_mmap;
+  uint32_t xspi_wccr_before_mmap;
+  uint32_t xspi_wtcr_before_mmap;
+  uint32_t xspi_cr_after_mmap;
+  uint32_t xspi_sr_after_mmap;
+  uint32_t xspi_dcr1_after_mmap;
+  uint32_t xspi_dcr2_after_mmap;
+  uint32_t xspi_dcr3_after_mmap;
+  uint32_t xspi_dcr4_after_mmap;
+  uint32_t xspi_ccr_after_mmap;
+  uint32_t xspi_tcr_after_mmap;
+  uint32_t xspi_wccr_after_mmap;
+  uint32_t xspi_wtcr_after_mmap;
+  uint32_t rcc_ahb3enr;
+  uint32_t rcc_ahb3ensr;
+  uint32_t rcc_ahb5enr;
+  uint32_t rcc_ahb5ensr;
+  uint32_t xspim_cr;
+  uint32_t mce1_clock_enabled;
+  uint32_t mce1_cr;
+  uint32_t mce1_sr;
+  uint32_t mce1_iasr;
+  uint32_t mce1_iaddr;
+  uint32_t mce1_region1_regcr;
+  uint32_t mce1_region1_saddr;
+  uint32_t mce1_region1_eaddr;
+  uint32_t risaf_clock_enabled;
+  uint32_t risaf11_cr;
+  uint32_t risaf11_iasr;
+  uint32_t risaf11_iaesr;
+  uint32_t risaf11_iaddr;
+  uint32_t risaf11_region1_cfgr;
+  uint32_t risaf11_region1_startr;
+  uint32_t risaf11_region1_endr;
+  uint32_t risaf11_region1_cidcfgr;
+  uint32_t sau_ctrl;
+  uint32_t sau_type;
+  uint32_t sau_rnr;
+  uint32_t sau_rbar;
+  uint32_t sau_rlar;
+  uint32_t mpu_ctrl;
+  uint32_t mpu_type;
+} FSBL_PSRAM_DiagRecord_t;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -100,6 +173,11 @@ typedef struct
 #define AD_SPI_LED_ERROR_TOGGLE_MS    100U
 #define AD_SPI_VERBOSE_FRAME_LOG      0U
 #define AD_SPI_VERBOSE_RAW_LOG        0U
+#define EXT_RAM_TEST_ENABLE           0U
+#define EXT_RAM_BASE_ADDR             0x90000000UL
+#define EXT_RAM_TEST_WORDS            1U
+#define FSBL_PSRAM_DIAG_RECORD_ADDR   0x2417F000UL
+#define FSBL_PSRAM_DIAG_RECORD_MAGIC  0x5053524DUL
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -158,6 +236,8 @@ static void SPI4_StatusLED_Task(uint32_t now_tick);
 static void SPI4_StatusLED_RecordFrame(uint8_t crc_ok);
 static void SPI4_StatusLED_RecordError(void);
 static void SPI4_StatusLED_Set(uint8_t on);
+static void ExtRam_Test(void);
+static void FSBL_PSRAM_DiagReport(void);
 static void AD7606_SPI4_StartDmaRead(uint32_t irq_count_snapshot);
 static void AD7606_SPI4_ProcessDmaFrame(uint32_t irq_count_snapshot);
 static void AD7606_SPI4_ReportDmaError(uint32_t irq_count_snapshot, uint8_t error_code, uint32_t hal_error);
@@ -193,12 +273,15 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_GPDMA1_Init();
-  MX_USART3_UART_Init();
   MX_SPI4_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
+  SCB->SHCSR |= (SCB_SHCSR_MEMFAULTENA_Msk | SCB_SHCSR_BUSFAULTENA_Msk | SCB_SHCSR_USGFAULTENA_Msk);
   memset(ad_spi_tx_dummy, 0xFF, sizeof(ad_spi_tx_dummy));
   HAL_GPIO_WritePin(AD_CS_GPIO_Port, AD_CS_Pin, GPIO_PIN_SET);
   UART_WriteString(uart_start_msg);
+  FSBL_PSRAM_DiagReport();
+  ExtRam_Test();
   heartbeat_tick = HAL_GetTick();
   SPI4_QualityTest_ClearWindow(heartbeat_tick);
   SPI4_StatusLED_Init(heartbeat_tick);
@@ -292,6 +375,219 @@ static void UART_WriteString(const char *text)
   if (text != NULL)
   {
     (void)HAL_UART_Transmit(&huart3, (uint8_t *)text, (uint16_t)strlen(text), 100U);
+  }
+}
+
+static void FSBL_PSRAM_DiagReport(void)
+{
+  const volatile FSBL_PSRAM_DiagRecord_t *diag =
+      (const volatile FSBL_PSRAM_DiagRecord_t *)FSBL_PSRAM_DIAG_RECORD_ADDR;
+  char line[192];
+  int len;
+
+  if (diag->magic != FSBL_PSRAM_DIAG_RECORD_MAGIC)
+  {
+    UART_WriteString("FSBL PSRAM diag not available\r\n");
+    return;
+  }
+
+  len = snprintf(line, sizeof(line),
+                 "FSBL PSRAM diag ver=%lu level=%lu result=%lu step=%lu err=%lu hal=0x%08lX\r\n",
+                 (unsigned long)diag->version,
+                 (unsigned long)diag->diag_level,
+                 (unsigned long)diag->result,
+                 (unsigned long)diag->step,
+                 (unsigned long)diag->error_code,
+                 (unsigned long)diag->hal_error);
+  if (len > 0)
+  {
+    (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+  }
+
+  len = snprintf(line, sizeof(line),
+                 "FSBL PSRAM MR0 w=%02X %02X r=%02X %02X, MR4 w=%02X %02X r=%02X %02X, MR8 w=%02X %02X r=%02X %02X\r\n",
+                 diag->mr0_w[0], diag->mr0_w[1], diag->mr0_r[0], diag->mr0_r[1],
+                 diag->mr4_w[0], diag->mr4_w[1], diag->mr4_r[0], diag->mr4_r[1],
+                 diag->mr8_w[0], diag->mr8_w[1], diag->mr8_r[0], diag->mr8_r[1]);
+  if (len > 0)
+  {
+    (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+  }
+
+  len = snprintf(line, sizeof(line),
+                 "FSBL PSRAM indirect len=%lu tx=%02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\r\n",
+                 (unsigned long)diag->indirect_len,
+                 diag->indirect_tx[0], diag->indirect_tx[1], diag->indirect_tx[2], diag->indirect_tx[3],
+                 diag->indirect_tx[4], diag->indirect_tx[5], diag->indirect_tx[6], diag->indirect_tx[7],
+                 diag->indirect_tx[8], diag->indirect_tx[9], diag->indirect_tx[10], diag->indirect_tx[11],
+                 diag->indirect_tx[12], diag->indirect_tx[13], diag->indirect_tx[14], diag->indirect_tx[15]);
+  if (len > 0)
+  {
+    (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+  }
+
+  len = snprintf(line, sizeof(line),
+                 "FSBL PSRAM indirect rx=%02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\r\n",
+                 diag->indirect_rx[0], diag->indirect_rx[1], diag->indirect_rx[2], diag->indirect_rx[3],
+                 diag->indirect_rx[4], diag->indirect_rx[5], diag->indirect_rx[6], diag->indirect_rx[7],
+                 diag->indirect_rx[8], diag->indirect_rx[9], diag->indirect_rx[10], diag->indirect_rx[11],
+                 diag->indirect_rx[12], diag->indirect_rx[13], diag->indirect_rx[14], diag->indirect_rx[15]);
+  if (len > 0)
+  {
+    (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+  }
+
+  if (diag->version >= 2UL)
+  {
+    len = snprintf(line, sizeof(line),
+                   "FSBL XSPI before mmap CR=0x%08lX SR=0x%08lX DCR1=0x%08lX DCR2=0x%08lX DCR3=0x%08lX DCR4=0x%08lX\r\n",
+                   (unsigned long)diag->xspi_cr_before_mmap,
+                   (unsigned long)diag->xspi_sr_before_mmap,
+                   (unsigned long)diag->xspi_dcr1_before_mmap,
+                   (unsigned long)diag->xspi_dcr2_before_mmap,
+                   (unsigned long)diag->xspi_dcr3_before_mmap,
+                   (unsigned long)diag->xspi_dcr4_before_mmap);
+    if (len > 0)
+    {
+      (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+    }
+
+    len = snprintf(line, sizeof(line),
+                   "FSBL XSPI before mmap CCR=0x%08lX TCR=0x%08lX WCCR=0x%08lX WTCR=0x%08lX\r\n",
+                   (unsigned long)diag->xspi_ccr_before_mmap,
+                   (unsigned long)diag->xspi_tcr_before_mmap,
+                   (unsigned long)diag->xspi_wccr_before_mmap,
+                   (unsigned long)diag->xspi_wtcr_before_mmap);
+    if (len > 0)
+    {
+      (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+    }
+
+    len = snprintf(line, sizeof(line),
+                   "FSBL XSPI after mmap CR=0x%08lX SR=0x%08lX DCR1=0x%08lX DCR2=0x%08lX DCR3=0x%08lX DCR4=0x%08lX\r\n",
+                   (unsigned long)diag->xspi_cr_after_mmap,
+                   (unsigned long)diag->xspi_sr_after_mmap,
+                   (unsigned long)diag->xspi_dcr1_after_mmap,
+                   (unsigned long)diag->xspi_dcr2_after_mmap,
+                   (unsigned long)diag->xspi_dcr3_after_mmap,
+                   (unsigned long)diag->xspi_dcr4_after_mmap);
+    if (len > 0)
+    {
+      (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+    }
+
+    len = snprintf(line, sizeof(line),
+                   "FSBL XSPI after mmap CCR=0x%08lX TCR=0x%08lX WCCR=0x%08lX WTCR=0x%08lX\r\n",
+                   (unsigned long)diag->xspi_ccr_after_mmap,
+                   (unsigned long)diag->xspi_tcr_after_mmap,
+                   (unsigned long)diag->xspi_wccr_after_mmap,
+                   (unsigned long)diag->xspi_wtcr_after_mmap);
+    if (len > 0)
+    {
+      (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+    }
+  }
+
+  if (diag->version >= 3UL)
+  {
+    len = snprintf(line, sizeof(line),
+                   "FSBL RCC AHB3ENR=0x%08lX AHB3ENSR=0x%08lX AHB5ENR=0x%08lX AHB5ENSR=0x%08lX\r\n",
+                   (unsigned long)diag->rcc_ahb3enr,
+                   (unsigned long)diag->rcc_ahb3ensr,
+                   (unsigned long)diag->rcc_ahb5enr,
+                   (unsigned long)diag->rcc_ahb5ensr);
+    if (len > 0)
+    {
+      (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+    }
+
+    len = snprintf(line, sizeof(line),
+                   "FSBL path XSPIM_CR=0x%08lX MCE1_CLK=%lu RISAF_CLK=%lu\r\n",
+                   (unsigned long)diag->xspim_cr,
+                   (unsigned long)diag->mce1_clock_enabled,
+                   (unsigned long)diag->risaf_clock_enabled);
+    if (len > 0)
+    {
+      (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+    }
+
+    len = snprintf(line, sizeof(line),
+                   "FSBL MCE1 CR=0x%08lX SR=0x%08lX IASR=0x%08lX IADDR=0x%08lX\r\n",
+                   (unsigned long)diag->mce1_cr,
+                   (unsigned long)diag->mce1_sr,
+                   (unsigned long)diag->mce1_iasr,
+                   (unsigned long)diag->mce1_iaddr);
+    if (len > 0)
+    {
+      (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+    }
+
+    len = snprintf(line, sizeof(line),
+                   "FSBL MCE1 R1 REGCR=0x%08lX SADDR=0x%08lX EADDR=0x%08lX\r\n",
+                   (unsigned long)diag->mce1_region1_regcr,
+                   (unsigned long)diag->mce1_region1_saddr,
+                   (unsigned long)diag->mce1_region1_eaddr);
+    if (len > 0)
+    {
+      (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+    }
+
+    len = snprintf(line, sizeof(line),
+                   "FSBL RISAF11 CR=0x%08lX IASR=0x%08lX IAESR=0x%08lX IADDR=0x%08lX\r\n",
+                   (unsigned long)diag->risaf11_cr,
+                   (unsigned long)diag->risaf11_iasr,
+                   (unsigned long)diag->risaf11_iaesr,
+                   (unsigned long)diag->risaf11_iaddr);
+    if (len > 0)
+    {
+      (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+    }
+
+    len = snprintf(line, sizeof(line),
+                   "FSBL RISAF11 R1 CFGR=0x%08lX START=0x%08lX END=0x%08lX CID=0x%08lX\r\n",
+                   (unsigned long)diag->risaf11_region1_cfgr,
+                   (unsigned long)diag->risaf11_region1_startr,
+                   (unsigned long)diag->risaf11_region1_endr,
+                   (unsigned long)diag->risaf11_region1_cidcfgr);
+    if (len > 0)
+    {
+      (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+    }
+
+    len = snprintf(line, sizeof(line),
+                   "FSBL SAU CTRL=0x%08lX TYPE=0x%08lX RNR=0x%08lX RBAR=0x%08lX RLAR=0x%08lX\r\n",
+                   (unsigned long)diag->sau_ctrl,
+                   (unsigned long)diag->sau_type,
+                   (unsigned long)diag->sau_rnr,
+                   (unsigned long)diag->sau_rbar,
+                   (unsigned long)diag->sau_rlar);
+    if (len > 0)
+    {
+      (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+    }
+
+    len = snprintf(line, sizeof(line),
+                   "FSBL MPU CTRL=0x%08lX TYPE=0x%08lX\r\n",
+                   (unsigned long)diag->mpu_ctrl,
+                   (unsigned long)diag->mpu_type);
+    if (len > 0)
+    {
+      (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+    }
+  }
+
+  if (diag->result == 2UL)
+  {
+    len = snprintf(line, sizeof(line),
+                   "FSBL PSRAM fail index=%lu expected=0x%08lX actual=0x%08lX test_words=%lu\r\n",
+                   (unsigned long)diag->fail_index,
+                   (unsigned long)diag->expected,
+                   (unsigned long)diag->actual,
+                   (unsigned long)diag->test_words);
+    if (len > 0)
+    {
+      (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+    }
   }
 }
 
@@ -772,6 +1068,81 @@ static void SPI4_StatusLED_Set(uint8_t on)
 {
   ad_spi_led_on = (on != 0U) ? 1U : 0U;
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, (ad_spi_led_on != 0U) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+}
+
+static void ExtRam_Test(void)
+{
+#if EXT_RAM_TEST_ENABLE
+  volatile uint8_t *ram8 = (volatile uint8_t *)EXT_RAM_BASE_ADDR;
+  volatile uint32_t *ram32 = (volatile uint32_t *)EXT_RAM_BASE_ADDR;
+  char line[128];
+  uint8_t expected8 = 0xA5U;
+  uint32_t expected32 = 0x5A5A1234U;
+  uint8_t actual8;
+  uint32_t actual32;
+
+  UART_WriteString("EXT RAM test begin\r\n");
+  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
+
+  UART_WriteString("EXT RAM byte write probe\r\n");
+  ram8[0] = expected8;
+  __DSB();
+  HAL_Delay(1U);
+
+  UART_WriteString("EXT RAM byte read probe\r\n");
+  actual8 = ram8[0];
+
+  if (actual8 != expected8)
+  {
+    int len = snprintf(line, sizeof(line),
+                       "EXT RAM byte FAIL addr=0x%08lX exp=0x%02X got=0x%02X\r\n",
+                       (unsigned long)EXT_RAM_BASE_ADDR,
+                       expected8,
+                       actual8);
+    if (len > 0)
+    {
+      (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+    }
+    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+    return;
+  }
+
+  UART_WriteString("EXT RAM word write probe\r\n");
+  ram32[0] = expected32;
+  __DSB();
+  HAL_Delay(1U);
+
+  UART_WriteString("EXT RAM word read probe\r\n");
+  actual32 = ram32[0];
+
+  if (actual32 != expected32)
+  {
+    int len = snprintf(line, sizeof(line),
+                       "EXT RAM word FAIL addr=0x%08lX exp=0x%08lX got=0x%08lX\r\n",
+                       (unsigned long)EXT_RAM_BASE_ADDR,
+                       (unsigned long)expected32,
+                       (unsigned long)actual32);
+    if (len > 0)
+    {
+      (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+    }
+    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+    return;
+  }
+
+  ram32[0] = 0x00000000U;
+  __DSB();
+
+  int len = snprintf(line, sizeof(line),
+                     "EXT RAM test OK base=0x%08lX bytes=%lu\r\n",
+                     (unsigned long)EXT_RAM_BASE_ADDR,
+                     (unsigned long)sizeof(uint32_t));
+  if (len > 0)
+  {
+    (void)HAL_UART_Transmit(&huart3, (uint8_t *)line, (uint16_t)len, 100U);
+  }
+  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
+#endif
 }
 
 static void AD7606_SPI4_StartDmaRead(uint32_t irq_count_snapshot)
