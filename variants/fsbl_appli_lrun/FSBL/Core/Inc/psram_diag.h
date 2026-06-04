@@ -24,10 +24,9 @@ extern "C" {
  *   3: level 2 + CPU byte-only memory-mapped probe
  *   4: level 3 + CPU write/read a small memory-mapped window
  *
- * Current APS256XXN direct CPU mmap probe can hang before NonSecure UART starts.
- * Keep level 2 as the safe bootable diagnostic level while tuning the access path.
+ * Keep disabled for the clean interface-development baseline.
  */
-#define FSBL_PSRAM_DIAG_LEVEL           2U
+#define FSBL_PSRAM_DIAG_LEVEL           0U
 #define FSBL_PSRAM_TEST_ENABLE          (FSBL_PSRAM_DIAG_LEVEL > 0U)
 #define FSBL_PSRAM_BLOCK_ON_FAIL        0U
 #define FSBL_PSRAM_TEST_WORDS           1U

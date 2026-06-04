@@ -18,15 +18,11 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "gpdma.h"
-#include "spi.h"
 #include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "ad7606_spi_dma.h"
-#include "ext_ram_test.h"
 #include <string.h>
 
 /* USER CODE END Includes */
@@ -45,9 +41,6 @@
 /* USER CODE BEGIN PM */
 
 /* USER CODE END PM */
-extern DMA_HandleTypeDef handle_GPDMA1_Channel10 ;
-extern DMA_HandleTypeDef handle_GPDMA1_Channel11 ;
-
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
@@ -112,15 +105,10 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_GPDMA1_Init();
-  MX_SPI4_Init();
   MX_USART3_UART_Init();
   SystemIsolation_Config();
   /* USER CODE BEGIN 2 */
   App_Print("FSBL->Appli start\r\n");
-  SCB->SHCSR |= (SCB_SHCSR_MEMFAULTENA_Msk | SCB_SHCSR_BUSFAULTENA_Msk | SCB_SHCSR_USGFAULTENA_Msk);
-  ExtRam_TestReport();
-  AD7606_SPI4_Init();
   heartbeat_tick = HAL_GetTick();
 
   /* USER CODE END 2 */
@@ -134,7 +122,6 @@ int main(void)
     /* USER CODE BEGIN 3 */
     uint32_t now_tick = HAL_GetTick();
 
-    AD7606_SPI4_Task(now_tick);
     App_BreathLed_Task(now_tick);
 
     if ((now_tick - heartbeat_tick) >= 1000U)
@@ -198,20 +185,6 @@ int main(void)
   /* region 1 is secure */
   risaf_base_config.EndAddress = 0x63fff;
   HAL_RIF_RISAF_ConfigBaseRegion(RISAF7, RISAF_REGION_1, &risaf_base_config);
-
-  /* RIF-Aware IPs Config */
-
-  /* set up GPDMA configuration */
-  /* set GPDMA1 channel 10 used by SPI4 */
-  if (HAL_DMA_ConfigChannelAttributes(&handle_GPDMA1_Channel10,DMA_CHANNEL_SEC|DMA_CHANNEL_PRIV|DMA_CHANNEL_SRC_SEC|DMA_CHANNEL_DEST_SEC)!= HAL_OK )
-  {
-    Error_Handler();
-  }
-  /* set GPDMA1 channel 11 used by SPI4 */
-  if (HAL_DMA_ConfigChannelAttributes(&handle_GPDMA1_Channel11,DMA_CHANNEL_SEC|DMA_CHANNEL_PRIV|DMA_CHANNEL_SRC_SEC|DMA_CHANNEL_DEST_SEC)!= HAL_OK )
-  {
-    Error_Handler();
-  }
 
   /* set up GPIO configuration */
   HAL_GPIO_ConfigPinAttributes(GPIOB,GPIO_PIN_0,GPIO_PIN_SEC|GPIO_PIN_NPRIV);

@@ -90,7 +90,9 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_XSPI2_Init();
+#if FSBL_PSRAM_TEST_ENABLE
   MX_XSPI1_Init();
+#endif
   /* USER CODE BEGIN 2 */
   MX_EXTMEM_Init();
 
