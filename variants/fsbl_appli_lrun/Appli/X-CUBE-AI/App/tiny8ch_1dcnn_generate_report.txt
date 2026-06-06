@@ -1,0 +1,229 @@
+ST Edge AI Core v2.2.0-20266 2adc00962
+Created date          : 2026-06-06 23:05:07
+Parameters            : generate --target stm32n6 --name tiny8ch_1dcnn -m E:/WORK/STM32N6/N6CODE/AI_MODE/eight_channel_1dcnn/artifacts/tiny8ch_1dcnn.onnx --compression none --verbosity 1 --workspace C:/Users/lenovo/AppData/Local/Temp/mxAI_workspace134947664956200155756524106155633 --output C:/Users/lenovo/.stm32cubemx/tiny8ch_1dcnn_output
+
+Exec/report summary (generate)
+------------------------------------------------------------------------------------------------------------
+model file         :   E:\WORK\STM32N6\N6CODE\AI_MODE\eight_channel_1dcnn\artifacts\tiny8ch_1dcnn.onnx      
+type               :   onnx                                                                                 
+c_name             :   tiny8ch_1dcnn                                                                        
+compression        :   none                                                                                 
+options            :   allocate-inputs, allocate-outputs                                                    
+optimization       :   balanced                                                                             
+target/series      :   stm32n6                                                                              
+workspace dir      :   C:\Users\lenovo\AppData\Local\Temp\mxAI_workspace134947664956200155756524106155633   
+output dir         :   C:\Users\lenovo\.stm32cubemx\tiny8ch_1dcnn_output                                    
+model_fmt          :   float                                                                                
+model_name         :   tiny8ch_1dcnn                                                                        
+model_hash         :   0x6e949e0b7215b0e6d3d8b77a307fbe68                                                   
+params #           :   5,324 items (20.80 KiB)                                                              
+------------------------------------------------------------------------------------------------------------
+input 1/1          :   'input', f32(1x8x1024), 32.00 KBytes, activations                                    
+output 1/1         :   'probabilities', f32(1x4), 16 Bytes, activations                                     
+macc               :   2,568,456                                                                            
+weights (ro)       :   21,296 B (20.80 KiB) (1 segment)                                                     
+activations (rw)   :   65,536 B (64.00 KiB) (1 segment) *                                                   
+ram (total)        :   65,536 B (64.00 KiB) = 65,536 + 0 + 0                                                
+------------------------------------------------------------------------------------------------------------
+(*) 'input'/'output' buffers are allocated in the activations buffer
+
+Model name - tiny8ch_1dcnn
+------ ---------------------------------------------------------- ------------------- ------------- --------- -------------------------------- --- ----------------- -------------------- --------------------- 
+m_id   layer (type,original)                                      oshape              param/size         macc                     connected to   | c_size            c_macc               c_type                
+------ ---------------------------------------------------------- ------------------- ------------- --------- -------------------------------- --- ----------------- -------------------- --------------------- 
+11     classifier_1_weight (Placeholder, Gemm)                    [b:4,c:32]          128/512                                                    | +16(+3.1%)        +132(+100.0%)        Dense_[6]             
+       classifier_1_bias (Placeholder, Gemm)                      [b:4]               4/16                                                       | -16(-100.0%)                           
+------ ---------------------------------------------------------- ------------------- ------------- --------- -------------------------------- --- ----------------- -------------------- --------------------- 
+0      input (Input, )                                            [b:1,h:1024,c:8]                                                               |                                        
+------ ---------------------------------------------------------- ------------------- ------------- --------- -------------------------------- --- ----------------- -------------------- --------------------- 
+1      _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:1024,c:16]   912/3,648       917,520                            input   | -3,648(-100.0%)   -917,520(-100.0%)    
+------ ---------------------------------------------------------- ------------------- ------------- --------- -------------------------------- --- ----------------- -------------------- --------------------- 
+2      _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:1024,c:16]                    16,384   _features_features..v_output_0   |                   -12,288(-75.0%)      Transpose_[0]         
+------ ---------------------------------------------------------- ------------------- ------------- --------- -------------------------------- --- ----------------- -------------------- --------------------- 
+3      _features_features..l_output_0 (Pool, MaxPool)             [b:1,h:512,c:16]                     16,384   _features_features..u_output_0   | +3,648(+100.0%)   +933,904(+5700.1%)   Conv2D_[1]            
+------ ---------------------------------------------------------- ------------------- ------------- --------- -------------------------------- --- ----------------- -------------------- --------------------- 
+4      _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:512,c:24]    1,944/7,776     983,064   _features_features..l_output_0   | -7,776(-100.0%)   -983,064(-100.0%)    
+------ ---------------------------------------------------------- ------------------- ------------- --------- -------------------------------- --- ----------------- -------------------- --------------------- 
+5      _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:512,c:24]                     12,288   _features_features..v_output_0   |                   -12,288(-100.0%)     
+------ ---------------------------------------------------------- ------------------- ------------- --------- -------------------------------- --- ----------------- -------------------- --------------------- 
+6      _features_features..l_output_0 (Pool, MaxPool)             [b:1,h:256,c:24]                     12,288   _features_features..u_output_0   | +7,776(+100.0%)   +995,352(+8100.2%)   Conv2D_[2]            
+------ ---------------------------------------------------------- ------------------- ------------- --------- -------------------------------- --- ----------------- -------------------- --------------------- 
+7      _features_features..v_output_0 (Conv2D, Conv)              [b:1,h:256,c:32]    2,336/9,344     589,856   _features_features..l_output_0   |                                        Conv2D_[3]            
+------ ---------------------------------------------------------- ------------------- ------------- --------- -------------------------------- --- ----------------- -------------------- --------------------- 
+8      _features_features..u_output_0 (Nonlinearity, Relu)        [b:1,h:256,c:32]                      8,192   _features_features..v_output_0   |                                        Nonlinearity_[4]      
+------ ---------------------------------------------------------- ------------------- ------------- --------- -------------------------------- --- ----------------- -------------------- --------------------- 
+9      _features_features..l_output_0 (Pool, GlobalAveragePool)   [b:1,h:1,c:32]                        8,192   _features_features..u_output_0   |                                        Pool_[5]              
+------ ---------------------------------------------------------- ------------------- ------------- --------- -------------------------------- --- ----------------- -------------------- --------------------- 
+10     _classifier_classi..n_output_0 (Reshape, Flatten)          [b:1,c:32]                                    _features_features..l_output_0   |                                        
+------ ---------------------------------------------------------- ------------------- ------------- --------- -------------------------------- --- ----------------- -------------------- --------------------- 
+11     _classifier_classi..m_output_0 (Gemm, Gemm)                [b:1,c:4]                               132   _classifier_classi..n_output_0   |                   -132(-100.0%)        
+                                                                                                                           classifier_1_weight   | 
+                                                                                                                             classifier_1_bias   | 
+------ ---------------------------------------------------------- ------------------- ------------- --------- -------------------------------- --- ----------------- -------------------- --------------------- 
+12     probabilities (Nonlinearity, Softmax)                      [b:1,c:4]                                60   _classifier_classi..m_output_0   |                                        Nonlinearity_[o][7]   
+------ ---------------------------------------------------------- ------------------- ------------- --------- -------------------------------- --- ----------------- -------------------- --------------------- 
+model/c-model: macc=2,564,360/2,568,456 +4,096(+0.2%) weights=21,296/21,296  activations=--/65,536 io=--/0
+
+
+
+Generated C-graph summary
+------------------------------------------------------------------------------------------------------------------------
+model name            : tiny8ch_1dcnn
+c-name                : tiny8ch_1dcnn
+c-node #              : 8
+c-array #             : 22
+activations size      : 65536 (1 segment)
+weights size          : 21296 (1 segment)
+macc                  : 2568456
+inputs                : ['input_output']
+outputs               : ['probabilities_output']
+
+C-Arrays (22)
+------ -------------------------------------------------------- ------------ ------------------------- ------------- --------- 
+c_id   name (*_array)                                           item/size    domain/mem-pool           c-type        comment   
+------ -------------------------------------------------------- ------------ ------------------------- ------------- --------- 
+0      _classifier_classifier_1_Gemm_output_0_bias              4/16         weights/weights           const float             
+1      _classifier_classifier_1_Gemm_output_0_output            4/16         activations/**default**   float                   
+2      _classifier_classifier_1_Gemm_output_0_weights           128/512      weights/weights           const float             
+3      _features_features_0_Conv_output_0_bias                  16/64        weights/weights           const float             
+4      _features_features_0_Conv_output_0_output                8192/32768   activations/**default**   float                   
+5      _features_features_0_Conv_output_0_scratch0              56/224       activations/**default**   float                   
+6      _features_features_0_Conv_output_0_scratch1              32/128       activations/**default**   float                   
+7      _features_features_0_Conv_output_0_weights               896/3584     weights/weights           const float             
+8      _features_features_3_Conv_output_0_bias                  24/96        weights/weights           const float             
+9      _features_features_3_Conv_output_0_output                6144/24576   activations/**default**   float                   
+10     _features_features_3_Conv_output_0_scratch0              80/320       activations/**default**   float                   
+11     _features_features_3_Conv_output_0_scratch1              48/192       activations/**default**   float                   
+12     _features_features_3_Conv_output_0_weights               1920/7680    weights/weights           const float             
+13     _features_features_6_Conv_output_0_bias                  32/128       weights/weights           const float             
+14     _features_features_6_Conv_output_0_output                8192/32768   activations/**default**   float                   
+15     _features_features_6_Conv_output_0_scratch0              72/288       activations/**default**   float                   
+16     _features_features_6_Conv_output_0_weights               2304/9216    weights/weights           const float             
+17     _features_features_7_Relu_output_0_output                8192/32768   activations/**default**   float                   
+18     _features_features_8_GlobalAveragePool_output_0_output   32/128       activations/**default**   float                   
+19     input_Transpose_output                                   8192/32768   activations/**default**   float                   
+20     input_output                                             8192/32768   activations/**default**   float         /input    
+21     probabilities_output                                     4/16         activations/**default**   float         /output   
+------ -------------------------------------------------------- ------------ ------------------------- ------------- --------- 
+
+C-Layers (8)
+------ ------------------------------------------------- ---- --------------- --------- ------ ----------------------------------------------------------- --------------------- 
+c_id   name (*_layer)                                    id   layer_type      macc      rom    tensors                                                     shape (array id)      
+------ ------------------------------------------------- ---- --------------- --------- ------ ----------------------------------------------------------- --------------------- 
+0      input_Transpose                                   2    Transpose       4096      0      I: input_output                                             f32(1x8x1024) (20)    
+                                                                                               O: input_Transpose_output                                   f32(1x1024x8) (19)    
+------ ------------------------------------------------- ---- --------------- --------- ------ ----------------------------------------------------------- --------------------- 
+1      _features_features_0_Conv_output_0                3    Conv2D          950288    3648   I: input_Transpose_output                                   f32(1x1024x8) (19)    
+                                                                                               S: _features_features_0_Conv_output_0_scratch0                                    
+                                                                                               S: _features_features_0_Conv_output_0_scratch1                                    
+                                                                                               W: _features_features_0_Conv_output_0_weights               f32(16x7x1x8) (7)     
+                                                                                               W: _features_features_0_Conv_output_0_bias                  f32(16) (3)           
+                                                                                               O: _features_features_0_Conv_output_0_output                f32(1x512x16) (4)     
+------ ------------------------------------------------- ---- --------------- --------- ------ ----------------------------------------------------------- --------------------- 
+2      _features_features_3_Conv_output_0                6    Conv2D          1007640   7776   I: _features_features_0_Conv_output_0_output                f32(1x512x16) (4)     
+                                                                                               S: _features_features_3_Conv_output_0_scratch0                                    
+                                                                                               S: _features_features_3_Conv_output_0_scratch1                                    
+                                                                                               W: _features_features_3_Conv_output_0_weights               f32(24x5x1x16) (12)   
+                                                                                               W: _features_features_3_Conv_output_0_bias                  f32(24) (8)           
+                                                                                               O: _features_features_3_Conv_output_0_output                f32(1x256x24) (9)     
+------ ------------------------------------------------- ---- --------------- --------- ------ ----------------------------------------------------------- --------------------- 
+3      _features_features_6_Conv_output_0                7    Conv2D          589856    9344   I: _features_features_3_Conv_output_0_output                f32(1x256x24) (9)     
+                                                                                               S: _features_features_6_Conv_output_0_scratch0                                    
+                                                                                               W: _features_features_6_Conv_output_0_weights               f32(32x3x1x24) (16)   
+                                                                                               W: _features_features_6_Conv_output_0_bias                  f32(32) (13)          
+                                                                                               O: _features_features_6_Conv_output_0_output                f32(1x256x32) (14)    
+------ ------------------------------------------------- ---- --------------- --------- ------ ----------------------------------------------------------- --------------------- 
+4      _features_features_7_Relu_output_0                8    Nonlinearity    8192      0      I: _features_features_6_Conv_output_0_output                f32(1x256x32) (14)    
+                                                                                               O: _features_features_7_Relu_output_0_output                f32(1x256x32) (17)    
+------ ------------------------------------------------- ---- --------------- --------- ------ ----------------------------------------------------------- --------------------- 
+5      _features_features_8_GlobalAveragePool_output_0   9    Pool            8192      0      I: _features_features_7_Relu_output_0_output                f32(1x256x32) (17)    
+                                                                                               O: _features_features_8_GlobalAveragePool_output_0_output   f32(1x1x32) (18)      
+------ ------------------------------------------------- ---- --------------- --------- ------ ----------------------------------------------------------- --------------------- 
+6      _classifier_classifier_1_Gemm_output_0            11   Dense           132       528    I: _features_features_8_GlobalAveragePool_output_0_output   f32(1x1x32) (18)      
+                                                                                               W: _classifier_classifier_1_Gemm_output_0_weights           f32(4x32) (2)         
+                                                                                               W: _classifier_classifier_1_Gemm_output_0_bias              f32(4) (0)            
+                                                                                               O: _classifier_classifier_1_Gemm_output_0_output            f32(1x4) (1)          
+------ ------------------------------------------------- ---- --------------- --------- ------ ----------------------------------------------------------- --------------------- 
+7      probabilities                                     12   Nonlinearity    60        0      I: _classifier_classifier_1_Gemm_output_0_output            f32(1x4) (1)          
+                                                                                               O: probabilities_output                                     f32(1x4) (21)         
+------ ------------------------------------------------- ---- --------------- --------- ------ ----------------------------------------------------------- --------------------- 
+
+
+
+Number of operations per c-layer
+------- ------ ----------------------------------------------- ----------- -------------- 
+c_id    m_id   name (type)                                             #op           type 
+------- ------ ----------------------------------------------- ----------- -------------- 
+0       2      input_Transpose (Transpose)                           4,096   smul_f32_f32 
+1       3      _features_features..v_output_0 (Conv2D)             950,288   smul_f32_f32 
+2       6      _features_features..v_output_0 (Conv2D)           1,007,640   smul_f32_f32 
+3       7      _features_features..v_output_0 (Conv2D)             589,856   smul_f32_f32 
+4       8      _features_features..u_output_0 (Nonlinearity)         8,192     op_f32_f32 
+5       9      _features_features..l_output_0 (Pool)                 8,192   smul_f32_f32 
+6       11     _classifier_classi..m_output_0 (Dense)                  132   smul_f32_f32 
+7       12     probabilities (Nonlinearity)                             60     op_f32_f32 
+------- ------ ----------------------------------------------- ----------- -------------- 
+total                                                            2,568,456 
+
+Number of operation types
+---------------- ----------- ----------- 
+operation type             #           % 
+---------------- ----------- ----------- 
+smul_f32_f32       2,560,204       99.7% 
+op_f32_f32             8,252        0.3% 
+
+Complexity report (model)
+------ ------------------------------------------ ------------------------- ------------------------- ------ 
+m_id   name                                       c_macc                    c_rom                     c_id   
+------ ------------------------------------------ ------------------------- ------------------------- ------ 
+11     classifier_1_weight                        |                  0.0%   |                  2.5%   [6]    
+2      _features_features_1_Relu_output_0         |                  0.2%   |                  0.0%   [0]    
+3      _features_features_2_MaxPool_output_0      |||||||||||||||   37.0%   ||||||            17.1%   [1]    
+6      _features_features_5_MaxPool_output_0      ||||||||||||||||  39.2%   |||||||||||||     36.5%   [2]    
+7      _features_features_6_Conv_output_0         |||||||||         23.0%   ||||||||||||||||  43.9%   [3]    
+8      _features_features_7_Relu_output_0         |                  0.3%   |                  0.0%   [4]    
+9      _features_features_8_GlobalA..l_output_0   |                  0.3%   |                  0.0%   [5]    
+12     probabilities                              |                  0.0%   |                  0.0%   [7]    
+------ ------------------------------------------ ------------------------- ------------------------- ------ 
+macc=2,568,456 weights=21,296 act=65,536 ram_io=0
+ 
+ Requested memory size by section - "stm32n6" target
+ ------------------------------- -------- -------- ------- -------- 
+ module                              text   rodata    data      bss 
+ ------------------------------- -------- -------- ------- -------- 
+ NetworkRuntime1020_CM55_GCC.a     17,004       32       0        0 
+ tiny8ch_1dcnn.o                      684       64   2,928      196 
+ tiny8ch_1dcnn_data.o                  48       16      88        0 
+ lib (toolchain)*                       0        0       0        0 
+ ------------------------------- -------- -------- ------- -------- 
+ RT total**                        17,736      112   3,016      196 
+ ------------------------------- -------- -------- ------- -------- 
+ weights                                0   21,296       0        0 
+ activations                            0        0       0   65,536 
+ io                                     0        0       0        0 
+ ------------------------------- -------- -------- ------- -------- 
+ TOTAL                             17,736   21,408   3,016   65,732 
+ ------------------------------- -------- -------- ------- -------- 
+ *  toolchain objects (libm/libgcc*)
+ ** RT AI runtime objects (kernels+infrastructure)
+  
+  Summary - "stm32n6" target
+  --------------------------------------------------
+               FLASH (ro)      %*   RAM (rw)      % 
+  --------------------------------------------------
+  RT total         20,864   49.5%      3,212   4.7% 
+  --------------------------------------------------
+  TOTAL            42,160             68,748        
+  --------------------------------------------------
+  *  rt/total
+
+
+Generated files (7)
+------------------------------------------------------------------------------- 
+C:\Users\lenovo\.stm32cubemx\tiny8ch_1dcnn_output\tiny8ch_1dcnn_data_params.h   
+C:\Users\lenovo\.stm32cubemx\tiny8ch_1dcnn_output\tiny8ch_1dcnn_data_params.c   
+C:\Users\lenovo\.stm32cubemx\tiny8ch_1dcnn_output\tiny8ch_1dcnn_data.h          
+C:\Users\lenovo\.stm32cubemx\tiny8ch_1dcnn_output\tiny8ch_1dcnn_data.c          
+C:\Users\lenovo\.stm32cubemx\tiny8ch_1dcnn_output\tiny8ch_1dcnn_config.h        
+C:\Users\lenovo\.stm32cubemx\tiny8ch_1dcnn_output\tiny8ch_1dcnn.h               
+C:\Users\lenovo\.stm32cubemx\tiny8ch_1dcnn_output\tiny8ch_1dcnn.c               

@@ -84,8 +84,8 @@ endif
 
 # default action: build all
 all:
-	cd FSBL && $(MAKE)
-	cd Appli && $(MAKE)
+	make -C FSBL
+	make -C Appli
 	
 
 
@@ -95,7 +95,7 @@ all:
 # list of objects
 
 EXEC =main
-main=    cd  Secure && $(MAKE)
+main=    make -C Secure
 
 		
 

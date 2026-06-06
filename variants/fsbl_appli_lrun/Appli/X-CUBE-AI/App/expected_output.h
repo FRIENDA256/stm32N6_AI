@@ -1,0 +1,9 @@
+#ifndef AI_EXPECTED_OUTPUT_H
+#define AI_EXPECTED_OUTPUT_H
+
+#define AI_OUTPUT_CLASS_COUNT 4U
+#define AI_EXPECTED_TOP1_INDEX 0U
+
+static const float g_ai_expected_output[AI_OUTPUT_CLASS_COUNT] = { 0.253180802f, 0.249720454f, 0.248090342f, 0.249008462f };
+
+#endif /* AI_EXPECTED_OUTPUT_H */
