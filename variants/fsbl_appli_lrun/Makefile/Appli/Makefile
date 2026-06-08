@@ -40,6 +40,7 @@ C_SOURCES =  \
 ../../Appli/X-CUBE-AI/App/tiny8ch_1dcnn_data.c \
 ../../Appli/X-CUBE-AI/App/tiny8ch_1dcnn_data_params.c \
 ../../Appli/Core/Src/main.c \
+../../Appli/Core/Src/app_main.c \
 ../../Appli/Core/Src/ad7606_spi_dma.c \
 ../../Appli/Core/Src/ext_ram_test.c \
 ../../Appli/Core/Src/gpio.c \
