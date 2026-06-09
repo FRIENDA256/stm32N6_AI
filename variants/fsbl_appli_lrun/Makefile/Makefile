@@ -46,7 +46,7 @@ SZ = $(PREFIX)size
 endif
 HEX = $(CP) -O ihex
 BIN = $(CP) -O binary -S
- 
+
 #######################################
 # CFLAGS
 #######################################
@@ -61,7 +61,7 @@ MCU = $(CPU) -mthumb $(FPU) $(FLOAT-ABI)
 
 # macros for gcc
 # AS defines
-AS_DEFS = 
+AS_DEFS =
 
 
 
@@ -84,9 +84,9 @@ endif
 
 # default action: build all
 all:
-	make -C FSBL
-	make -C Appli
-	
+	$(MAKE) -C FSBL
+	$(MAKE) -C Appli
+
 
 
 #######################################
@@ -95,16 +95,16 @@ all:
 # list of objects
 
 EXEC =main
-main=    make -C Secure
+main=    $(MAKE) -C Secure
 
-		
+
 
 #######################################
 # clean up
 #######################################
 clean:
 	-rm -fR $(EXEC)
-  
+
 #######################################
 # dependencies
 ######################################

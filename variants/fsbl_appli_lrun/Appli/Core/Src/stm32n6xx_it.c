@@ -22,6 +22,10 @@
 #include "stm32n6xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
+#include <string.h>
+
+#include "usart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,6 +55,33 @@
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+static void Fault_Print(const char *text)
+{
+  (void)HAL_UART_Transmit(&huart3, (const uint8_t *)text, (uint16_t)strlen(text), HAL_MAX_DELAY);
+}
+
+static void Fault_Dump(const char *name)
+{
+  char line[192];
+
+  (void)snprintf(line, sizeof(line),
+                 "%s CFSR=0x%08lX HFSR=0x%08lX MMFAR=0x%08lX BFAR=0x%08lX\r\n",
+                 name,
+                 (unsigned long)SCB->CFSR,
+                 (unsigned long)SCB->HFSR,
+                 (unsigned long)SCB->MMFAR,
+                 (unsigned long)SCB->BFAR);
+  Fault_Print(line);
+
+  (void)snprintf(line, sizeof(line),
+                 "%s SFSR=0x%08lX SFAR=0x%08lX AHB5ENR=0x%08lX MEMENR=0x%08lX\r\n",
+                 name,
+                 (unsigned long)SCB->SFSR,
+                 (unsigned long)SCB->SFAR,
+                 (unsigned long)RCC->AHB5ENR,
+                 (unsigned long)RCC->MEMENR);
+  Fault_Print(line);
+}
 
 /* USER CODE END 0 */
 
@@ -86,6 +117,7 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
+  Fault_Dump("HardFault");
 
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
@@ -101,6 +133,7 @@ void HardFault_Handler(void)
 void MemManage_Handler(void)
 {
   /* USER CODE BEGIN MemoryManagement_IRQn 0 */
+  Fault_Dump("MemManage");
 
   /* USER CODE END MemoryManagement_IRQn 0 */
   while (1)
@@ -116,6 +149,7 @@ void MemManage_Handler(void)
 void BusFault_Handler(void)
 {
   /* USER CODE BEGIN BusFault_IRQn 0 */
+  Fault_Dump("BusFault");
 
   /* USER CODE END BusFault_IRQn 0 */
   while (1)
@@ -131,6 +165,7 @@ void BusFault_Handler(void)
 void UsageFault_Handler(void)
 {
   /* USER CODE BEGIN UsageFault_IRQn 0 */
+  Fault_Dump("UsageFault");
 
   /* USER CODE END UsageFault_IRQn 0 */
   while (1)
@@ -146,6 +181,7 @@ void UsageFault_Handler(void)
 void SecureFault_Handler(void)
 {
   /* USER CODE BEGIN SecureFault_IRQn 0 */
+  Fault_Dump("SecureFault");
 
   /* USER CODE END SecureFault_IRQn 0 */
   while (1)

@@ -17,6 +17,8 @@ Makefile/**/build*/
 # Generated dependency/cache files
 .dep/
 .cache/
+_stedgeai_diag_copy_weights*/
+**/_stedgeai_diag_copy_weights*/
 
 # Local backups and archives
 *.zip

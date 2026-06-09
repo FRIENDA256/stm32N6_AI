@@ -14,6 +14,9 @@
     "stm32.extflash.addr.fsbl": "0x70000000",
     "stm32.extflash.addr.appli": "0x70100000",
 
+    "stm32.npu.weights": "tiny_temporal_mixer_8ch_int8_atonbuf.xSPI2.raw",
+    "stm32.npu.weights.addr": "0x71000000",
+
     "stm32.make.path": "make",
     "stm32.gcc.path": "arm-none-eabi-gcc",
     "stm32.objdump.path": "arm-none-eabi-objdump",

@@ -384,6 +384,38 @@
         },
         {
             "type": "shell",
+            "label": "Flash: NPU Weights EXT",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/tools/flash_npu_weights.ps1",
+                "-Programmer",
+                "${config:stm32.programmer.path}",
+                "-ExternalLoader",
+                "${config:stm32.externalLoader}",
+                "-Weights",
+                "${workspaceFolder}/variants/fsbl_appli_lrun/tiny_temporal_mixer_8ch_int8_atonbuf.xSPI2.raw",
+                "-Address",
+                "0x71000000"
+            ],
+            "problemMatcher": [],
+            "detail": "Program X-CUBE-AI NPU weights raw into xSPI2 external Flash"
+        },
+        {
+            "label": "Flash: BootChain EXT + NPU Weights",
+            "dependsOn": [
+                "Flash: BootChain EXT (FSBL->Secure->NonSecure)",
+                "Flash: NPU Weights EXT"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": [],
+            "detail": "Program boot images first, then program NPU weights at the configured xSPI2 address"
+        },
+        {
+            "type": "shell",
             "label": "Flash: AppliSecure (STLink)",
             "command": "${config:stm32.openocd.path}",
             "args": [

@@ -153,6 +153,22 @@ Use STM32CubeProgrammer with the STM32N6570-DK external loader. Do not use a
 plain OpenOCD `program <bin> 0x70000000 verify` flow unless an external Flash
 bank has been explicitly configured.
 
+For the NPU `tiny_temporal_mixer_8ch_int8` test, the generated weights are not
+part of the Appli binary. Program the raw weights into xSPI2 Flash:
+
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File tools\flash_npu_weights.ps1
+```
+
+This writes:
+
+```text
+variants\fsbl_appli_lrun\tiny_temporal_mixer_8ch_int8_atonbuf.xSPI2.raw -> 0x71000000
+```
+
+The firmware prints a startup probe for `0x71000000`. `match=1` means the
+weights in external Flash match the generated raw file.
+
 ## Notes For New Interface Work
 
 This baseline is deliberately quiet. When adding a new peripheral or interface:
@@ -162,4 +178,3 @@ This baseline is deliberately quiet. When adding a new peripheral or interface:
 - Enable one subsystem at a time.
 - Add diagnostics behind compile-time switches when possible.
 - Avoid re-enabling PSRAM/SPI4/AD7606 startup code unless the task requires it.
-

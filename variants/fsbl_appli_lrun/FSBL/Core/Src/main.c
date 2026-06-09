@@ -88,11 +88,10 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
+  MX_GPDMA1_Init();
   MX_GPIO_Init();
-  MX_XSPI2_Init();
-#if FSBL_PSRAM_TEST_ENABLE
   MX_XSPI1_Init();
-#endif
+  MX_XSPI2_Init();
   /* USER CODE BEGIN 2 */
   MX_EXTMEM_Init();
 
@@ -144,7 +143,7 @@ void SystemClock_Config(void)
 
   /** Configure the main internal regulator output voltage
   */
-  if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK)
+  if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE0) != HAL_OK)
   {
     Error_Handler();
   }
