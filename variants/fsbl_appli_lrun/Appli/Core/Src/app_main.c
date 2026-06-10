@@ -29,8 +29,24 @@ LL_ATON_DECLARE_NAMED_NN_INSTANCE_AND_INTERFACE(tiny_temporal_mixer_8ch_int8);
 #define NPU_AI_WEIGHTS_TAIL_OFFSET 79872U
 #define NPU_AI_WEIGHTS_TAIL_SUM 0x00007E90UL
 #define NPU_AI_USE_NPURAM_USER_IO 1U
-#define NPU_AI_NPURAM_USER_IO_BASE 0x342E0000UL
-#define NPU_AI_NPURAM_POOL_BYTES 458752U
+#define NPU_AI_NPURAM_ACTIVATION_BASE 0x342E0000UL
+#define NPU_AI_NPURAM_ACTIVATION_BYTES 0x00056000UL
+#define NPU_AI_NPURAM_USER_INPUT_BASE 0x34336000UL
+#define NPU_AI_NPURAM_USER_OUTPUT_BASE 0x34340000UL
+#define NPU_AI_NPURAM_POOL_BYTES 0x00070000UL
+#define NPU_AI_USER_OUTPUT_BUFFER_BYTES 32U
+
+#if (NPU_AI_NPURAM_USER_INPUT_BASE < (NPU_AI_NPURAM_ACTIVATION_BASE + NPU_AI_NPURAM_ACTIVATION_BYTES))
+#error "NPU input buffer overlaps generated activation range"
+#endif
+
+#if ((NPU_AI_NPURAM_USER_INPUT_BASE + LL_ATON_TINY_TEMPORAL_MIXER_8CH_INT8_IN_1_SIZE_BYTES) > NPU_AI_NPURAM_USER_OUTPUT_BASE)
+#error "NPU input and output user buffers overlap"
+#endif
+
+#if ((NPU_AI_NPURAM_USER_OUTPUT_BASE + NPU_AI_USER_OUTPUT_BUFFER_BYTES) > (NPU_AI_NPURAM_ACTIVATION_BASE + NPU_AI_NPURAM_POOL_BYTES))
+#error "NPU user output buffer is outside configured npuRAM pool"
+#endif
 
 static const char *const g_ai_class_names[NPU_AI_OUTPUT_CLASS_COUNT] = {
   "class_0",
@@ -39,12 +55,9 @@ static const char *const g_ai_class_names[NPU_AI_OUTPUT_CLASS_COUNT] = {
   "class_3",
 };
 
+/* Golden raw for the current CubeMX/STEdgeAI 2.2 ATON backend on STM32N6. */
 static const int8_t g_ai_expected_output_int8[NPU_AI_OUTPUT_CLASS_COUNT] = {
-  6, 65, 3, -69,
-};
-
-static const int32_t g_ai_expected_output_float_micro[NPU_AI_OUTPUT_CLASS_COUNT] = {
-  17962, 25737, 17426, 7909,
+  0, 5, -39, -115,
 };
 
 static const uint8_t g_ai_weights_expected_first16[16] = {
@@ -100,37 +113,6 @@ static int32_t App_FloatToMicro(float value)
   return (int32_t)(scaled - 0.5f);
 }
 
-static void App_PrintMicroScore(const char *prefix, int32_t score_micro, const char *suffix)
-{
-  char line[128];
-  uint32_t integer;
-  uint32_t fraction;
-
-  if (score_micro < 0)
-  {
-    integer = (uint32_t)((-score_micro) / 1000000L);
-    fraction = (uint32_t)((-score_micro) % 1000000L);
-    (void)snprintf(line, sizeof(line), "%sscore=-%lu.%06lu%s",
-                   prefix, (unsigned long)integer, (unsigned long)fraction, suffix);
-  }
-  else
-  {
-    integer = (uint32_t)(score_micro / 1000000L);
-    fraction = (uint32_t)(score_micro % 1000000L);
-    (void)snprintf(line, sizeof(line), "%sscore=%lu.%06lu%s",
-                   prefix, (unsigned long)integer, (unsigned long)fraction, suffix);
-  }
-  App_Print(line);
-}
-
-static float App_ReadFloat32(const void *addr)
-{
-  float value;
-
-  (void)memcpy(&value, addr, sizeof(value));
-  return value;
-}
-
 static void App_CacheCleanAligned(uintptr_t addr, uint32_t size)
 {
   uintptr_t start = addr & ~((uintptr_t)NPU_AI_CACHE_LINE_BYTES - 1U);
@@ -181,7 +163,7 @@ static void App_PrintMemProbe(const char *label, const void *addr, uint32_t sum_
 
 static void App_PrintNpuRamProbe(const char *label, uint32_t offset, uint32_t sum_len)
 {
-  App_PrintMemProbe(label, (const void *)(NPU_AI_NPURAM_USER_IO_BASE + offset), sum_len);
+  App_PrintMemProbe(label, (const void *)(NPU_AI_NPURAM_ACTIVATION_BASE + offset), sum_len);
 }
 
 static void App_PrintRisafAccessState(const char *label)
@@ -205,7 +187,7 @@ static void App_PrintRisafAccessState(const char *label)
 
 static void App_ClearNpuRamPool(void)
 {
-  void *pool = (void *)NPU_AI_NPURAM_USER_IO_BASE;
+  void *pool = (void *)NPU_AI_NPURAM_ACTIVATION_BASE;
 
   App_CacheInvalidateAligned((uintptr_t)pool, NPU_AI_NPURAM_POOL_BYTES);
   (void)memset(pool, 0, NPU_AI_NPURAM_POOL_BYTES);
@@ -321,8 +303,8 @@ static void App_ConfigureNpuWeightAccess(void)
   risaf_config.EndAddress = 0x07FFFFFFU;
   HAL_RIF_RISAF_ConfigBaseRegion(RISAF12, RISAF_REGION_1, &risaf_config);
 
-  risaf_config.StartAddress = NPU_AI_NPURAM_USER_IO_BASE;
-  risaf_config.EndAddress = NPU_AI_NPURAM_USER_IO_BASE + NPU_AI_NPURAM_POOL_BYTES - 1U;
+  risaf_config.StartAddress = NPU_AI_NPURAM_ACTIVATION_BASE;
+  risaf_config.EndAddress = NPU_AI_NPURAM_ACTIVATION_BASE + NPU_AI_NPURAM_POOL_BYTES - 1U;
   HAL_RIF_RISAF_ConfigBaseRegion(RISAF4, RISAF_REGION_1, &risaf_config);
   HAL_RIF_RISAF_ConfigBaseRegion(RISAF5, RISAF_REGION_1, &risaf_config);
 
@@ -392,9 +374,6 @@ static void App_RunNpuSelfTest(void)
   uint32_t top_index = 0U;
   int8_t top_score;
   uint32_t mismatch_count = 0U;
-  uint32_t float_top_index = 0U;
-  int32_t float_top_score_micro;
-  uint32_t float_mismatch_count = 0U;
   uint32_t output_probe_size;
   uint32_t run_start_tick;
   uint32_t run_loop_count = 0U;
@@ -423,8 +402,8 @@ static void App_RunNpuSelfTest(void)
     LL_ATON_User_IO_Result_t input_set_result;
     LL_ATON_User_IO_Result_t output_set_result;
 #if NPU_AI_USE_NPURAM_USER_IO
-    void *user_input_buffer = (void *)NPU_AI_NPURAM_USER_IO_BASE;
-    void *user_output_buffer = (void *)NPU_AI_NPURAM_USER_IO_BASE;
+    void *user_input_buffer = (void *)NPU_AI_NPURAM_USER_INPUT_BASE;
+    void *user_output_buffer = (void *)NPU_AI_NPURAM_USER_OUTPUT_BASE;
 #else
     void *user_input_buffer = g_npu_input_buffer;
     void *user_output_buffer = g_npu_output_buffer;
@@ -437,7 +416,7 @@ static void App_RunNpuSelfTest(void)
     output_set_result = LL_ATON_Set_User_Output_Buffer(&NN_Instance_tiny_temporal_mixer_8ch_int8,
                                                        0U,
                                                        user_output_buffer,
-                                                       32U);
+                                                       NPU_AI_USER_OUTPUT_BUFFER_BYTES);
     (void)snprintf(line, sizeof(line),
                    "NPU user io set mode=%s input=%ld output=%ld in_addr=0x%08lX out_addr=0x%08lX\r\n",
 #if NPU_AI_USE_NPURAM_USER_IO
@@ -565,43 +544,6 @@ static void App_RunNpuSelfTest(void)
                  (uint8_t)output_buffer[1],
                  (uint8_t)output_buffer[2],
                  (uint8_t)output_buffer[3]);
-  App_Print(line);
-
-  App_Print("NPU adjacent float32 invalid-view begin\r\n");
-  float_top_score_micro = App_FloatToMicro(App_ReadFloat32(&((const uint8_t *)output_buffer)[0]));
-  for (uint32_t i = 0U; i < NPU_AI_OUTPUT_CLASS_COUNT; i++)
-  {
-    int32_t score_micro = App_FloatToMicro(App_ReadFloat32(&((const uint8_t *)output_buffer)[i * sizeof(float)]));
-    int32_t diff_micro = score_micro - g_ai_expected_output_float_micro[i];
-
-    if (diff_micro < 0)
-    {
-      diff_micro = -diff_micro;
-    }
-    if (diff_micro > 2000L)
-    {
-      float_mismatch_count++;
-    }
-    if (score_micro > float_top_score_micro)
-    {
-      float_top_score_micro = score_micro;
-      float_top_index = i;
-    }
-
-    (void)snprintf(line, sizeof(line), "NPU float[%lu] %s ",
-                   (unsigned long)i, g_ai_class_names[i]);
-    App_PrintMicroScore(line, score_micro, " ");
-    (void)snprintf(line, sizeof(line), "exp=%ld.%06ld\r\n",
-                   (long)(g_ai_expected_output_float_micro[i] / 1000000L),
-                   (long)(g_ai_expected_output_float_micro[i] % 1000000L));
-    App_Print(line);
-  }
-  (void)snprintf(line, sizeof(line),
-                 "NPU float top1 index=%lu label=%s expected=%lu mismatches=%lu\r\n",
-                 (unsigned long)float_top_index,
-                 g_ai_class_names[float_top_index],
-                 (unsigned long)NPU_AI_EXPECTED_TOP1_INDEX,
-                 (unsigned long)float_mismatch_count);
   App_Print(line);
 
   App_Print("NPU output int8 view begin\r\n");

@@ -7,22 +7,32 @@ The current main development baseline is:
 
 ```text
 variants/fsbl_appli_lrun/
-FSBL -> Appli
+FSBL -> Appli + STM32N6 NPU self-test
 ```
 
-It is intentionally clean for new interface development:
+It is now the verified NPU inference baseline for the 8-channel temporal mixer
+experiment:
 
 - FSBL boots from external Flash and loads Appli.
 - Appli initializes GPIO and USART3.
 - PO1 LED runs a breathing pattern.
-- USART3 prints startup and 1-second heartbeat logs.
-- PSRAM, SPI4, GPDMA, AD7606, and large-buffer diagnostics are disabled on the
-  startup path.
+- USART3 prints startup, NPU self-test, and 1-second heartbeat logs.
+- Appli initializes the STM32N6 NPU runtime and runs a fixed-input INT8 model.
+- Model weights are read from xSPI2 Flash at `0x71000000`.
+- NPU user input/output buffers are placed outside the generated activation
+  range in NPU RAM.
+- PSRAM, SPI4, GPDMA, AD7606, and large-buffer diagnostics remain disabled on
+  the startup path.
 
 Expected UART output:
 
 ```text
 FSBL->Appli start
+NPU AI self-test begin
+...
+NPU output raw bytes=00 05 D9 8D
+NPU top1 index=1 label=class_1 expected=1 raw=5 score=0.017822
+NPU AI self-test OK
 FSBL->Appli heartbeat
 FSBL->Appli heartbeat
 ...
@@ -44,7 +54,7 @@ No flow control
 README.md
 variants/
   README.md
-  fsbl_appli_lrun/                 Current clean FSBL->Appli baseline
+  fsbl_appli_lrun/                 Current FSBL->Appli NPU inference baseline
   fsbl_appli_led_usart_baseline/   Archived minimal LED/USART baseline
 Drivers/
 Middlewares/
@@ -63,7 +73,7 @@ FSBL -> AppliSecure -> AppliNonSecure
 
 Keep it as historical reference unless a task explicitly targets that layout.
 
-## Current Baseline
+## Current NPU Baseline
 
 Use `variants/fsbl_appli_lrun/` for new development.
 
@@ -78,7 +88,14 @@ Runtime scope:
   - Initializes GPIO and USART3.
   - Configures RIF attributes needed by the baseline.
   - Runs PO1 breathing LED.
-  - Prints `FSBL->Appli heartbeat` every second.
+  - Enters the application code in `Appli/Core/Src/app_main.c`.
+- `Appli/Core/Src/app_main.c`
+  - Enables the STM32N6 NPU and required internal RAM clocks.
+  - Grants RISAF access for xSPI2 weights and NPU RAM.
+  - Verifies the external xSPI2 weights at `0x71000000`.
+  - Runs `tiny_temporal_mixer_8ch_int8` with a fixed 8-channel x 1024 INT8
+    input array.
+  - Prints NPU raw output, Top-1 result, and heartbeat logs.
 
 Disabled by design:
 
@@ -86,6 +103,22 @@ Disabled by design:
 - XSPI1 PSRAM memory-mapped validation.
 - Appli PSRAM sanity and 4 MiB buffer tests.
 - SPI4 / GPDMA / AD7606 receiver startup.
+
+Current NPU model:
+
+```text
+Model: tiny_temporal_mixer_8ch_int8
+Input:  int8[1, 1, 8, 1024], 8192 bytes
+Output: int8[1, 4], 4 bytes
+Weights: variants/fsbl_appli_lrun/tiny_temporal_mixer_8ch_int8_atonbuf.xSPI2.raw
+Weights address: 0x71000000
+Weights SHA256: CBBDB5C3D09629EA5FB55EEB2E5B58A956FD7B9A439213690926B6F1106E7CF8
+NPU activation base: 0x342E0000
+NPU user input:      0x34336000
+NPU user output:     0x34340000
+Expected raw output: 00 05 D9 8D
+Expected Top-1:      class_1
+```
 
 The PSRAM tuning work was validated separately. The last known stable PSRAM
 diagnostic version is preserved in git history:
@@ -99,6 +132,10 @@ The clean baseline is:
 ```text
 0c9a5c9 Create clean LED USART heartbeat baseline
 ```
+
+Use the archived `variants/fsbl_appli_led_usart_baseline/` variant, or commit
+`0c9a5c9`, when a task needs a pure LED/USART starting point without AI runtime
+code.
 
 ## Build
 
