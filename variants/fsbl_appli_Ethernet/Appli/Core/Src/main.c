@@ -29,7 +29,6 @@
 /* USER CODE BEGIN Includes */
 #include "app_console.h"
 #include "app_timebase.h"
-#include "eth_bringup_tests.h"
 #include "eth_diagnostics.h"
 /* USER CODE END Includes */
 
@@ -97,7 +96,6 @@ int main(void)
   SystemIsolation_Config();
   /* USER CODE BEGIN 2 */
   App_Print("FSBL->Appli NetX Ethernet start\r\n");
-  Ethernet_BringupTests_BeforeNetX();
   /* USER CODE END 2 */
 
   MX_ThreadX_Init();
@@ -111,7 +109,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    Ethernet_BringupTests_ThreadReturned();
+    HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+    App_Print("ThreadX kernel returned unexpectedly\r\n");
+    HAL_Delay(1000U);
   }
   /* USER CODE END 3 */
 }

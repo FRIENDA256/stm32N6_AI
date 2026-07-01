@@ -2,7 +2,7 @@
 /**
   ******************************************************************************
   * @file    eth_diagnostics.c
-  * @brief   Ethernet diagnostic helpers shared by NetX and bare tests.
+  * @brief   Ethernet runtime diagnostic helpers for the NetX baseline.
   ******************************************************************************
   */
 /* USER CODE END Header */
@@ -203,7 +203,7 @@ void Ethernet_PrintRxSummary(void)
   Ethernet_AppendHex32(line, &pos, phy_addr);
   Ethernet_AppendText(line, &pos, " irq=");
   Ethernet_AppendHex32(line, &pos, eth1_irq_count);
-  Ethernet_AppendText(line, &pos, " mac_rx=");
+  Ethernet_AppendText(line, &pos, " mmc_paok=");
   Ethernet_AppendHex32(line, &pos, heth1.Instance->MMCRPAOKR);
   Ethernet_AppendText(line, &pos, " crc=");
   Ethernet_AppendHex32(line, &pos, heth1.Instance->MMCRCRCEPR);

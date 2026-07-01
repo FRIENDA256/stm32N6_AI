@@ -163,16 +163,33 @@ int32_t RTL8211_Init(rtl8211_Object_t *pObj)
 #if defined(ENABLE_RTL8211F_TXDELAY) && (ENABLE_RTL8211F_TXDELAY==1)
   /* Select page 0xd08 */
   pObj->IO.WriteReg(pObj->DevAddr, RTL8211_PAGSR, 0xd08);
-  /* Set PHY Tx Delay */
-  pObj->IO.WriteReg(pObj->DevAddr, RTL8211_MIICR1_PD08, RTL8211_MIICR1_TXDLY_ENABLE);
+  /* Set PHY Tx Delay: read-modify-write so the strap-configured RGMII bits in
+     MIICR1 are preserved (a blind write clears them and breaks the RGMII path). */
+  {
+    uint32_t miicr = 0U;
+    if (pObj->IO.ReadReg(pObj->DevAddr, RTL8211_MIICR1_PD08, &miicr) >= 0)
+    {
+      miicr |= (uint32_t)RTL8211_MIICR1_TXDLY_ENABLE;
+      pObj->IO.WriteReg(pObj->DevAddr, RTL8211_MIICR1_PD08, miicr);
+    }
+  }
   /* Restore Default Page */
   pObj->IO.WriteReg(pObj->DevAddr, RTL8211_PAGSR, 0);
 #endif
 #if defined(ENABLE_RTL8211F_RXDELAY) && (ENABLE_RTL8211F_RXDELAY==1)
   /* Select page 0xd08 */
   pObj->IO.WriteReg(pObj->DevAddr, RTL8211_PAGSR, 0xd08);
-  /* Set PHY Rx Delay */
-  pObj->IO.WriteReg(pObj->DevAddr, RTL8211_MIICR2_PD08, RTL8211_MIICR2_RXDLY_ENABLE);
+  /* Set PHY Rx Delay: read-modify-write so the strap-configured RGMII bits in
+     MIICR2 (e.g. strap 0x0019) are preserved. A blind write of just
+     RXDLY_ENABLE (0x0008) clears them and the MAC then receives nothing. */
+  {
+    uint32_t miicr = 0U;
+    if (pObj->IO.ReadReg(pObj->DevAddr, RTL8211_MIICR2_PD08, &miicr) >= 0)
+    {
+      miicr |= (uint32_t)RTL8211_MIICR2_RXDLY_ENABLE;
+      pObj->IO.WriteReg(pObj->DevAddr, RTL8211_MIICR2_PD08, miicr);
+    }
+  }
   /* Restore Default Page */
   pObj->IO.WriteReg(pObj->DevAddr, RTL8211_PAGSR, 0);
 #endif

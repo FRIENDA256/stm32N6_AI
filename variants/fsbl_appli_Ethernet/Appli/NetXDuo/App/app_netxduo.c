@@ -52,7 +52,7 @@
 #define APP_NETX_UART_TX_WAIT_CYCLES     1000000U
 #define APP_NETX_LINK_CHECK_PERIOD       (1U * NX_IP_PERIODIC_RATE)
 #define APP_NETX_STATS_PERIOD            5U
-#define APP_NETX_VERBOSE_DIAG            1U
+#define APP_NETX_VERBOSE_DIAG            0U
 #define APP_NETX_LINE_MAX                160U
 
 /* USER CODE END PD */

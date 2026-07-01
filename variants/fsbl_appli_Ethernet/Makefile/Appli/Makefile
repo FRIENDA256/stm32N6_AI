@@ -40,7 +40,6 @@ C_SOURCES =  \
 ../../Appli/Core/Src/main.c \
 ../../Appli/Core/Src/app_console.c \
 ../../Appli/Core/Src/app_timebase.c \
-../../Appli/Core/Src/eth_bringup_tests.c \
 ../../Appli/Core/Src/eth_diagnostics.c \
 ../../Appli/Core/Src/gpio.c \
 ../../Appli/Core/Src/eth.c \
@@ -799,7 +798,6 @@ C_DEFS =  \
 -DENABLE_RTL8211F_RXDELAY=1 \
 -DDISABLE_RTL8211F_EEE=1 \
 -DRTL8211_INIT_TO=10000 \
--DAPP_ETH_RAW_TX_TEST=1 \
 -DTX_INCLUDE_USER_DEFINE_FILE \
 -DTX_SINGLE_MODE_SECURE=1
 

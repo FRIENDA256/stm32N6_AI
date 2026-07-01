@@ -1,42 +1,129 @@
 # FSBL Appli Ethernet Bring-up
 
-This variant started from the clean FSBL -> Appli LED/USART baseline and is now
-used for early Ethernet hardware bring-up on an STM32N657 design with an
-RTL8211F RGMII PHY.
+This variant started from the clean FSBL -> Appli LED/USART baseline and was used
+for early Ethernet hardware bring-up on an STM32N657 design with an RTL8211F RGMII
+PHY.
 
-The low-level Ethernet TX path has been proven before with raw broadcast
-frames. The current image is temporarily switched back to a raw TX diagnostic
-mode with `APP_ETH_RAW_TX_TEST=1` so the STM32 -> PHY -> magnetics/RJ45 -> PC
-direction can be rechecked independently of NetX Duo RX/ARP handling.
+**Status (2026-07-01): the ThreadX + NetX Duo static-IPv4 stack works end to end.**
+`ping 192.168.1.50` from the PC gets replies, ARP resolves to `02:00:00:00:00:01`,
+and the board's NetX `IP rx` / `ARP req rx` and ETH `IRQ count` counters advance.
+Two root causes had to be fixed first; see **Resolution** immediately below.
 
-After this TX-only check, set `APP_ETH_RAW_TX_TEST` back to `0` or remove the
-Makefile define to return to the ThreadX + NetX Duo static IPv4 ping test.
+The raw bring-up test modes (`APP_ETH_RAW_TX_TEST` / `APP_ETH_RAW_RX_TEST`) and the
+temporary diagnostics served their purpose and were removed; the build now produces
+the NetX Duo image directly. Historical raw TX/RX notes are kept below only as a
+bring-up record.
+
+## Resolution: NetX Ping Working (2026-07-01)
+
+Getting from "link flaps / no ping" to a working ping required fixing two
+independent, low-visibility problems. Both had the same misleading signature:
+MDIO and the PHY link looked perfectly healthy while the actual RGMII/physical
+data path was broken, which is why they were hard to isolate. The debugging
+converged as: firmware -> switch -> direct PC link -> cable -> magnetics ->
+power rails -> **clock** (root cause 1), then filter/callbacks/RISAF/cache ->
+**RGMII RX delay register** (root cause 2).
+
+### Root cause 1: corrupted PHY reference clock (link flapping)
+
+Symptom: autonegotiation never completed (`ANLPAR=0`), the link flapped up/down
+about once per second, and the board could not link to a switch or a directly
+connected PC. Scoping the PHY 25 MHz crystal (X3) showed **100 MHz**, not 25 MHz.
+
+Cause: `PF5` was muxed as `ETH1_CLK` and the firmware drove the 100 MHz ETH1
+kernel clock (PLL1/12) onto it. On this board **R118 (marked DNP in the
+schematic but actually populated)** connected that `ETH_CLK/PF5` net to the PHY
+crystal/EXT_CLK node, overriding the 25 MHz reference with 100 MHz (4x wrong).
+MDIO still worked (management uses the separate MDC clock and static registers),
+so registers/IDs read fine and the fault was invisible from software.
+
+Fix:
+- `Appli/Core/Src/eth.c` `HAL_ETH_MspInit()` no longer configures `GPIO_PIN_5`
+  (PF5/ETH1_CLK) as an ETH alternate function, so the MCU stops driving 100 MHz
+  onto that net. Also remove `PF5.Signal=ETH1_CLK` in the `.ioc` so CubeMX does
+  not regenerate it.
+- Remove R118 on the board. The PHY then self-clocks from X3; scope confirmed
+  X3 back at 25.00 MHz and autonegotiation completes to 100M full duplex.
+
+### Root cause 2: RGMII RX delay register blind-write (no packets received)
+
+Symptom: with a stable 100M link, TX worked (raw `0x88B5` broadcast, and a raw-RX
+bring-up test proved PHY -> RGMII -> MAC receive works), but the NetX image
+received nothing: MMC RX counters = 0, ETH `IRQ count` = 0, MTL RX queue empty,
+and **no CRC/alignment errors**, i.e. the MAC never detected a single valid
+frame, and PC `ping` got no reply.
+
+Cause: `Drivers/BSP/Components/rtl8211/rtl8211.c` set the RGMII TX/RX internal
+delays with a **blind write** of page `0x0D08` registers, e.g.
+`MIICR2 = RXDLY_ENABLE (0x0008)`. That overwrote the whole register and cleared
+the **strap-configured bits** (strap `MIICR2 = 0x0019`; bits 0 and 4 are part of
+the RGMII RX timing). RGMII is a source-synchronous DDR interface; RXC and RXD
+need a fixed ~1-2 ns skew so data is stable at the clock edge. With the RX delay
+wrong, the MAC sampled RXD at the wrong instant, never saw a valid `RX_CTL`/frame
+boundary, and dropped everything silently (hence zero good frames AND zero
+errors). The raw-RX bring-up test worked because it used **read-modify-write** and
+preserved the strap bits.
+
+Fix: `rtl8211.c` now read-modify-writes MIICR1/MIICR2 (`read | delay-enable`)
+instead of blind-writing. After this the board receives ARP/ICMP, replies to ARP,
+and `ping 192.168.1.50` succeeds.
+
+Diagnostic gotcha: **`MMCRPAOKR` (logged as `mmc_paok`) reads 0 on this MAC even
+when RX works**; it is not a reliable "frames received" counter. Use NetX
+`IP rx` / `ARP req rx` / ETH `IRQ count` / an actual ping reply as the real RX
+proof.
+
+### This session's code consolidation
+
+With ping working, the temporary test/diagnostic code was removed:
+
+- Deleted `Appli/Core/Src/eth_bringup_tests.c` + `.h`, their Makefile source
+  entry, and the `APP_ETH_RAW_TX_TEST` / `APP_ETH_RAW_RX_TEST` defines; removed
+  the `main.c` include and the two `Ethernet_BringupTests_*()` calls (the
+  "scheduler returned unexpectedly" fallback loop body is now inline in `main.c`).
+- Restored normal MAC filtering (removed the temporary promiscuous / receive-all
+  diagnostic added to `app_netxduo.c`) and set `APP_NETX_VERBOSE_DIAG` back to
+  `0` (compact `NX:` / `ETH:` summary lines instead of the full register dump).
+- Kept the two real fixes (eth.c PF5, rtl8211.c MIICR read-modify-write),
+  `eth_diagnostics.c/.h` (runtime health log), and
+  `USE_HAL_ETH_REGISTER_CALLBACKS=1` (required by the NetX Ethernet driver).
+- Clean full rebuild succeeds; the NetX baseline fits in the current Appli image.
 
 ## Current Boot Chain
 
 ```text
-FSBL -> Appli
+FSBL -> Appli -> ThreadX -> NetX Duo
 ```
 
-Runtime behavior in the current raw TX diagnostic image:
+Runtime behavior in the current NetX Duo image:
 
 - FSBL initializes the external Flash path through XSPI2/EXTMEM.
 - FSBL jumps to the secure Appli image.
 - Appli initializes GPIO, USART3, ETH1, and RIF.
-- `Ethernet_BringupTests_BeforeNetX()` enters an infinite raw Ethernet TX loop.
-- ThreadX and NetX Duo are intentionally not started in this image.
-- The board transmits 60-byte broadcast Ethernet frames with EtherType
-  `0x88B5` and source MAC `02:00:00:00:00:01`.
+- Appli starts ThreadX through `MX_ThreadX_Init()`.
+- NetX Duo creates the packet pool, static IPv4 interface, ARP cache, ICMP, and
+  the status/link threads.
+- The board uses static IPv4 `192.168.1.50/24` and MAC `02:00:00:00:00:01`.
 
 Expected serial output now begins with:
 
 ```text
 FSBL->Appli NetX Ethernet start
-RAW TX test: eth.type=0x88B5 src=02:00:00:00:00:01
+NetX init OK
+IP: 192.168.1.50/24
+NetX link: up
 ```
 
-The previous NetX Duo path remains in the project, but is bypassed while
-`APP_ETH_RAW_TX_TEST=1`.
+To validate the link from the PC, keep the PC wired NIC on `192.168.1.10/24`,
+then run:
+
+```powershell
+arp -d *
+ping -S 192.168.1.10 192.168.1.50
+```
+
+The link is considered validated when ping receives replies and the compact
+`NX:` line shows advancing `ip_rx` / `arp_req` / `arp_resp` counters.
 
 ## Hardware Context
 
@@ -106,8 +193,8 @@ PG4  -> ETH1_RGMII_TXD3
 
 ### Code Organization
 
-`Appli/Core/Src/main.c` is now kept as the boot and initialization sequence
-only. Bring-up utilities were split into small modules:
+`Appli/Core/Src/main.c` is kept as the boot and initialization sequence only.
+The reusable bring-up support code is split into small modules:
 
 - `Appli/Core/Src/app_console.c` / `Appli/Core/Inc/app_console.h`
   - bounded polled USART prints
@@ -119,12 +206,10 @@ only. Bring-up utilities were split into small modules:
     timer starts
 - `Appli/Core/Src/eth_diagnostics.c` / `Appli/Core/Inc/eth_diagnostics.h`
   - shared Ethernet clock diagnostics
-- `Appli/Core/Src/eth_bringup_tests.c` / `Appli/Core/Inc/eth_bringup_tests.h`
-  - reserved low-level Ethernet test hooks
-  - current NetX build leaves old raw PHY/TX tests inactive
 
-The Appli Makefile has been updated to compile these new source files. If
-CubeMX regenerates the Makefile, re-add those four `.c` files.
+The Appli Makefile has been updated to compile these helper source files. If
+CubeMX regenerates the Makefile, re-add `app_console.c`, `app_timebase.c`, and
+`eth_diagnostics.c`.
 
 ### ETH Clock
 
@@ -284,10 +369,9 @@ arp || icmp || eth.addr == 02:00:00:00:00:01
 Expected serial output from the NetX test:
 
 ```text
-NetX Duo init start
-NetX Duo init done
-NetX Duo static IPv4: 192.168.1.50/24
-PC test: set 192.168.1.x/24, then ping 192.168.1.50
+FSBL->Appli NetX Ethernet start
+NetX init OK
+IP: 192.168.1.50/24
 NetX link: up
 ```
 
@@ -296,19 +380,20 @@ ThreadX takes over SysTick, so `HAL_GetTick()` is overridden in
 This keeps the ST Ethernet/RTL8211 driver timeouts working without adding a
 separate TIM6 HAL time base.
 
-### Raw Ethernet Transmit Test
+### Historical Raw Ethernet Transmit Test
 
-The current build enables this test with:
+An earlier diagnostic build enabled this test with:
 
 ```make
 -DAPP_ETH_RAW_TX_TEST=1
 ```
 
-It is implemented in `Appli/Core/Src/eth_bringup_tests.c` and runs before
-`MX_ThreadX_Init()`. This deliberately bypasses NetX Duo and avoids depending
-on the ThreadX SysTick handler during the low-level hardware test.
+That temporary test lived in `Appli/Core/Src/eth_bringup_tests.c` and ran before
+`MX_ThreadX_Init()`. It deliberately bypassed NetX Duo and avoided depending on
+the ThreadX SysTick handler during the low-level hardware test. The test file
+and build define have since been removed from the current NetX baseline.
 
-The raw test sends a 60-byte Ethernet broadcast frame without a TCP/IP stack:
+The raw test sent a 60-byte Ethernet broadcast frame without a TCP/IP stack:
 
 ```text
 Destination MAC: ff:ff:ff:ff:ff:ff
@@ -317,9 +402,9 @@ EtherType:       0x88B5
 Payload prefix:  STM32N6 RAW TX SEQ=
 ```
 
-It also limits the RTL8211F advertisement to 100M full duplex, enables RTL8211F
-RGMII RXC output, enables RGMII TX/RX internal delays, configures the STM32 ETH
-MAC for 100M full duplex, starts the ETH HAL, and repeatedly calls
+It also limited the RTL8211F advertisement to 100M full duplex, enabled RTL8211F
+RGMII RXC output, enabled RGMII TX/RX internal delays, configured the STM32 ETH
+MAC for 100M full duplex, started the ETH HAL, and repeatedly called
 `HAL_ETH_Transmit_IT()`.
 
 Useful Wireshark display filter:
@@ -334,9 +419,9 @@ If Wireshark captures these frames, the board TX direction is proven through:
 CPU buffer -> ETH DMA -> STM32 MAC -> RGMII TX -> RTL8211F -> MDI/magnetics/RJ45 -> PC
 ```
 
-This does not prove the RX direction. The previous NetX issue, where PC ARP
-requests were visible in Wireshark but `ip_rx`, `arp_req`, `irq`, and `mac_rx`
-stayed zero, still points at the PHY-to-STM32 RGMII RX side.
+This did not prove the RX direction. At that point in the investigation, PC ARP
+requests were visible in Wireshark but `ip_rx`, `arp_req`, `irq`, and
+`mmc_paok` stayed zero, so the focus moved to the PHY-to-STM32 RGMII RX side.
 
 ### DMA And Cache Diagnostics
 
@@ -380,19 +465,19 @@ ETH HAL raw TX seq low16 increments
 - ThreadX + NetX Duo code is generated and configured for a static IPv4 ping
   test.
 
-### Still Not Solved
+### Resolved (2026-07-01)
 
-- NetX Duo ping currently sees PC-originated ARP requests in Wireshark, but the
-  board has not yet replied. The next flashed image includes RX-path diagnostics
-  and the NetX driver broadcast-filter fix.
-- Link speed/duplex selected by the generated RTL8211 driver should be checked
-  in the first NetX run. If gigabit is unstable, temporarily disable
-  `ETH_PHY_1000MBITS_SUPPORTED` or force 100M during bring-up.
-- `TXDLY` strap is still observed disabled while `RXDLY` is enabled. This does
-  not block PHY autonegotiation, but should be fixed before relying on higher
-  RGMII data rates.
-- The final production schematic should mark the optional PF5/ETH_CLK path as
-  DNP/no-connect when the PHY uses its local 25 MHz crystal.
+- NetX Duo ping now works end to end; see **Resolution** near the top. The two
+  root causes were the PF5/R118 100 MHz clock injection into the PHY 25 MHz
+  reference, and the `rtl8211.c` RGMII RX-delay blind-write; both are fixed.
+- Link is a stable 100M full duplex. Advertisement is capped at 100M during
+  bring-up (`LIMIT_RTL8211F_TO_100M_FULL=1`). Before enabling gigabit, verify the
+  RGMII RX/TX internal delays and signal integrity at 125 MHz.
+- RGMII TX/RX delays are now set with read-modify-write in `rtl8211.c`, preserving
+  the strap-configured `MIICR1`/`MIICR2` bits instead of overwriting them.
+- The final production schematic must mark the PF5/ETH_CLK path (R118) as
+  DNP/no-connect: the PHY self-clocks from its local 25 MHz crystal, and driving
+  ETH1_CLK onto that node corrupts the reference and makes the link flap.
 
 ## Current Hardware Findings
 
@@ -498,10 +583,9 @@ After CubeMX regeneration, re-check these items:
 - Check `Makefile/FSBL/Makefile` after regeneration. FSBL must still compile
   `FSBL/Core/Src/extmem.c` and the `STM32_ExtMem_Manager` sources/includes,
   otherwise `stm32_extmem.h` will be missing and FSBL will not build.
-- Keep the Ethernet diagnostic/test code in the split helper modules and re-add
+- Keep the Ethernet diagnostic code in the split helper modules and re-add
   them to `Makefile/Appli/Makefile` after CubeMX regeneration:
-  `app_console.c`, `app_timebase.c`, `eth_diagnostics.c`,
-  `eth_bringup_tests.c`.
+  `app_console.c`, `app_timebase.c`, and `eth_diagnostics.c`.
 - Keep the RIF ETH1 master setup and CPUAXI SRAM region access for ETH DMA.
 - Rebuild both FSBL and Appli after regeneration.
 
@@ -516,7 +600,7 @@ After CubeMX regeneration, re-check these items:
    `0x001C / 0xC916`.
 7. Confirm ETH kernel clock is 100 MHz.
 8. Confirm PF5 is not driving the PHY crystal/EXT_CLK node.
-9. Confirm NetX Duo prints `NetX Duo init done`.
+9. Confirm NetX Duo prints `NetX init OK`.
 10. Confirm NetX Duo prints `NetX link: up`.
 11. Configure the PC wired adapter to `192.168.1.10/24`.
 12. Confirm Wireshark sees ARP traffic for `192.168.1.50`.
@@ -587,8 +671,8 @@ After CubeMX regeneration, re-check these items:
   starts, then clears the HAL-created SysTick again immediately after
   `HAL_Init()`. ThreadX still re-enables and reconfigures SysTick inside
   `_tx_initialize_low_level()`.
-- After that fix the boot reached `M9`, `E2`, `R9`, `N2`, and
-  `NetX Duo init done`. This proves the early boot, ETH HAL init, RIF setup,
+- After that fix the boot reached `M9`, `E2`, `R9`, `N2`, and the then-current
+  `NetX Duo init done` marker. This proves the early boot, ETH HAL init, RIF setup,
   and NetX object creation all complete.
 - A later observation with the normal status-thread priority reached
   `NetX Duo static IPv4: 192.168.1.50/24`, `NetX link: up`, and periodic
@@ -674,7 +758,7 @@ Expected compact UART output:
 - `NetX link: up` / `NetX link: down` reports NetX link state.
 - `NX:` is the compact NetX counter line. Watch `arp_req`, `arp_resp`,
   `ip_rx`, and `drop`.
-- `ETH:` is the compact ETH/MAC/PHY line. Watch `irq`, `mac_rx`, `crc`,
+- `ETH:` is the compact ETH/MAC/PHY line. Watch `irq`, `mmc_paok`, `crc`,
   `bmsr`, `physr1`, `speed`, and `ps`.
 - HardFault/NMI/MemManage/BusFault/UsageFault handlers still print full fault
   context when a fault occurs.
@@ -683,7 +767,7 @@ Expected compact UART output:
   removed, but no RX clock waveform was observed on either the STM32 PF7 side
   or the RTL8211F `RXCLK/PHYAD1` side. This is now the strongest RX-path clue:
   the PHY link can be up over MDI/MDIO, but without RGMII RXCLK the STM32 ETH
-  MAC cannot receive ARP frames, which matches `irq=0`, `mac_rx=0`, and NetX RX
+  MAC cannot receive ARP frames, which matches `irq=0`, `mmc_paok=0`, and NetX RX
   counters staying at zero.
 - R118/PF5 is a separate issue from PF7/RXCLK. R118 connected the MCU
   `ETH_CLK/PF5` net to the PHY crystal/EXT_CLK node and could corrupt the PHY
@@ -699,14 +783,15 @@ Expected compact UART output:
   it first verifies expected address `0x01`, then scans `1..31`.
 - After removing the PF7/RXCLK pull-up and power cycling, the link still
   reports 100M full duplex (`bmsr=0x79AD`, `physr1=0x301E`), while `irq=0`,
-  `mac_rx=0`, and NetX RX counters remain zero. A follow-up image now
+  `mmc_paok=0`, and NetX RX counters remain zero. A follow-up image now
   explicitly sets RTL8211F page `0x0A43` `PHYCR2.RXC_ENABLE` and prints
   `phycr2=` in the compact `ETH:` line. If `phycr2` includes bit `0x0002` but
   PF7/RXCLK still has no 25 MHz waveform at a 100M link, continue with hardware
   checks around the PHY `RXCLK/PHYAD1` pin, reset/strap network, and the 22 ohm
   series resistor path to PF7.
 - 2026-07-01 raw TX recheck image:
-  `Makefile/Appli/Makefile` now defines `APP_ETH_RAW_TX_TEST=1`.
+  that diagnostic image defined `APP_ETH_RAW_TX_TEST=1` in
+  `Makefile/Appli/Makefile`.
   `Ethernet_BringupTests_BeforeNetX()` enters a raw broadcast TX loop and does
   not start ThreadX/NetX. The frame is EtherType `0x88B5`, source MAC
   `02:00:00:00:00:01`, and payload prefix `STM32N6 RAW TX SEQ=`.
@@ -724,12 +809,35 @@ Expected compact UART output:
   instead of being included in the GPIOF pull-up group. This keeps the RX clock
   node clean for the next RX-path measurement. It is not required for the raw
   TX direction, but avoids masking the PF7 hardware observation.
+- 2026-07-01 raw RX recheck image:
+  that diagnostic image defined `APP_ETH_RAW_TX_TEST=0` and
+  `APP_ETH_RAW_RX_TEST=1` in `Makefile/Appli/Makefile`.
+  `USE_HAL_ETH_REGISTER_CALLBACKS` is enabled so the
+  raw RX test can register static DMA buffer callbacks without depending on
+  the NetX packet pool. The board starts ETH MAC RX in polling mode and prints
+  received frame summaries, for example `type=0806 ... ARP`, after a PC-side
+  `arp -d *; ping -S 192.168.1.10 192.168.1.50`.
+- The raw RX recheck confirmed the receive direction works in hardware: the
+  board's MAC printed the PC's ARP (`type=0806`) and multicast IPv4 frames. That
+  proved PHY -> RGMII -> MAC RX and the RX pins are fine, so the earlier NetX
+  `mmc_paok=0` was a software/PHY-config issue, not RX hardware.
+- Root-caused the NetX RX failure to the `rtl8211.c` blind-write of the RGMII
+  delay registers (page `0x0D08` MIICR1/MIICR2): it cleared the strap bits
+  (`MIICR2` strap `0x0019` -> written `0x0008`) and broke the RXC/RXD sampling.
+  Changed it to read-modify-write. After flashing, `ping 192.168.1.50` replies,
+  ARP resolves, and NetX `IP rx` / `ARP req rx` / ETH `IRQ count` advance. Note
+  that `MMCRPAOKR` stayed `0` even though RX works; it is not a reliable
+  "frames received" counter on this MAC; use NetX/IRQ counters or a ping reply.
+- Consolidated the code once ping worked: removed the raw TX/RX bring-up tests
+  (`eth_bringup_tests.c/.h`) and their Makefile defines, reverted the temporary
+  promiscuous-filter and verbose-diag diagnostics, and kept only the two real
+  fixes. See **Resolution** at the top of this README.
 
 ## Guardrails
 
 - This variant is now a first NetX Duo bring-up project, not a complete product
   network application.
-- Keep the raw TX and MDIO diagnostics guarded in the code until NetX ping is
-  stable across direct-PC and switch tests.
+- Raw TX/RX diagnostics are no longer compiled in this baseline. Reintroduce
+  them only if a future hardware regression needs a stack-free Ethernet test.
 - Keep changes scoped to this variant; other FSBL/Appli variants may have
   unrelated work in progress.

@@ -180,7 +180,7 @@ extern "C" {
 #define  USE_HAL_DCMIPP_REGISTER_CALLBACKS    0U /* DCMIPP register callback disabled    */
 #define  USE_HAL_DMA2D_REGISTER_CALLBACKS     0U /* DMA2D register callback disabled     */
 #define  USE_HAL_DTS_REGISTER_CALLBACKS       0U /* DTS register callback disabled       */
-#define  USE_HAL_ETH_REGISTER_CALLBACKS       0U /* ETH register callback disabled       */
+#define  USE_HAL_ETH_REGISTER_CALLBACKS       1U /* ETH register callback enabled        */
 #define  USE_HAL_FDCAN_REGISTER_CALLBACKS     0U /* FDCAN register callback disabled     */
 #define  USE_HAL_GFXMMU_REGISTER_CALLBACKS    0U /* GFXMMU register callback disabled    */
 #define  USE_HAL_GFXTIM_REGISTER_CALLBACKS    0U /* GFXTIM register callback disabled    */
