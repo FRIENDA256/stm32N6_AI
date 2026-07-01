@@ -1,0 +1,43 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug: Appli (STLink/OpenOCD)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/${config:stm32.elf.appli}",
+            "servertype": "openocd",
+            "serverpath": "${config:stm32.openocd.path}",
+            "searchDir": [
+                "${config:stm32.openocd.searchDir1}",
+                "${config:stm32.openocd.searchDir2}"
+            ],
+            "configFiles": [
+                "${config:stm32.openocd.interfaceScript}",
+                "${config:stm32.openocd.targetScript}"
+            ],
+            "runToEntryPoint": "main",
+            "preLaunchTask": "Build: Appli"
+        },
+        {
+            "name": "Debug: FSBL (STLink/OpenOCD)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/${config:stm32.elf.fsbl}",
+            "servertype": "openocd",
+            "serverpath": "${config:stm32.openocd.path}",
+            "searchDir": [
+                "${config:stm32.openocd.searchDir1}",
+                "${config:stm32.openocd.searchDir2}"
+            ],
+            "configFiles": [
+                "${config:stm32.openocd.interfaceScript}",
+                "${config:stm32.openocd.targetScript}"
+            ],
+            "runToEntryPoint": "main",
+            "preLaunchTask": "Build: FSBL"
+        }
+    ]
+}
