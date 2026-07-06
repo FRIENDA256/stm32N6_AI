@@ -23,10 +23,11 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "app_console.h"
+#include "app_udp_echo.h"
 #include "main.h"
 #include "eth_diagnostics.h"
 #include "gpio.h"
-#include "usart.h"
 #include <string.h>
 
 /* USER CODE END Includes */
@@ -49,9 +50,9 @@
 #define APP_NETX_IP_THREAD_PRIORITY      5U
 #define APP_NETX_STATUS_THREAD_PRIORITY  10U
 #define APP_NETX_LINK_THREAD_PRIORITY    11U
-#define APP_NETX_UART_TX_WAIT_CYCLES     1000000U
 #define APP_NETX_LINK_CHECK_PERIOD       (1U * NX_IP_PERIODIC_RATE)
 #define APP_NETX_STATS_PERIOD            5U
+#define APP_NETX_ENABLE_PERIODIC_STATS   0U
 #define APP_NETX_VERBOSE_DIAG            0U
 #define APP_NETX_LINE_MAX                160U
 
@@ -73,104 +74,19 @@ static TX_THREAD NetXDuoLinkThread;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-static void NetXDuo_Print(const char *text);
-static HAL_StatusTypeDef NetXDuo_UartWaitFlag(uint32_t flag);
-static HAL_StatusTypeDef NetXDuo_UartWriteByte(uint8_t byte);
-static void NetXDuo_PrintHex32(const char *label, ULONG value);
+#if (APP_NETX_ENABLE_PERIODIC_STATS == 1U)
 static void NetXDuo_AppendText(char *line, uint32_t *pos, const char *text);
 static void NetXDuo_AppendHex32(char *line, uint32_t *pos, ULONG value);
-static UINT NetXDuo_ByteAllocate(TX_BYTE_POOL *byte_pool, UCHAR **memory, ULONG size);
 static void NetXDuo_PrintStats(void);
+#endif
+static UINT NetXDuo_ByteAllocate(TX_BYTE_POOL *byte_pool, UCHAR **memory, ULONG size);
 static VOID NetXDuo_StatusThreadEntry(ULONG thread_input);
 static VOID NetXDuo_LinkThreadEntry(ULONG thread_input);
 
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-static HAL_StatusTypeDef NetXDuo_UartWaitFlag(uint32_t flag)
-{
-  if (huart3.Instance == NULL)
-  {
-    return HAL_ERROR;
-  }
-
-  for (volatile uint32_t wait = 0U; wait < APP_NETX_UART_TX_WAIT_CYCLES; wait++)
-  {
-    if ((huart3.Instance->ISR & flag) != 0U)
-    {
-      return HAL_OK;
-    }
-  }
-
-  return HAL_TIMEOUT;
-}
-
-static HAL_StatusTypeDef NetXDuo_UartWriteByte(uint8_t byte)
-{
-  if (huart3.Instance == NULL)
-  {
-    return HAL_ERROR;
-  }
-
-  huart3.Instance->ICR = USART_ICR_ORECF |
-                         USART_ICR_FECF |
-                         USART_ICR_NECF |
-                         USART_ICR_PECF;
-
-  if (NetXDuo_UartWaitFlag(USART_ISR_TXE_TXFNF) != HAL_OK)
-  {
-    return HAL_TIMEOUT;
-  }
-
-  huart3.Instance->TDR = byte;
-
-  return HAL_OK;
-}
-
-static void NetXDuo_Print(const char *text)
-{
-  if (text != NULL)
-  {
-    while (*text != '\0')
-    {
-      if (NetXDuo_UartWriteByte((uint8_t)(*text)) != HAL_OK)
-      {
-        break;
-      }
-      text++;
-    }
-  }
-}
-
-static void NetXDuo_PrintHex32(const char *label, ULONG value)
-{
-  static const char hex[] = "0123456789ABCDEF";
-  char line[64];
-  uint32_t pos = 0U;
-
-  if (label != NULL)
-  {
-    while ((label[pos] != '\0') && (pos < (sizeof(line) - 13U)))
-    {
-      line[pos] = label[pos];
-      pos++;
-    }
-  }
-
-  line[pos++] = '0';
-  line[pos++] = 'x';
-  for (uint32_t nibble = 0U; nibble < 8U; nibble++)
-  {
-    uint32_t shift = 28U - (nibble * 4U);
-    line[pos++] = hex[(value >> shift) & 0xFU];
-  }
-  line[pos++] = '\r';
-  line[pos++] = '\n';
-  line[pos] = '\0';
-
-  NetXDuo_Print(line);
-}
-
+#if (APP_NETX_ENABLE_PERIODIC_STATS == 1U)
 static void NetXDuo_AppendText(char *line, uint32_t *pos, const char *text)
 {
   while ((text != NULL) && (*text != '\0') && (*pos < (APP_NETX_LINE_MAX - 1U)))
@@ -204,6 +120,7 @@ static void NetXDuo_AppendHex32(char *line, uint32_t *pos, ULONG value)
     (*pos)++;
   }
 }
+#endif
 
 static UINT NetXDuo_ByteAllocate(TX_BYTE_POOL *byte_pool, UCHAR **memory, ULONG size)
 {
@@ -217,7 +134,7 @@ static UINT NetXDuo_ByteAllocate(TX_BYTE_POOL *byte_pool, UCHAR **memory, ULONG 
   status = tx_byte_allocate(byte_pool, (VOID **)memory, size, TX_NO_WAIT);
   if (status != TX_SUCCESS)
   {
-    NetXDuo_PrintHex32("NetX byte allocate failed: ", status);
+    App_PrintHex32("NetX byte allocate failed: ", status);
     return NX_NOT_SUCCESSFUL;
   }
 
@@ -225,6 +142,7 @@ static UINT NetXDuo_ByteAllocate(TX_BYTE_POOL *byte_pool, UCHAR **memory, ULONG 
   return NX_SUCCESS;
 }
 
+#if (APP_NETX_ENABLE_PERIODIC_STATS == 1U)
 static void NetXDuo_PrintStats(void)
 {
   ULONG ip_tx = 0U;
@@ -272,18 +190,18 @@ static void NetXDuo_PrintStats(void)
                          &icmp_unhandled);
 
 #if (APP_NETX_VERBOSE_DIAG == 1U)
-  NetXDuo_Print("NetX stats\r\n");
-  NetXDuo_PrintHex32("  IP tx: ", ip_tx);
-  NetXDuo_PrintHex32("  IP rx: ", ip_rx);
-  NetXDuo_PrintHex32("  IP invalid: ", ip_invalid);
-  NetXDuo_PrintHex32("  IP rx drop: ", ip_rx_drop);
-  NetXDuo_PrintHex32("  IP rx checksum: ", ip_rx_checksum);
-  NetXDuo_PrintHex32("  IP tx drop: ", ip_tx_drop);
-  NetXDuo_PrintHex32("  ARP req rx: ", arp_req_rx);
-  NetXDuo_PrintHex32("  ARP resp tx: ", arp_resp_tx);
-  NetXDuo_PrintHex32("  ARP invalid: ", arp_invalid);
-  NetXDuo_PrintHex32("  ICMP checksum: ", icmp_checksum);
-  NetXDuo_PrintHex32("  ICMP unhandled: ", icmp_unhandled);
+  App_Print("NetX stats\r\n");
+  App_PrintHex32("  IP tx: ", ip_tx);
+  App_PrintHex32("  IP rx: ", ip_rx);
+  App_PrintHex32("  IP invalid: ", ip_invalid);
+  App_PrintHex32("  IP rx drop: ", ip_rx_drop);
+  App_PrintHex32("  IP rx checksum: ", ip_rx_checksum);
+  App_PrintHex32("  IP tx drop: ", ip_tx_drop);
+  App_PrintHex32("  ARP req rx: ", arp_req_rx);
+  App_PrintHex32("  ARP resp tx: ", arp_resp_tx);
+  App_PrintHex32("  ARP invalid: ", arp_invalid);
+  App_PrintHex32("  ICMP checksum: ", icmp_checksum);
+  App_PrintHex32("  ICMP unhandled: ", icmp_unhandled);
 #else
   NetXDuo_AppendText(line, &pos, "NX: ip_rx=");
   NetXDuo_AppendHex32(line, &pos, ip_rx);
@@ -304,20 +222,23 @@ static void NetXDuo_PrintStats(void)
     line[pos++] = '\n';
   }
   line[pos] = '\0';
-  NetXDuo_Print(line);
+  App_Print(line);
 #endif
 }
+#endif
 
 static VOID NetXDuo_StatusThreadEntry(ULONG thread_input)
 {
   ULONG actual_status = 0U;
   UINT link_was_up = NX_FALSE;
   UINT status;
+#if (APP_NETX_ENABLE_PERIODIC_STATS == 1U)
   uint32_t stats_period = 0U;
+#endif
 
   (void)thread_input;
 
-  NetXDuo_Print("IP: 192.168.1.50/24\r\n");
+  App_Print("IP: 192.168.1.50/24\r\n");
 
   for (;;)
   {
@@ -330,9 +251,10 @@ static VOID NetXDuo_StatusThreadEntry(ULONG thread_input)
       if (link_was_up == NX_FALSE)
       {
         link_was_up = NX_TRUE;
-        NetXDuo_Print("NetX link: up\r\n");
+        App_Print("NetX link: up\r\n");
       }
       HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+#if (APP_NETX_ENABLE_PERIODIC_STATS == 1U)
       stats_period++;
       if (stats_period >= APP_NETX_STATS_PERIOD)
       {
@@ -344,15 +266,18 @@ static VOID NetXDuo_StatusThreadEntry(ULONG thread_input)
         Ethernet_PrintRxSummary();
 #endif
       }
+#endif
     }
     else
     {
       if (link_was_up == NX_TRUE)
       {
         link_was_up = NX_FALSE;
-        NetXDuo_Print("NetX link: down\r\n");
+        App_Print("NetX link: down\r\n");
       }
+#if (APP_NETX_ENABLE_PERIODIC_STATS == 1U)
       stats_period = 0U;
+#endif
     }
 
     tx_thread_sleep(NX_IP_PERIODIC_RATE);
@@ -384,7 +309,7 @@ static VOID NetXDuo_LinkThreadEntry(ULONG thread_input)
                                              &actual_status);
         if ((status != NX_SUCCESS) && (status != NX_ALREADY_ENABLED))
         {
-          NetXDuo_PrintHex32("NX_LINK_ENABLE failed: ", status);
+          App_PrintHex32("NX_LINK_ENABLE failed: ", status);
         }
       }
     }
@@ -398,7 +323,7 @@ static VOID NetXDuo_LinkThreadEntry(ULONG thread_input)
                                              &actual_status);
         if ((status != NX_SUCCESS) && (status != NX_NOT_ENABLED))
         {
-          NetXDuo_PrintHex32("NX_LINK_DISABLE failed: ", status);
+          App_PrintHex32("NX_LINK_DISABLE failed: ", status);
         }
       }
     }
@@ -440,7 +365,7 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
                               APP_NETX_PACKET_POOL_SIZE);
   if (ret != NX_SUCCESS)
   {
-    NetXDuo_PrintHex32("nx_packet_pool_create failed: ", ret);
+    App_PrintHex32("nx_packet_pool_create failed: ", ret);
     return ret;
   }
 
@@ -461,7 +386,7 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
                      APP_NETX_IP_THREAD_PRIORITY);
   if (ret != NX_SUCCESS)
   {
-    NetXDuo_PrintHex32("nx_ip_create failed: ", ret);
+    App_PrintHex32("nx_ip_create failed: ", ret);
     return ret;
   }
 
@@ -474,14 +399,21 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
   ret = nx_arp_enable(&NetXDuoIpInstance, arp_cache_memory, APP_NETX_ARP_CACHE_SIZE);
   if (ret != NX_SUCCESS)
   {
-    NetXDuo_PrintHex32("nx_arp_enable failed: ", ret);
+    App_PrintHex32("nx_arp_enable failed: ", ret);
     return ret;
   }
 
   ret = nx_icmp_enable(&NetXDuoIpInstance);
   if (ret != NX_SUCCESS)
   {
-    NetXDuo_PrintHex32("nx_icmp_enable failed: ", ret);
+    App_PrintHex32("nx_icmp_enable failed: ", ret);
+    return ret;
+  }
+
+  ret = AppUdpEcho_Start(&NetXDuoIpInstance, byte_pool);
+  if (ret != NX_SUCCESS)
+  {
+    App_PrintHex32("UDP echo start failed: ", ret);
     return ret;
   }
 
@@ -503,7 +435,7 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
                          TX_AUTO_START);
   if (ret != TX_SUCCESS)
   {
-    NetXDuo_PrintHex32("tx_thread_create failed: ", ret);
+    App_PrintHex32("tx_thread_create failed: ", ret);
     return NX_NOT_SUCCESSFUL;
   }
 
@@ -525,11 +457,11 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
                          TX_AUTO_START);
   if (ret != TX_SUCCESS)
   {
-    NetXDuo_PrintHex32("tx_link_thread_create failed: ", ret);
+    App_PrintHex32("tx_link_thread_create failed: ", ret);
     return NX_NOT_SUCCESSFUL;
   }
 
-  NetXDuo_Print("NetX init OK\r\n");
+  App_Print("NetX init OK\r\n");
   /* USER CODE END MX_NetXDuo_MEM_POOL */
 
   /* USER CODE BEGIN MX_NetXDuo_Init */

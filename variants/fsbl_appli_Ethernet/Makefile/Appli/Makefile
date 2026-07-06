@@ -37,6 +37,7 @@ BUILD_DIR = build
 # C sources
 C_SOURCES =  \
 ../../Appli/NetXDuo/App/app_netxduo.c \
+../../Appli/NetXDuo/App/app_udp_echo.c \
 ../../Appli/Core/Src/main.c \
 ../../Appli/Core/Src/app_console.c \
 ../../Appli/Core/Src/app_timebase.c \

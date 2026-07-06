@@ -4,10 +4,12 @@ This variant started from the clean FSBL -> Appli LED/USART baseline and was use
 for early Ethernet hardware bring-up on an STM32N657 design with an RTL8211F RGMII
 PHY.
 
-**Status (2026-07-01): the ThreadX + NetX Duo static-IPv4 stack works end to end.**
+**Status (2026-07-06): the ThreadX + NetX Duo static-IPv4 stack works end to end.**
 `ping 192.168.1.50` from the PC gets replies, ARP resolves to `02:00:00:00:00:01`,
-and the board's NetX `IP rx` / `ARP req rx` and ETH `IRQ count` counters advance.
-Two root causes had to be fixed first; see **Resolution** immediately below.
+and a minimal UDP echo service now listens on `192.168.1.50:5005`. The default
+UART log is intentionally quiet; enable the optional NetX diagnostic macros only
+when investigating a regression. Two root causes had to be fixed first; see
+**Resolution** immediately below.
 
 The raw bring-up test modes (`APP_ETH_RAW_TX_TEST` / `APP_ETH_RAW_RX_TEST`) and the
 temporary diagnostics served their purpose and were removed; the build now produces
@@ -101,8 +103,8 @@ Runtime behavior in the current NetX Duo image:
 - FSBL jumps to the secure Appli image.
 - Appli initializes GPIO, USART3, ETH1, and RIF.
 - Appli starts ThreadX through `MX_ThreadX_Init()`.
-- NetX Duo creates the packet pool, static IPv4 interface, ARP cache, ICMP, and
-  the status/link threads.
+- NetX Duo creates the packet pool, static IPv4 interface, ARP cache, ICMP, UDP,
+  the UDP echo test service, and the status/link threads.
 - The board uses static IPv4 `192.168.1.50/24` and MAC `02:00:00:00:00:01`.
 
 Expected serial output now begins with:
@@ -112,7 +114,11 @@ FSBL->Appli NetX Ethernet start
 NetX init OK
 IP: 192.168.1.50/24
 NetX link: up
+UDP echo: 192.168.1.50:5005
 ```
+
+The `IP`, `NetX link`, and `UDP echo` lines are printed by different ThreadX
+threads, so their relative order after `NetX init OK` is not important.
 
 To validate the link from the PC, keep the PC wired NIC on `192.168.1.10/24`,
 then run:
@@ -122,8 +128,9 @@ arp -d *
 ping -S 192.168.1.10 192.168.1.50
 ```
 
-The link is considered validated when ping receives replies and the compact
-`NX:` line shows advancing `ip_rx` / `arp_req` / `arp_resp` counters.
+The link is considered validated when ping receives replies. For routine use the
+periodic `NX:`/`ETH:` counter log is disabled; re-enable it in
+`Appli/NetXDuo/App/app_netxduo.c` only when debugging.
 
 ## Hardware Context
 
@@ -206,10 +213,12 @@ The reusable bring-up support code is split into small modules:
     timer starts
 - `Appli/Core/Src/eth_diagnostics.c` / `Appli/Core/Inc/eth_diagnostics.h`
   - shared Ethernet clock diagnostics
+- `Appli/NetXDuo/App/app_udp_echo.c` / `Appli/NetXDuo/App/app_udp_echo.h`
+  - minimal UDP echo test service on port `5005`
 
 The Appli Makefile has been updated to compile these helper source files. If
 CubeMX regenerates the Makefile, re-add `app_console.c`, `app_timebase.c`, and
-`eth_diagnostics.c`.
+`eth_diagnostics.c`, plus the UDP echo module.
 
 ### ETH Clock
 
@@ -342,6 +351,8 @@ Gateway:     none
 DHCP:        disabled
 IPv6:        disabled
 ICMP:        enabled
+UDP:         enabled
+UDP echo:    192.168.1.50:5005
 ```
 
 PC-side test setup:
@@ -352,18 +363,39 @@ Netmask:          255.255.255.0
 Gateway:          blank
 ```
 
-Then test:
+Then test ICMP:
 
-```sh
-ping 192.168.1.50
+```powershell
+arp -d *
+ping -S 192.168.1.10 192.168.1.50
+```
+
+Then test the UDP echo service:
+
+```powershell
+$udp = [System.Net.Sockets.UdpClient]::new([System.Net.IPEndPoint]::new([System.Net.IPAddress]::Parse("192.168.1.10"), 0))
+$udp.Client.ReceiveTimeout = 2000
+$server = [System.Net.IPEndPoint]::new([System.Net.IPAddress]::Parse("192.168.1.50"), 5005)
+$msg = [Text.Encoding]::ASCII.GetBytes("n6 udp echo")
+[void]$udp.Send($msg, $msg.Length, $server)
+$remote = [System.Net.IPEndPoint]::new([System.Net.IPAddress]::Any, 0)
+[Text.Encoding]::ASCII.GetString($udp.Receive([ref]$remote))
+$udp.Close()
+```
+
+Expected UDP output:
+
+```text
+n6 udp echo
 ```
 
 Useful Wireshark display filters:
 
 ```text
 arp || icmp
+udp.port == 5005
 eth.addr == 02:00:00:00:00:01
-arp || icmp || eth.addr == 02:00:00:00:00:01
+arp || icmp || udp.port == 5005 || eth.addr == 02:00:00:00:00:01
 ```
 
 Expected serial output from the NetX test:
@@ -373,6 +405,7 @@ FSBL->Appli NetX Ethernet start
 NetX init OK
 IP: 192.168.1.50/24
 NetX link: up
+UDP echo: 192.168.1.50:5005
 ```
 
 ThreadX takes over SysTick, so `HAL_GetTick()` is overridden in
@@ -585,7 +618,8 @@ After CubeMX regeneration, re-check these items:
   otherwise `stm32_extmem.h` will be missing and FSBL will not build.
 - Keep the Ethernet diagnostic code in the split helper modules and re-add
   them to `Makefile/Appli/Makefile` after CubeMX regeneration:
-  `app_console.c`, `app_timebase.c`, and `eth_diagnostics.c`.
+  `app_console.c`, `app_timebase.c`, `eth_diagnostics.c`, and
+  `app_udp_echo.c`.
 - Keep the RIF ETH1 master setup and CPUAXI SRAM region access for ETH DMA.
 - Rebuild both FSBL and Appli after regeneration.
 
@@ -605,6 +639,7 @@ After CubeMX regeneration, re-check these items:
 11. Configure the PC wired adapter to `192.168.1.10/24`.
 12. Confirm Wireshark sees ARP traffic for `192.168.1.50`.
 13. Confirm `ping 192.168.1.50` receives replies.
+14. Confirm the UDP echo service replies on `192.168.1.50:5005`.
 
 ## Latest Debug Notes
 
@@ -832,11 +867,26 @@ Expected compact UART output:
   (`eth_bringup_tests.c/.h`) and their Makefile defines, reverted the temporary
   promiscuous-filter and verbose-diag diagnostics, and kept only the two real
   fixes. See **Resolution** at the top of this README.
+- 2026-07-06 NetX UDP echo baseline:
+  added `Appli/NetXDuo/App/app_udp_echo.c/.h`, enabled UDP after ARP/ICMP, and
+  started a minimal echo socket on `192.168.1.50:5005`. `nx_udp_socket_bind()`
+  must run from a ThreadX thread context; calling it directly from
+  `MX_NetXDuo_Init()` returned `NX_CALLER_ERROR (0x11)`, so the bind now happens
+  at the start of the UDP echo thread.
+- Verified from the PC with a PowerShell `UdpClient`: sending `n6 udp echo` from
+  `192.168.1.10` to `192.168.1.50:5005` returns the same payload. This proves the
+  minimum bidirectional path through PC UDP, PHY, RGMII RX/TX, STM32 MAC, and
+  NetX UDP.
+- Rebuilt with `make -C Makefile/Appli -j32`; build succeeded with
+  `text=69048`, `data=240`, `bss=90872`. The only build warning is the existing
+  linker `LOAD segment with RWX permissions` warning.
 
 ## Guardrails
 
 - This variant is now a first NetX Duo bring-up project, not a complete product
   network application.
+- UDP echo on port `5005` is the current minimum application-layer validation
+  service.
 - Raw TX/RX diagnostics are no longer compiled in this baseline. Reintroduce
   them only if a future hardware regression needs a stack-free Ethernet test.
 - Keep changes scoped to this variant; other FSBL/Appli variants may have
