@@ -1,0 +1,36 @@
+{
+    "stm32.make.dir.fsbl": "Makefile/FSBL",
+    "stm32.make.dir.appli": "Makefile/Appli",
+
+    "stm32.elf.fsbl": "Makefile/FSBL/build/fsbl_appli_all_FSBL.elf",
+    "stm32.elf.appli": "Makefile/Appli/build/fsbl_appli_all_Appli.elf",
+
+    "stm32.bin.fsbl": "Makefile/FSBL/build/fsbl_appli_all_FSBL.bin",
+    "stm32.bin.appli": "Makefile/Appli/build/fsbl_appli_all_Appli.bin",
+
+    "stm32.trusted.fsbl": "Makefile/FSBL/build/fsbl_appli_all_FSBL-trusted.bin",
+    "stm32.trusted.appli": "Makefile/Appli/build/fsbl_appli_all_Appli-trusted.bin",
+
+    "stm32.extflash.addr.fsbl": "0x70000000",
+    "stm32.extflash.addr.appli": "0x70100000",
+
+    "stm32.make.path": "make",
+    "stm32.gcc.path": "arm-none-eabi-gcc",
+    "stm32.objdump.path": "arm-none-eabi-objdump",
+    "stm32.programmer.path": "D:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin/STM32_Programmer_CLI.exe",
+    "stm32.signingtool.path": "D:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin/STM32_SigningTool_CLI.exe",
+    "stm32.externalLoader": "D:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin/ExternalLoader/MX66UW1G45G_STM32N6570-DK.stldr",
+    "stm32.openocd.path": "D:/Program Files/STM32CubeIDE_2.0.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.openocd.win32_2.4.300.202509300731/tools/bin/openocd.exe",
+
+    "stm32.openocd.searchDir1": "D:/VSCODE+STM32+GCC/OpenOCD-20240820-0.12.0/share/openocd/scripts",
+    "stm32.openocd.searchDir2": "D:/Program Files/STM32CubeIDE_2.0.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.debug.openocd_2.3.200.202510310951/resources/openocd/st_scripts",
+    "stm32.openocd.interfaceScript": "interface/stlink-dap.cfg",
+    "stm32.openocd.targetScript": "target/stm32n6x.cfg",
+
+    "C_Cpp.errorSquiggles": "enabled",
+    "files.associations": {
+        "*.ld": "ld",
+        "stm32n6xx_hal_conf.h": "c",
+        "stm32n6xx_it.h": "c"
+    }
+}
