@@ -14,6 +14,8 @@
 
 #define APP_UART_TX_WAIT_CYCLES 1000000U
 
+static volatile uint32_t AppConsoleMuted;
+
 static HAL_StatusTypeDef App_UartWaitFlag(uint32_t flag)
 {
   if (huart3.Instance == NULL)
@@ -55,6 +57,11 @@ static HAL_StatusTypeDef App_UartWriteByte(uint8_t byte)
 
 void App_Print(const char *text)
 {
+  if (AppConsoleMuted != 0U)
+  {
+    return;
+  }
+
   if (text != NULL)
   {
     while (*text != '\0')
@@ -131,4 +138,9 @@ void App_PrintHex32(const char *label, uint32_t value)
   line[pos] = '\0';
 
   App_Print(line);
+}
+
+void App_ConsoleSetMuted(uint32_t muted)
+{
+  AppConsoleMuted = (muted != 0U) ? 1U : 0U;
 }

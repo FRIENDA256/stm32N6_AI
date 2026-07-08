@@ -45,6 +45,8 @@ C_SOURCES =  \
 ../../Appli/Core/Src/app_callbacks.c \
 ../../Appli/Core/Src/app_console.c \
 ../../Appli/Core/Src/app_timebase.c \
+../../Appli/Core/Src/tiny1c_debug_driver.c \
+../../Appli/Core/Src/tiny1c_port_stm32_hal.c \
 ../../Appli/Core/Src/eth_diagnostics.c \
 ../../Appli/Core/Src/main.c \
 ../../Appli/Core/Src/gpio.c \

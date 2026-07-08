@@ -20,6 +20,7 @@ void App_Print(const char *text);
 void App_BootPrint(const char *text);
 void App_PrintHex16(const char *label, uint32_t value);
 void App_PrintHex32(const char *label, uint32_t value);
+void App_ConsoleSetMuted(uint32_t muted);
 
 #ifdef __cplusplus
 }

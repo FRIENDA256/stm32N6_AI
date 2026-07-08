@@ -10,6 +10,7 @@
 #include "app_tcp_command.h"
 #include "ad7606_spi_dma.h"
 #include "app_console.h"
+#include "tiny1c_port_stm32_hal.h"
 #include <string.h>
 
 #define APP_TCP_COMMAND_THREAD_STACK_SIZE 2048U
@@ -170,13 +171,72 @@ static UINT AppTcpCommand_SendStatus(void)
   return AppTcpCommand_SendText(line);
 }
 
+static UINT AppTcpCommand_SendTiny1CResult(const char *name, uint8_t tiny1c_command)
+{
+  char line[80];
+  ULONG pos = 0UL;
+  tiny1c_status_t status;
+
+  status = Tiny1C_STM32_ProcessCommand(tiny1c_command);
+  if (status == TINY1C_STATUS_OK)
+  {
+    AppTcpCommand_AppendText(line, &pos, sizeof(line), "OK ");
+  }
+  else if (status == TINY1C_STATUS_UNSUPPORTED)
+  {
+    AppTcpCommand_AppendText(line, &pos, sizeof(line), "ERR unsupported ");
+  }
+  else
+  {
+    AppTcpCommand_AppendText(line, &pos, sizeof(line), "ERR failed ");
+  }
+
+  AppTcpCommand_AppendText(line, &pos, sizeof(line), name);
+  AppTcpCommand_AppendText(line, &pos, sizeof(line), "\r\n");
+  line[pos] = '\0';
+
+  return AppTcpCommand_SendText(line);
+}
+
+static UINT AppTcpCommand_SendTiny1CCaptureDumpResult(const char *name, uint8_t capture_command)
+{
+  char line[80];
+  ULONG pos = 0UL;
+  tiny1c_status_t status;
+
+  status = Tiny1C_STM32_ProcessCommand(capture_command);
+  if (status == TINY1C_STATUS_OK)
+  {
+    status = Tiny1C_STM32_ProcessCommand((uint8_t)'b');
+  }
+
+  if (status == TINY1C_STATUS_OK)
+  {
+    AppTcpCommand_AppendText(line, &pos, sizeof(line), "OK ");
+  }
+  else if (status == TINY1C_STATUS_UNSUPPORTED)
+  {
+    AppTcpCommand_AppendText(line, &pos, sizeof(line), "ERR unsupported ");
+  }
+  else
+  {
+    AppTcpCommand_AppendText(line, &pos, sizeof(line), "ERR failed ");
+  }
+
+  AppTcpCommand_AppendText(line, &pos, sizeof(line), name);
+  AppTcpCommand_AppendText(line, &pos, sizeof(line), "\r\n");
+  line[pos] = '\0';
+
+  return AppTcpCommand_SendText(line);
+}
+
 static UINT AppTcpCommand_Process(char *request)
 {
   char *command = AppTcpCommand_Trim(request);
 
   if ((command[0] == '\0') || AppTcpCommand_Equals(command, "HELP") || AppTcpCommand_Equals(command, "?"))
   {
-    return AppTcpCommand_SendText("OK commands: PING INFO STAT ADRAW HELP QUIT\r\n");
+    return AppTcpCommand_SendText("OK commands: PING INFO STAT ADRAW IRPROBE IRVSYNC IRIMG IRTEMP IRDUMP IRCAPIMG IRCAPTEMP IRFASTIMG IRFASTTEMP HELP QUIT\r\n");
   }
 
   if (AppTcpCommand_Equals(command, "PING"))
@@ -198,6 +258,51 @@ static UINT AppTcpCommand_Process(char *request)
   {
     AD7606_SPI4_RequestRawDump();
     return AppTcpCommand_SendText("OK AD7606 raw dump armed\r\n");
+  }
+
+  if (AppTcpCommand_Equals(command, "IRPROBE"))
+  {
+    return AppTcpCommand_SendTiny1CResult("IRPROBE", (uint8_t)'i');
+  }
+
+  if (AppTcpCommand_Equals(command, "IRVSYNC"))
+  {
+    return AppTcpCommand_SendTiny1CResult("IRVSYNC", (uint8_t)'v');
+  }
+
+  if (AppTcpCommand_Equals(command, "IRIMG") || AppTcpCommand_Equals(command, "IRIMAGE"))
+  {
+    return AppTcpCommand_SendTiny1CResult("IRIMG", (uint8_t)'s');
+  }
+
+  if (AppTcpCommand_Equals(command, "IRTEMP"))
+  {
+    return AppTcpCommand_SendTiny1CResult("IRTEMP", (uint8_t)'t');
+  }
+
+  if (AppTcpCommand_Equals(command, "IRDUMP") || AppTcpCommand_Equals(command, "IRBIN"))
+  {
+    return AppTcpCommand_SendTiny1CResult("IRDUMP", (uint8_t)'b');
+  }
+
+  if (AppTcpCommand_Equals(command, "IRCAPIMG") || AppTcpCommand_Equals(command, "IRCAPIMAGE"))
+  {
+    return AppTcpCommand_SendTiny1CCaptureDumpResult("IRCAPIMG", (uint8_t)'s');
+  }
+
+  if (AppTcpCommand_Equals(command, "IRCAPTEMP"))
+  {
+    return AppTcpCommand_SendTiny1CCaptureDumpResult("IRCAPTEMP", (uint8_t)'t');
+  }
+
+  if (AppTcpCommand_Equals(command, "IRFASTIMG"))
+  {
+    return AppTcpCommand_SendTiny1CResult("IRFASTIMG", (uint8_t)'k');
+  }
+
+  if (AppTcpCommand_Equals(command, "IRFASTTEMP"))
+  {
+    return AppTcpCommand_SendTiny1CResult("IRFASTTEMP", (uint8_t)'l');
   }
 
   if (AppTcpCommand_Equals(command, "QUIT") || AppTcpCommand_Equals(command, "EXIT"))
