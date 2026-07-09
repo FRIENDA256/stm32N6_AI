@@ -96,7 +96,8 @@ def tcp_test(args):
     sock = socket.create_connection((args.host, args.tcp_port), timeout=args.timeout)
     sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
     try:
-        command = f"TCPTHR {args.tcp_mib}\r\n".encode("ascii")
+        command_name = "TCPTHRZ" if args.no_fill else "TCPTHR"
+        command = f"{command_name} {args.tcp_mib}\r\n".encode("ascii")
         print(f"TCP: sending {command.decode().strip()} to {args.host}:{args.tcp_port}")
         sock.sendall(command)
 
@@ -136,7 +137,8 @@ def udp_test(args):
     tcp = socket.create_connection((args.host, args.tcp_port), timeout=args.timeout)
     tcp.settimeout(0.25)
 
-    command = f"UDPTHR {local_ip} {args.udp_port} {args.udp_ms} {args.udp_payload}\r\n".encode("ascii")
+    command_name = "UDPTHRZ" if args.no_fill else "UDPTHR"
+    command = f"{command_name} {local_ip} {args.udp_port} {args.udp_ms} {args.udp_payload}\r\n".encode("ascii")
     print(f"UDP: listening on {local_ip}:{args.udp_port}, SO_RCVBUF={actual_rcvbuf}")
     print(f"UDP: sending {command.decode().strip()} to {args.host}:{args.tcp_port}")
 
@@ -244,6 +246,7 @@ def main():
     parser.add_argument("--udp-drain-s", type=float, default=1.0)
     parser.add_argument("--local-ip", default=None, help="PC IPv4 address for UDPTHR; auto-detected by default")
     parser.add_argument("--timeout", type=float, default=10.0)
+    parser.add_argument("--no-fill", action="store_true", help="Use TCPTHRZ/UDPTHRZ to reserve packet payload without filling it")
     args = parser.parse_args()
 
     if args.mode in ("tcp", "both"):

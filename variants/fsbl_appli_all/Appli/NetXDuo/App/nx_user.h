@@ -86,9 +86,7 @@
 
 /* If defined, the link driver is able to specify extra capability, such as
    checksum offloading features. */
-/*
 #define NX_ENABLE_INTERFACE_CAPABILITY
-*/
 
 /* NX_PHYSICAL_HEADER Specifies the size in bytes of the physical header of
    the frame. */

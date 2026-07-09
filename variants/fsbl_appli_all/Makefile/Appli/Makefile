@@ -22,7 +22,7 @@ TARGET = fsbl_appli_all_Appli
 # debug build?
 DEBUG = 1
 # optimization
-OPT = -Og
+OPT = -O2
 
 
 #######################################

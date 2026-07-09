@@ -180,7 +180,8 @@ int main(void)
 
   /* set up base region configuration for CPUAXI_RAM0*/
   /* region 1 is secure */
-  risaf_base_config.EndAddress = 0x9bfff;
+  /* Keep CPUAXI_RAM0 fully visible to CPU and DMA masters for ETH/NetX buffers. */
+  risaf_base_config.EndAddress = 0xfffff;
   HAL_RIF_RISAF_ConfigBaseRegion(RISAF2, RISAF_REGION_1, &risaf_base_config);
 
   /* set up base region configuration for FLEXRAM*/
