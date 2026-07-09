@@ -299,16 +299,97 @@ static tiny1c_status_t Tiny1C_ReadFrameRawDirect(tiny1c_t *dev, uint8_t first_co
     }
     else
     {
-      uint8_t saved_previous = frame_buffer[copied_count - 1U];
-
-      if (Tiny1C_SPIReadInto(dev, command, &frame_buffer[copied_count - 1U], transfer_len) != TINY1C_STATUS_OK)
+      if (skip_len == 0U)
       {
-        return TINY1C_STATUS_ERROR;
+        if (Tiny1C_SPIReadInto(dev, command, &frame_buffer[copied_count], transfer_len) != TINY1C_STATUS_OK)
+        {
+          return TINY1C_STATUS_ERROR;
+        }
       }
-      frame_buffer[copied_count - 1U] = saved_previous;
+      else if (skip_len == 1U)
+      {
+        uint8_t saved_previous = frame_buffer[copied_count - 1U];
+
+        if (Tiny1C_SPIReadInto(dev, command, &frame_buffer[copied_count - 1U], transfer_len) != TINY1C_STATUS_OK)
+        {
+          return TINY1C_STATUS_ERROR;
+        }
+        frame_buffer[copied_count - 1U] = saved_previous;
+      }
+      else
+      {
+        if (Tiny1C_SPIReadInto(dev, command, dev->buffers.spi_rx, transfer_len) != TINY1C_STATUS_OK)
+        {
+          return TINY1C_STATUS_ERROR;
+        }
+        for (uint32_t i = 0U; i < copy_len; i++)
+        {
+          frame_buffer[copied_count + i] = dev->buffers.spi_rx[skip_len + i];
+        }
+      }
     }
 
     copied_count += copy_len;
+  }
+
+  return TINY1C_STATUS_OK;
+}
+
+static tiny1c_status_t Tiny1C_WaitVsyncSync(tiny1c_t *dev)
+{
+  uint32_t start_tick;
+  uint32_t timeout_ms;
+  int start_state;
+  int edge_state;
+
+  if ((dev == NULL) || (dev->config.sync_to_vsync == 0U))
+  {
+    return TINY1C_STATUS_OK;
+  }
+
+  if ((dev->port.vsync_read == NULL) || (dev->port.tick_ms == NULL))
+  {
+    Tiny1C_Print(dev, "[Tiny1C] VSYNC sync unavailable, read unsynced\r\n");
+    return TINY1C_STATUS_OK;
+  }
+
+  timeout_ms = (dev->config.vsync_timeout_ms == 0U) ? 80U : dev->config.vsync_timeout_ms;
+  start_tick = Tiny1C_Tick(dev);
+  start_state = dev->port.vsync_read(dev->port.ctx);
+  edge_state = start_state;
+
+  while ((Tiny1C_Tick(dev) - start_tick) < timeout_ms)
+  {
+    edge_state = dev->port.vsync_read(dev->port.ctx);
+    if (edge_state != start_state)
+    {
+      break;
+    }
+  }
+
+  if (edge_state == start_state)
+  {
+    Tiny1C_Print(dev, "[Tiny1C] VSYNC sync timeout, read unsynced\r\n");
+    return TINY1C_STATUS_OK;
+  }
+
+  if (dev->config.vsync_wait_pulse_end != 0U)
+  {
+    uint32_t pulse_tick = Tiny1C_Tick(dev);
+    int pulse_state = edge_state;
+
+    while ((Tiny1C_Tick(dev) - pulse_tick) < timeout_ms)
+    {
+      if (dev->port.vsync_read(dev->port.ctx) != pulse_state)
+      {
+        break;
+      }
+    }
+  }
+
+  if (dev->config.vsync_settle_ms != 0U)
+  {
+    Tiny1C_Delay(dev, dev->config.vsync_settle_ms);
   }
 
   return TINY1C_STATUS_OK;
@@ -489,9 +570,13 @@ void Tiny1C_DefaultConfig(tiny1c_config_t *config)
   config->uart_bin_chunk = TINY1C_DEFAULT_UART_BIN_CHUNK;
   config->warmup_ms = TINY1C_DEFAULT_WARMUP_MS;
   config->warmup_discard_frames = TINY1C_DEFAULT_DISCARD_FRAMES;
+  config->vsync_timeout_ms = 80U;
+  config->vsync_settle_ms = 1U;
   config->fast_test_frames = TINY1C_DEFAULT_FAST_TEST_FRAMES;
   config->enable_25fps_cmd = 1U;
   config->use_direct_read = 1U;
+  config->sync_to_vsync = 0U;
+  config->vsync_wait_pulse_end = 0U;
   config->flash_image_slot_addr = TINY1C_FLASH_IMAGE_SLOT_ADDR;
   config->flash_temp_slot_addr = TINY1C_FLASH_TEMP_SLOT_ADDR;
   config->flash_header_len = TINY1C_FLASH_HEADER_LEN;
@@ -692,8 +777,14 @@ static tiny1c_status_t Tiny1C_ReadFrameWithMode(tiny1c_t *dev, uint8_t command, 
     Tiny1C_PrintU32(dev, dev->config.frame_len);
     Tiny1C_Print(dev, " bytes... chunk=");
     Tiny1C_PrintU32(dev, dev->config.spi_chunk_len);
-    Tiny1C_Print(dev, (direct_mode != 0U) ? ", direct rx, skip=first512/cont1... " : ", cs=chunk, skip=first512/cont1... ");
+    Tiny1C_Print(dev, (direct_mode != 0U) ? ", direct rx, skip=first" : ", cs=chunk, skip=first");
+    Tiny1C_PrintU32(dev, dev->config.first_dummy_len);
+    Tiny1C_Print(dev, "/cont");
+    Tiny1C_PrintU32(dev, dev->config.continue_dummy_len);
+    Tiny1C_Print(dev, "... ");
   }
+
+  (void)Tiny1C_WaitVsyncSync(dev);
 
   if (((direct_mode != 0U) ?
        Tiny1C_ReadFrameRawDirect(dev, command, dev->buffers.frame) :

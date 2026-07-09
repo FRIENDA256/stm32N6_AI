@@ -11,6 +11,7 @@
 #include "ad7606_spi_dma.h"
 #include "app_console.h"
 #include "tiny1c_port_stm32_hal.h"
+#include <stdio.h>
 #include <string.h>
 
 #define APP_TCP_COMMAND_THREAD_STACK_SIZE 2048U
@@ -18,7 +19,13 @@
 #define APP_TCP_COMMAND_LISTEN_QUEUE      1U
 #define APP_TCP_COMMAND_WINDOW_SIZE       2048UL
 #define APP_TCP_COMMAND_RX_BUFFER_SIZE    128U
+#define APP_TCP_COMMAND_TX_CHUNK_SIZE     1024UL
 #define APP_TCP_COMMAND_LOG_INTERVAL      8UL
+#define APP_TCP_COMMAND_AD_WAIT_MS        3000U
+#define APP_TCP_COMMAND_AD_POLL_MS        20U
+#define APP_TCP_COMMAND_IR_PAUSE_AD7606   1U
+#define APP_TCP_COMMAND_IR_AD_WAIT_MS     200U
+#define APP_TCP_COMMAND_IR_AD_POLL_MS     2U
 
 static NX_TCP_SOCKET TcpCommandSocket;
 static TX_THREAD TcpCommandThread;
@@ -26,6 +33,41 @@ static NX_IP *TcpCommandIp;
 static NX_PACKET_POOL *TcpCommandPacketPool;
 static ULONG TcpCommandConnections;
 static ULONG TcpCommandRxPackets;
+static uint8_t TcpCommandAdFrame[AD7606_SPI4_MAX_FRAME_SIZE];
+
+static ULONG AppTcpCommand_MsToTicks(uint32_t ms);
+
+static void AppTcpCommand_IrCaptureBegin(void)
+{
+#if (APP_TCP_COMMAND_IR_PAUSE_AD7606 == 1U)
+  ULONG start_tick;
+  ULONG timeout_ticks;
+  ULONG poll_ticks;
+
+  AD7606_SPI4_SetPaused(1U);
+
+  start_tick = tx_time_get();
+  timeout_ticks = AppTcpCommand_MsToTicks(APP_TCP_COMMAND_IR_AD_WAIT_MS);
+  poll_ticks = AppTcpCommand_MsToTicks(APP_TCP_COMMAND_IR_AD_POLL_MS);
+
+  while (AD7606_SPI4_IsIdle() == 0U)
+  {
+    if ((tx_time_get() - start_tick) >= timeout_ticks)
+    {
+      App_Print("AD7606 pause wait timeout before Tiny1C capture\r\n");
+      break;
+    }
+    tx_thread_sleep(poll_ticks);
+  }
+#endif
+}
+
+static void AppTcpCommand_IrCaptureEnd(void)
+{
+#if (APP_TCP_COMMAND_IR_PAUSE_AD7606 == 1U)
+  AD7606_SPI4_SetPaused(0U);
+#endif
+}
 
 static UINT AppTcpCommand_ByteAllocate(TX_BYTE_POOL *byte_pool, UCHAR **memory, ULONG size)
 {
@@ -45,6 +87,13 @@ static UINT AppTcpCommand_ByteAllocate(TX_BYTE_POOL *byte_pool, UCHAR **memory, 
 
   memset(*memory, 0, size);
   return NX_SUCCESS;
+}
+
+static ULONG AppTcpCommand_MsToTicks(uint32_t ms)
+{
+  ULONG ticks = (ULONG)(((uint64_t)ms * TX_TIMER_TICKS_PER_SECOND + 999ULL) / 1000ULL);
+
+  return (ticks == 0UL) ? 1UL : ticks;
 }
 
 static void AppTcpCommand_AppendText(char *line, ULONG *pos, ULONG max_len, const char *text)
@@ -156,6 +205,109 @@ static UINT AppTcpCommand_SendText(const char *text)
   return status;
 }
 
+static uint32_t AppTcpCommand_Crc32(const uint8_t *data, uint32_t len)
+{
+  uint32_t crc = 0xFFFFFFFFU;
+
+  if (data == NULL)
+  {
+    return 0U;
+  }
+
+  for (uint32_t i = 0U; i < len; i++)
+  {
+    crc ^= data[i];
+    for (uint32_t bit = 0U; bit < 8U; bit++)
+    {
+      if ((crc & 1U) != 0U)
+      {
+        crc = (crc >> 1U) ^ 0xEDB88320U;
+      }
+      else
+      {
+        crc >>= 1U;
+      }
+    }
+  }
+
+  return crc ^ 0xFFFFFFFFU;
+}
+
+static UINT AppTcpCommand_SendBytes(const uint8_t *data, uint32_t len)
+{
+  uint32_t offset = 0U;
+
+  if ((TcpCommandPacketPool == NX_NULL) || ((data == NULL) && (len != 0U)))
+  {
+    return NX_PTR_ERROR;
+  }
+
+  while (offset < len)
+  {
+    NX_PACKET *packet_ptr;
+    ULONG chunk = (ULONG)(len - offset);
+    UINT status;
+
+    if (chunk > APP_TCP_COMMAND_TX_CHUNK_SIZE)
+    {
+      chunk = APP_TCP_COMMAND_TX_CHUNK_SIZE;
+    }
+
+    status = nx_packet_allocate(TcpCommandPacketPool, &packet_ptr, NX_TCP_PACKET, NX_WAIT_FOREVER);
+    if (status != NX_SUCCESS)
+    {
+      return status;
+    }
+
+    status = nx_packet_data_append(packet_ptr,
+                                   (VOID *)&data[offset],
+                                   chunk,
+                                   TcpCommandPacketPool,
+                                   NX_WAIT_FOREVER);
+    if (status == NX_SUCCESS)
+    {
+      status = nx_tcp_socket_send(&TcpCommandSocket, packet_ptr, NX_WAIT_FOREVER);
+      if (status == NX_SUCCESS)
+      {
+        packet_ptr = NX_NULL;
+      }
+    }
+
+    if (packet_ptr != NX_NULL)
+    {
+      (void)nx_packet_release(packet_ptr);
+    }
+
+    if (status != NX_SUCCESS)
+    {
+      return status;
+    }
+
+    offset += (uint32_t)chunk;
+  }
+
+  return NX_SUCCESS;
+}
+
+static UINT AppTcpCommand_SendBinaryFrame(const char *header, const uint8_t *data, uint32_t len)
+{
+  UINT status;
+
+  status = AppTcpCommand_SendText(header);
+  if (status != NX_SUCCESS)
+  {
+    return status;
+  }
+
+  status = AppTcpCommand_SendBytes(data, len);
+  if (status != NX_SUCCESS)
+  {
+    return status;
+  }
+
+  return AppTcpCommand_SendText("\r\nEND_STM32N6_BINARY\r\n");
+}
+
 static UINT AppTcpCommand_SendStatus(void)
 {
   char line[96];
@@ -204,7 +356,9 @@ static UINT AppTcpCommand_SendTiny1CCaptureDumpResult(const char *name, uint8_t 
   ULONG pos = 0UL;
   tiny1c_status_t status;
 
+  AppTcpCommand_IrCaptureBegin();
   status = Tiny1C_STM32_ProcessCommand(capture_command);
+  AppTcpCommand_IrCaptureEnd();
   if (status == TINY1C_STATUS_OK)
   {
     status = Tiny1C_STM32_ProcessCommand((uint8_t)'b');
@@ -230,13 +384,109 @@ static UINT AppTcpCommand_SendTiny1CCaptureDumpResult(const char *name, uint8_t 
   return AppTcpCommand_SendText(line);
 }
 
+static UINT AppTcpCommand_SendAD7606Binary(void)
+{
+  AD7606_SPI4_FrameInfo_t info;
+  uint32_t frame_len;
+  uint32_t transport_crc;
+  ULONG start_tick;
+  ULONG timeout_ticks;
+  ULONG poll_ticks;
+  char header[256];
+  int len;
+
+  start_tick = tx_time_get();
+  timeout_ticks = AppTcpCommand_MsToTicks(APP_TCP_COMMAND_AD_WAIT_MS);
+  poll_ticks = AppTcpCommand_MsToTicks(APP_TCP_COMMAND_AD_POLL_MS);
+
+  do
+  {
+    frame_len = AD7606_SPI4_CopyLatestFrame(TcpCommandAdFrame, sizeof(TcpCommandAdFrame), &info);
+    if (frame_len != 0U)
+    {
+      break;
+    }
+
+    tx_thread_sleep(poll_ticks);
+  } while ((tx_time_get() - start_tick) < timeout_ticks);
+
+  if (frame_len == 0U)
+  {
+    return AppTcpCommand_SendText("ERR AD7606 no valid frame timeout\r\n");
+  }
+
+  transport_crc = AppTcpCommand_Crc32(TcpCommandAdFrame, frame_len);
+  len = snprintf(header,
+                 sizeof(header),
+                 "STM32N6_BIN V1 SOURCE=AD7606 TYPE=0x%02X IRQ=%lu SEQ=%lu TOTAL=%u PAYLOAD=%u TS=%lu SAMPLE=%lu BYTES=%lu CRC32=0x%08lX\r\nBEGIN_STM32N6_BINARY\r\n",
+                 (unsigned int)info.frame_type,
+                 (unsigned long)info.irq_count,
+                 (unsigned long)info.frame_seq,
+                 (unsigned int)info.total_len,
+                 (unsigned int)info.payload_len,
+                 (unsigned long)info.timestamp_ms,
+                 (unsigned long)info.sample_counter,
+                 (unsigned long)frame_len,
+                 (unsigned long)transport_crc);
+  if ((len <= 0) || ((uint32_t)len >= sizeof(header)))
+  {
+    return AppTcpCommand_SendText("ERR AD7606 header failed\r\n");
+  }
+
+  return AppTcpCommand_SendBinaryFrame(header, TcpCommandAdFrame, frame_len);
+}
+
+static UINT AppTcpCommand_SendTiny1CBinary(const char *name, uint8_t frame_command, uint8_t baseline_mode)
+{
+  const uint8_t *frame;
+  uint32_t frame_len;
+  uint8_t actual_command;
+  uint32_t crc32;
+  tiny1c_status_t status;
+  char header[192];
+  int len;
+
+  AppTcpCommand_IrCaptureBegin();
+  status = (baseline_mode != 0U) ?
+    Tiny1C_STM32_CaptureFrameBaseline(frame_command) :
+    Tiny1C_STM32_CaptureFrame(frame_command);
+  AppTcpCommand_IrCaptureEnd();
+  if (status != TINY1C_STATUS_OK)
+  {
+    return AppTcpCommand_SendText("ERR Tiny1C capture failed\r\n");
+  }
+
+  status = Tiny1C_STM32_GetLatestFrame(&frame, &frame_len, &actual_command, &crc32);
+  if (status != TINY1C_STATUS_OK)
+  {
+    return AppTcpCommand_SendText("ERR Tiny1C no frame\r\n");
+  }
+
+  len = snprintf(header,
+                 sizeof(header),
+                 "STM32N6_BIN V1 SOURCE=TINY1C KIND=%s MODE=%s CMD=0x%02X WIDTH=%lu HEIGHT=%lu BYTES=%lu CRC32=0x%08lX\r\nBEGIN_STM32N6_BINARY\r\n",
+                 name,
+                 (baseline_mode != 0U) ? "baseline" : "direct",
+                 (unsigned int)actual_command,
+                 (unsigned long)TINY1C_DEFAULT_FRAME_WIDTH,
+                 (unsigned long)TINY1C_DEFAULT_FRAME_HEIGHT,
+                 (unsigned long)frame_len,
+                 (unsigned long)crc32);
+  if ((len <= 0) || ((uint32_t)len >= sizeof(header)))
+  {
+    return AppTcpCommand_SendText("ERR Tiny1C header failed\r\n");
+  }
+
+  return AppTcpCommand_SendBinaryFrame(header, frame, frame_len);
+}
+
 static UINT AppTcpCommand_Process(char *request)
 {
   char *command = AppTcpCommand_Trim(request);
 
   if ((command[0] == '\0') || AppTcpCommand_Equals(command, "HELP") || AppTcpCommand_Equals(command, "?"))
   {
-    return AppTcpCommand_SendText("OK commands: PING INFO STAT ADRAW IRPROBE IRVSYNC IRIMG IRTEMP IRDUMP IRCAPIMG IRCAPTEMP IRFASTIMG IRFASTTEMP HELP QUIT\r\n");
+    return AppTcpCommand_SendText("OK commands: PING INFO STAT ADRAW ADGET IRPROBE IRVSYNC IRIMG IRTEMP IRDUMP IRCAPIMG IRCAPTEMP IRGETIMG IRGETTEMP IRGETIMGBASE IRGETTEMPBASE IRFASTIMG IRFASTTEMP HELP QUIT\r\n");
   }
 
   if (AppTcpCommand_Equals(command, "PING"))
@@ -258,6 +508,13 @@ static UINT AppTcpCommand_Process(char *request)
   {
     AD7606_SPI4_RequestRawDump();
     return AppTcpCommand_SendText("OK AD7606 raw dump armed\r\n");
+  }
+
+  if (AppTcpCommand_Equals(command, "ADGET") ||
+      AppTcpCommand_Equals(command, "AD7606GET") ||
+      AppTcpCommand_Equals(command, "ADNET"))
+  {
+    return AppTcpCommand_SendAD7606Binary();
   }
 
   if (AppTcpCommand_Equals(command, "IRPROBE"))
@@ -293,6 +550,30 @@ static UINT AppTcpCommand_Process(char *request)
   if (AppTcpCommand_Equals(command, "IRCAPTEMP"))
   {
     return AppTcpCommand_SendTiny1CCaptureDumpResult("IRCAPTEMP", (uint8_t)'t');
+  }
+
+  if (AppTcpCommand_Equals(command, "IRGETIMG") ||
+      AppTcpCommand_Equals(command, "IRGETIMAGE") ||
+      AppTcpCommand_Equals(command, "IRNETIMG"))
+  {
+    return AppTcpCommand_SendTiny1CBinary("image", TINY1C_CMD_IMAGE, 0U);
+  }
+
+  if (AppTcpCommand_Equals(command, "IRGETTEMP") || AppTcpCommand_Equals(command, "IRNETTEMP"))
+  {
+    return AppTcpCommand_SendTiny1CBinary("temp", TINY1C_CMD_TEMP, 0U);
+  }
+
+  if (AppTcpCommand_Equals(command, "IRGETIMGBASE") ||
+      AppTcpCommand_Equals(command, "IRGETIMAGEBASE") ||
+      AppTcpCommand_Equals(command, "IRNETIMGBASE"))
+  {
+    return AppTcpCommand_SendTiny1CBinary("image", TINY1C_CMD_IMAGE, 1U);
+  }
+
+  if (AppTcpCommand_Equals(command, "IRGETTEMPBASE") || AppTcpCommand_Equals(command, "IRNETTEMPBASE"))
+  {
+    return AppTcpCommand_SendTiny1CBinary("temp", TINY1C_CMD_TEMP, 1U);
   }
 
   if (AppTcpCommand_Equals(command, "IRFASTIMG"))

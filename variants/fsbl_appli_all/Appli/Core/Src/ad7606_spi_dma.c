@@ -16,7 +16,7 @@
 #include <string.h>
 
 #define AD_SPI_HEADER_SIZE               24U
-#define AD_SPI_MAX_FRAME_SIZE            8240U
+#define AD_SPI_MAX_FRAME_SIZE            AD7606_SPI4_MAX_FRAME_SIZE
 #define AD_SPI_CRC_SIZE                  4U
 #define AD_FRAME_MAGIC                   0xAD76U
 #define AD_FRAME_TYPE_RAW_SYNC           0x01U
@@ -109,6 +109,14 @@ static void SPI4_StatusLED_Set(uint8_t on);
 static void AD7606_SPI4_StartDmaRead(uint32_t irq_count_snapshot);
 static void AD7606_SPI4_ProcessDmaFrame(uint32_t irq_count_snapshot);
 static void AD7606_SPI4_ReportDmaError(uint32_t irq_count_snapshot, uint8_t error_code, uint32_t hal_error);
+static void AD7606_SPI4_SaveLatestFrame(uint32_t irq_count_snapshot,
+                                        uint32_t frame_seq,
+                                        uint16_t total_len,
+                                        uint16_t payload_len,
+                                        uint32_t timestamp_ms,
+                                        uint32_t sample_counter,
+                                        uint8_t frame_type,
+                                        uint32_t crc_actual);
 static void AD7606_SPI4_DumpRawFrame(uint32_t irq_count_snapshot,
                                      uint32_t frame_seq,
                                      uint16_t total_len,
@@ -127,6 +135,7 @@ static volatile uint32_t ad_dma_error_hal;
 static volatile uint16_t ad_dma_total_len;
 static volatile uint32_t ad_dma_irq_snapshot;
 static volatile uint8_t ad_raw_dump_requested;
+static volatile uint8_t ad_spi_paused;
 static AD_SPI_QualityStats_t ad_spi_quality;
 static uint32_t ad_spi_last_good_frame_tick;
 static uint32_t ad_spi_last_error_tick;
@@ -134,6 +143,10 @@ static uint32_t ad_spi_led_tick;
 static uint8_t ad_spi_led_on;
 static uint8_t ad_spi_tx_dummy[AD_SPI_MAX_FRAME_SIZE];
 static uint8_t ad_spi_rx_frame[AD_SPI_MAX_FRAME_SIZE];
+static uint8_t ad_spi_latest_frame[AD_SPI_MAX_FRAME_SIZE];
+static AD7606_SPI4_FrameInfo_t ad_spi_latest_info;
+static volatile uint32_t ad_spi_latest_update_seq;
+static volatile uint8_t ad_spi_latest_valid;
 
 void AD7606_SPI4_Init(void)
 {
@@ -141,6 +154,8 @@ void AD7606_SPI4_Init(void)
 
   memset(ad_spi_tx_dummy, 0xFF, sizeof(ad_spi_tx_dummy));
   memset(ad_spi_rx_frame, 0x00, sizeof(ad_spi_rx_frame));
+  memset(ad_spi_latest_frame, 0x00, sizeof(ad_spi_latest_frame));
+  memset(&ad_spi_latest_info, 0x00, sizeof(ad_spi_latest_info));
 
   ad_irq_count = 0U;
   ad_irq_pending = 0U;
@@ -151,6 +166,9 @@ void AD7606_SPI4_Init(void)
   ad_dma_total_len = 0U;
   ad_dma_irq_snapshot = 0U;
   ad_raw_dump_requested = 0U;
+  ad_spi_paused = 0U;
+  ad_spi_latest_update_seq = 0U;
+  ad_spi_latest_valid = 0U;
 
   HAL_GPIO_WritePin(AD_CS_GPIO_Port, AD_CS_Pin, GPIO_PIN_SET);
   SPI4_QualityTest_ClearWindow(now_tick);
@@ -200,6 +218,15 @@ void AD7606_SPI4_Task(uint32_t now_tick)
     AD7606_SPI4_ReportDmaError(irq_count_snapshot, error_code, hal_error);
   }
 
+  if (ad_spi_paused != 0U)
+  {
+    __disable_irq();
+    ad_irq_pending = 0U;
+    __enable_irq();
+    SPI4_StatusLED_Task(now_tick);
+    return;
+  }
+
   if (ad_irq_pending != 0U)
   {
     uint8_t start_dma = 0U;
@@ -230,6 +257,69 @@ void AD7606_SPI4_RequestRawDump(void)
 {
   ad_raw_dump_requested = 1U;
   UART_WriteString("AD7606 raw dump armed\r\n");
+}
+
+void AD7606_SPI4_SetPaused(uint8_t paused)
+{
+  __disable_irq();
+  ad_spi_paused = (paused != 0U) ? 1U : 0U;
+  if (ad_spi_paused != 0U)
+  {
+    ad_irq_pending = 0U;
+  }
+  __enable_irq();
+}
+
+uint8_t AD7606_SPI4_IsIdle(void)
+{
+  uint8_t idle;
+
+  __disable_irq();
+  idle = ((ad_spi_dma_state == AD_SPI_DMA_IDLE) &&
+          (ad_dma_frame_ready == 0U) &&
+          (ad_dma_error_code == 0U)) ? 1U : 0U;
+  __enable_irq();
+
+  return idle;
+}
+
+uint32_t AD7606_SPI4_CopyLatestFrame(uint8_t *dest, uint32_t dest_len, AD7606_SPI4_FrameInfo_t *info)
+{
+  uint32_t total_len;
+
+  if ((dest == NULL) || (ad_spi_latest_valid == 0U))
+  {
+    return 0U;
+  }
+
+  for (uint32_t attempt = 0U; attempt < 8U; attempt++)
+  {
+    uint32_t seq_before = ad_spi_latest_update_seq;
+
+    if ((seq_before & 1U) != 0U)
+    {
+      continue;
+    }
+
+    total_len = (uint32_t)ad_spi_latest_info.total_len;
+    if ((total_len == 0U) || (total_len > AD_SPI_MAX_FRAME_SIZE) || (dest_len < total_len))
+    {
+      return 0U;
+    }
+
+    memcpy(dest, ad_spi_latest_frame, total_len);
+    if (info != NULL)
+    {
+      *info = ad_spi_latest_info;
+    }
+
+    if (seq_before == ad_spi_latest_update_seq)
+    {
+      return total_len;
+    }
+  }
+
+  return 0U;
 }
 
 static void UART_WriteString(const char *text)
@@ -682,6 +772,18 @@ static void AD7606_SPI4_ProcessDmaFrame(uint32_t irq_count_snapshot)
     ad_spi_quality.payload_length_warning_count++;
   }
 
+  if (crc_actual == crc_expected)
+  {
+    AD7606_SPI4_SaveLatestFrame(irq_count_snapshot,
+                                frame_seq,
+                                total_len,
+                                payload_len,
+                                timestamp_ms,
+                                sample_counter,
+                                ad_spi_rx_frame[3],
+                                crc_actual);
+  }
+
   if ((crc_actual == crc_expected) && (ad_raw_dump_requested != 0U))
   {
     ad_raw_dump_requested = 0U;
@@ -694,6 +796,39 @@ static void AD7606_SPI4_ProcessDmaFrame(uint32_t irq_count_snapshot)
                              crc_expected,
                              crc_actual);
   }
+}
+
+static void AD7606_SPI4_SaveLatestFrame(uint32_t irq_count_snapshot,
+                                        uint32_t frame_seq,
+                                        uint16_t total_len,
+                                        uint16_t payload_len,
+                                        uint32_t timestamp_ms,
+                                        uint32_t sample_counter,
+                                        uint8_t frame_type,
+                                        uint32_t crc_actual)
+{
+  AD7606_SPI4_FrameInfo_t info;
+
+  if ((total_len == 0U) || (total_len > AD_SPI_MAX_FRAME_SIZE))
+  {
+    return;
+  }
+
+  info.irq_count = irq_count_snapshot;
+  info.frame_seq = frame_seq;
+  info.timestamp_ms = timestamp_ms;
+  info.sample_counter = sample_counter;
+  info.crc32 = crc_actual;
+  info.total_len = total_len;
+  info.payload_len = payload_len;
+  info.frame_type = frame_type;
+  info.crc_ok = 1U;
+
+  ad_spi_latest_update_seq++;
+  memcpy(ad_spi_latest_frame, ad_spi_rx_frame, total_len);
+  ad_spi_latest_info = info;
+  ad_spi_latest_valid = 1U;
+  ad_spi_latest_update_seq++;
 }
 
 static void AD7606_SPI4_ReportDmaError(uint32_t irq_count_snapshot, uint8_t error_code, uint32_t hal_error)

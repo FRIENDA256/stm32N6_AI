@@ -49,9 +49,13 @@ typedef struct
   uint32_t uart_bin_chunk;
   uint32_t warmup_ms;
   uint32_t warmup_discard_frames;
+  uint32_t vsync_timeout_ms;
+  uint32_t vsync_settle_ms;
   uint32_t fast_test_frames;
   uint8_t enable_25fps_cmd;
   uint8_t use_direct_read;
+  uint8_t sync_to_vsync;
+  uint8_t vsync_wait_pulse_end;
   uint32_t flash_image_slot_addr;
   uint32_t flash_temp_slot_addr;
   uint32_t flash_header_len;

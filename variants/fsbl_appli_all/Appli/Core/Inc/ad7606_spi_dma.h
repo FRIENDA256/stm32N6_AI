@@ -15,10 +15,29 @@ extern "C" {
 #endif
 
 #include "main.h"
+#include <stdint.h>
+
+#define AD7606_SPI4_MAX_FRAME_SIZE 8240U
+
+typedef struct
+{
+  uint32_t irq_count;
+  uint32_t frame_seq;
+  uint32_t timestamp_ms;
+  uint32_t sample_counter;
+  uint32_t crc32;
+  uint16_t total_len;
+  uint16_t payload_len;
+  uint8_t frame_type;
+  uint8_t crc_ok;
+} AD7606_SPI4_FrameInfo_t;
 
 void AD7606_SPI4_Init(void);
 void AD7606_SPI4_Task(uint32_t now_tick);
 void AD7606_SPI4_RequestRawDump(void);
+void AD7606_SPI4_SetPaused(uint8_t paused);
+uint8_t AD7606_SPI4_IsIdle(void);
+uint32_t AD7606_SPI4_CopyLatestFrame(uint8_t *dest, uint32_t dest_len, AD7606_SPI4_FrameInfo_t *info);
 void AD7606_SPI4_TxRxCpltCallback(SPI_HandleTypeDef *hspi);
 void AD7606_SPI4_ErrorCallback(SPI_HandleTypeDef *hspi);
 void AD7606_SPI4_EXTI_RisingCallback(uint16_t GPIO_Pin);

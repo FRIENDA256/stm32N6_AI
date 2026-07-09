@@ -139,6 +139,9 @@ static int Tiny1C_STM32_SpiTxRx(void *ctx,
                                 uint32_t len,
                                 uint32_t timeout_ms)
 {
+  HAL_StatusTypeDef status;
+  uint32_t primask;
+
   (void)ctx;
 
   if ((tx == NULL) || (rx == NULL) || (len > 0xFFFFU))
@@ -146,11 +149,19 @@ static int Tiny1C_STM32_SpiTxRx(void *ctx,
     return -1;
   }
 
-  return (HAL_SPI_TransmitReceive(&hspi3,
-                                  (uint8_t *)tx,
-                                  rx,
-                                  (uint16_t)len,
-                                  timeout_ms) == HAL_OK) ? 0 : -1;
+  primask = __get_PRIMASK();
+  __disable_irq();
+  status = HAL_SPI_TransmitReceive(&hspi3,
+                                   (uint8_t *)tx,
+                                   rx,
+                                   (uint16_t)len,
+                                   timeout_ms);
+  if (primask == 0U)
+  {
+    __enable_irq();
+  }
+
+  return (status == HAL_OK) ? 0 : -1;
 }
 
 static int Tiny1C_STM32_VsyncRead(void *ctx)
@@ -240,6 +251,71 @@ tiny1c_status_t Tiny1C_STM32_ProcessCommand(uint8_t command)
   }
 
   return status;
+}
+
+tiny1c_status_t Tiny1C_STM32_CaptureFrame(uint8_t frame_command)
+{
+  tiny1c_status_t status;
+
+  status = Tiny1C_STM32_Init();
+  if (status != TINY1C_STATUS_OK)
+  {
+    App_Print("Tiny1C init failed\r\n");
+    return status;
+  }
+
+  if (Tiny1C_CommandIsFrame(frame_command) == 0U)
+  {
+    return TINY1C_STATUS_UNSUPPORTED;
+  }
+
+  return Tiny1C_ReadFrame(&g_tiny1c, frame_command);
+}
+
+tiny1c_status_t Tiny1C_STM32_CaptureFrameBaseline(uint8_t frame_command)
+{
+  tiny1c_status_t status;
+
+  status = Tiny1C_STM32_Init();
+  if (status != TINY1C_STATUS_OK)
+  {
+    App_Print("Tiny1C init failed\r\n");
+    return status;
+  }
+
+  if (Tiny1C_CommandIsFrame(frame_command) == 0U)
+  {
+    return TINY1C_STATUS_UNSUPPORTED;
+  }
+
+  return Tiny1C_ReadFrameBaseline(&g_tiny1c, frame_command);
+}
+
+tiny1c_status_t Tiny1C_STM32_GetLatestFrame(const uint8_t **data,
+                                            uint32_t *len,
+                                            uint8_t *frame_command,
+                                            uint32_t *crc32)
+{
+  if ((data == NULL) || (len == NULL) ||
+      (g_tiny1c.frame_valid == 0U) ||
+      (g_tiny1c.buffers.frame == NULL) ||
+      (g_tiny1c.config.frame_len == 0U))
+  {
+    return TINY1C_STATUS_ERROR;
+  }
+
+  *data = g_tiny1c.buffers.frame;
+  *len = g_tiny1c.config.frame_len;
+  if (frame_command != NULL)
+  {
+    *frame_command = g_tiny1c.last_frame_command;
+  }
+  if (crc32 != NULL)
+  {
+    *crc32 = Tiny1C_Crc32(g_tiny1c.buffers.frame, g_tiny1c.config.frame_len);
+  }
+
+  return TINY1C_STATUS_OK;
 }
 
 void Tiny1C_STM32_PrintBootMessage(void)
