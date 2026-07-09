@@ -64,6 +64,9 @@ typedef funcptr funcptr_NS;
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
+#ifndef __NON_CACHEABLE
+#define __NON_CACHEABLE __attribute__((section(".noncacheable")))
+#endif
 
 /* USER CODE END EM */
 

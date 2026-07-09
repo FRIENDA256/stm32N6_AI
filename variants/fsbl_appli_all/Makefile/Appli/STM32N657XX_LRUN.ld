@@ -39,7 +39,8 @@ ENTRY(Reset_Handler)
 MEMORY
 {
   ROM    (xrw)    : ORIGIN = 0x34000400,   LENGTH = 511K
-  RAM    (xrw)    : ORIGIN = 0x34080000,   LENGTH = 1536K
+  NOCACHE_RAM (xrw) : ORIGIN = 0x34080000, LENGTH = 520K
+  RAM    (xrw)    : ORIGIN = 0x34102000,   LENGTH = 1016K
 }
 /* Highest address of the user mode stack */
 _estack = ORIGIN(RAM) + LENGTH(RAM); /* end of "RAM" Ram type memory */
@@ -180,28 +181,28 @@ SECTIONS
   PROVIDE( __data_source_size = __data_source_end - __data_source );
 
 
-  .noncacheable :
+  .noncacheable (NOLOAD) :
   {
     . = ALIGN(8);
     __snoncacheable = .;/* create symbol for start of section */
     KEEP(*(.noncacheable))
     . = ALIGN(8);
     __enoncacheable = .;  /* create symbol for end of section */
-  } > RAM
+  } > NOCACHE_RAM
 
   .RxDecripSection 0x34100000 (NOLOAD) :
   {
     . = ALIGN(32);
     KEEP(*(.RxDecripSection))
     . = ALIGN(32);
-  } > RAM
+  } > NOCACHE_RAM
 
   .TxDecripSection 0x341000C0 (NOLOAD) :
   {
     . = ALIGN(32);
     KEEP(*(.TxDecripSection))
     . = ALIGN(32);
-  } > RAM
+  } > NOCACHE_RAM
 
   /* Uninitialized TLS data section */
   .tbss (NOLOAD) : ALIGN(4)

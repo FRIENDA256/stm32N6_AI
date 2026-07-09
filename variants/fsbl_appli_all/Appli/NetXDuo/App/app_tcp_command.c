@@ -31,9 +31,9 @@
 #define APP_TCP_COMMAND_UDP_DEFAULT_PORT  5010U
 #define APP_TCP_COMMAND_UDP_DEFAULT_MS    5000U
 #define APP_TCP_COMMAND_UDP_MAX_MS        60000U
-#define APP_TCP_COMMAND_UDP_DEFAULT_SIZE  1400U
+#define APP_TCP_COMMAND_UDP_DEFAULT_SIZE  1472U
 #define APP_TCP_COMMAND_UDP_MIN_SIZE      32U
-#define APP_TCP_COMMAND_UDP_MAX_SIZE      1400U
+#define APP_TCP_COMMAND_UDP_MAX_SIZE      1472U
 #define APP_TCP_COMMAND_UDP_HEADER_SIZE   16U
 
 static NX_TCP_SOCKET TcpCommandSocket;
@@ -41,6 +41,7 @@ static NX_UDP_SOCKET TcpCommandUdpThroughputSocket;
 static TX_THREAD TcpCommandThread;
 static NX_IP *TcpCommandIp;
 static NX_PACKET_POOL *TcpCommandPacketPool;
+static TX_BYTE_POOL *TcpCommandBytePool;
 static ULONG TcpCommandConnections;
 static ULONG TcpCommandRxPackets;
 static uint8_t TcpCommandAdFrame[AD7606_SPI4_MAX_FRAME_SIZE];
@@ -470,13 +471,50 @@ static UINT AppTcpCommand_SendBinaryFrame(const char *header, const uint8_t *dat
 
 static UINT AppTcpCommand_SendStatus(void)
 {
-  char line[96];
+  ULONG pool_total = 0UL;
+  ULONG pool_free = 0UL;
+  ULONG pool_empty = 0UL;
+  ULONG byte_available = 0UL;
+  ULONG byte_fragments = 0UL;
+  CHAR *byte_pool_name = NX_NULL;
+  char line[256];
   ULONG pos = 0UL;
+
+  if (TcpCommandPacketPool != NX_NULL)
+  {
+    (void)nx_packet_pool_info_get(TcpCommandPacketPool,
+                                  &pool_total,
+                                  &pool_free,
+                                  &pool_empty,
+                                  NX_NULL,
+                                  NX_NULL);
+  }
+
+  if (TcpCommandBytePool != TX_NULL)
+  {
+    (void)tx_byte_pool_info_get(TcpCommandBytePool,
+                                &byte_pool_name,
+                                &byte_available,
+                                &byte_fragments,
+                                TX_NULL,
+                                TX_NULL,
+                                TX_NULL);
+  }
 
   AppTcpCommand_AppendText(line, &pos, sizeof(line), "OK connections=");
   AppTcpCommand_AppendHex32(line, &pos, sizeof(line), TcpCommandConnections);
   AppTcpCommand_AppendText(line, &pos, sizeof(line), " rx_packets=");
   AppTcpCommand_AppendHex32(line, &pos, sizeof(line), TcpCommandRxPackets);
+  AppTcpCommand_AppendText(line, &pos, sizeof(line), " pool_total=");
+  AppTcpCommand_AppendHex32(line, &pos, sizeof(line), pool_total);
+  AppTcpCommand_AppendText(line, &pos, sizeof(line), " pool_free=");
+  AppTcpCommand_AppendHex32(line, &pos, sizeof(line), pool_free);
+  AppTcpCommand_AppendText(line, &pos, sizeof(line), " pool_empty=");
+  AppTcpCommand_AppendHex32(line, &pos, sizeof(line), pool_empty);
+  AppTcpCommand_AppendText(line, &pos, sizeof(line), " byte_avail=");
+  AppTcpCommand_AppendHex32(line, &pos, sizeof(line), byte_available);
+  AppTcpCommand_AppendText(line, &pos, sizeof(line), " byte_frag=");
+  AppTcpCommand_AppendHex32(line, &pos, sizeof(line), byte_fragments);
   AppTcpCommand_AppendText(line, &pos, sizeof(line), "\r\n");
   line[pos] = '\0';
 
@@ -1136,13 +1174,14 @@ UINT AppTcpCommand_Start(NX_IP *ip_ptr, NX_PACKET_POOL *packet_pool, TX_BYTE_POO
   UCHAR *thread_stack;
   UINT status;
 
-  if ((ip_ptr == NX_NULL) || (packet_pool == NX_NULL))
+  if ((ip_ptr == NX_NULL) || (packet_pool == NX_NULL) || (byte_pool == TX_NULL))
   {
     return NX_PTR_ERROR;
   }
 
   TcpCommandIp = ip_ptr;
   TcpCommandPacketPool = packet_pool;
+  TcpCommandBytePool = byte_pool;
 
   status = nx_tcp_enable(ip_ptr);
   if ((status != NX_SUCCESS) && (status != NX_ALREADY_ENABLED))

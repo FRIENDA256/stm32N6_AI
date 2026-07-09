@@ -239,7 +239,7 @@ def main():
     parser.add_argument("--tcp-timeout", type=float, default=120.0)
     parser.add_argument("--udp-ms", type=int, default=5000)
     parser.add_argument("--udp-port", type=int, default=5010)
-    parser.add_argument("--udp-payload", type=int, default=1400)
+    parser.add_argument("--udp-payload", type=int, default=1472)
     parser.add_argument("--udp-rcvbuf", type=int, default=16 * 1024 * 1024)
     parser.add_argument("--udp-drain-s", type=float, default=1.0)
     parser.add_argument("--local-ip", default=None, help="PC IPv4 address for UDPTHR; auto-detected by default")
