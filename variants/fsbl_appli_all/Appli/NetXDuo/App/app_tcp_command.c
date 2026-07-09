@@ -19,21 +19,33 @@
 #define APP_TCP_COMMAND_LISTEN_QUEUE      1U
 #define APP_TCP_COMMAND_WINDOW_SIZE       2048UL
 #define APP_TCP_COMMAND_RX_BUFFER_SIZE    128U
-#define APP_TCP_COMMAND_TX_CHUNK_SIZE     1024UL
+#define APP_TCP_COMMAND_TX_CHUNK_SIZE     1400UL
 #define APP_TCP_COMMAND_LOG_INTERVAL      8UL
 #define APP_TCP_COMMAND_AD_WAIT_MS        3000U
 #define APP_TCP_COMMAND_AD_POLL_MS        20U
 #define APP_TCP_COMMAND_IR_PAUSE_AD7606   1U
 #define APP_TCP_COMMAND_IR_AD_WAIT_MS     200U
 #define APP_TCP_COMMAND_IR_AD_POLL_MS     2U
+#define APP_TCP_COMMAND_THR_DEFAULT_MIB   32U
+#define APP_TCP_COMMAND_THR_MAX_MIB       256U
+#define APP_TCP_COMMAND_UDP_DEFAULT_PORT  5010U
+#define APP_TCP_COMMAND_UDP_DEFAULT_MS    5000U
+#define APP_TCP_COMMAND_UDP_MAX_MS        60000U
+#define APP_TCP_COMMAND_UDP_DEFAULT_SIZE  1400U
+#define APP_TCP_COMMAND_UDP_MIN_SIZE      32U
+#define APP_TCP_COMMAND_UDP_MAX_SIZE      1400U
+#define APP_TCP_COMMAND_UDP_HEADER_SIZE   16U
 
 static NX_TCP_SOCKET TcpCommandSocket;
+static NX_UDP_SOCKET TcpCommandUdpThroughputSocket;
 static TX_THREAD TcpCommandThread;
 static NX_IP *TcpCommandIp;
 static NX_PACKET_POOL *TcpCommandPacketPool;
 static ULONG TcpCommandConnections;
 static ULONG TcpCommandRxPackets;
 static uint8_t TcpCommandAdFrame[AD7606_SPI4_MAX_FRAME_SIZE];
+static uint8_t TcpCommandThroughputBuffer[APP_TCP_COMMAND_UDP_MAX_SIZE];
+static uint8_t TcpCommandThroughputPatternReady;
 
 static ULONG AppTcpCommand_MsToTicks(uint32_t ms);
 
@@ -152,6 +164,15 @@ static char *AppTcpCommand_Trim(char *text)
   return text;
 }
 
+static const char *AppTcpCommand_SkipSpaces(const char *text)
+{
+  while ((*text == ' ') || (*text == '\t'))
+  {
+    text++;
+  }
+  return text;
+}
+
 static UINT AppTcpCommand_Equals(const char *left, const char *right)
 {
   while ((*left != '\0') && (*right != '\0'))
@@ -165,6 +186,145 @@ static UINT AppTcpCommand_Equals(const char *left, const char *right)
   }
 
   return ((*left == '\0') && (*right == '\0')) ? NX_TRUE : NX_FALSE;
+}
+
+static UINT AppTcpCommand_MatchCommand(const char *text, const char *command, const char **args)
+{
+  const char *left = text;
+  const char *right = command;
+
+  while ((*left != '\0') && (*right != '\0'))
+  {
+    if (AppTcpCommand_ToUpper(*left) != AppTcpCommand_ToUpper(*right))
+    {
+      return NX_FALSE;
+    }
+    left++;
+    right++;
+  }
+
+  if (*right != '\0')
+  {
+    return NX_FALSE;
+  }
+
+  if ((*left != '\0') && (*left != ' ') && (*left != '\t'))
+  {
+    return NX_FALSE;
+  }
+
+  if (args != NULL)
+  {
+    *args = AppTcpCommand_SkipSpaces(left);
+  }
+
+  return NX_TRUE;
+}
+
+static UINT AppTcpCommand_ParseU32(const char **cursor, uint32_t *value)
+{
+  const char *text;
+  uint32_t result = 0U;
+  uint8_t have_digit = 0U;
+
+  if ((cursor == NULL) || (value == NULL))
+  {
+    return NX_PTR_ERROR;
+  }
+
+  text = AppTcpCommand_SkipSpaces(*cursor);
+  while ((*text >= '0') && (*text <= '9'))
+  {
+    result = (result * 10U) + (uint32_t)(*text - '0');
+    have_digit = 1U;
+    text++;
+  }
+
+  if (have_digit == 0U)
+  {
+    return NX_NOT_SUCCESSFUL;
+  }
+
+  *cursor = text;
+  *value = result;
+  return NX_SUCCESS;
+}
+
+static UINT AppTcpCommand_ParseIPv4(const char **cursor, ULONG *addr)
+{
+  const char *text;
+  uint32_t octet[4];
+
+  if ((cursor == NULL) || (addr == NULL))
+  {
+    return NX_PTR_ERROR;
+  }
+
+  text = AppTcpCommand_SkipSpaces(*cursor);
+  for (uint32_t i = 0U; i < 4U; i++)
+  {
+    uint32_t value = 0U;
+    uint8_t have_digit = 0U;
+
+    while ((*text >= '0') && (*text <= '9'))
+    {
+      value = (value * 10U) + (uint32_t)(*text - '0');
+      if (value > 255U)
+      {
+        return NX_NOT_SUCCESSFUL;
+      }
+      have_digit = 1U;
+      text++;
+    }
+
+    if (have_digit == 0U)
+    {
+      return NX_NOT_SUCCESSFUL;
+    }
+
+    octet[i] = value;
+
+    if (i < 3U)
+    {
+      if (*text != '.')
+      {
+        return NX_NOT_SUCCESSFUL;
+      }
+      text++;
+    }
+  }
+
+  *cursor = text;
+  *addr = IP_ADDRESS(octet[0], octet[1], octet[2], octet[3]);
+  return NX_SUCCESS;
+}
+
+static void AppTcpCommand_WriteLE16(uint8_t *data, uint16_t value)
+{
+  data[0] = (uint8_t)(value & 0xFFU);
+  data[1] = (uint8_t)((value >> 8) & 0xFFU);
+}
+
+static void AppTcpCommand_WriteLE32(uint8_t *data, uint32_t value)
+{
+  data[0] = (uint8_t)(value & 0xFFU);
+  data[1] = (uint8_t)((value >> 8) & 0xFFU);
+  data[2] = (uint8_t)((value >> 16) & 0xFFU);
+  data[3] = (uint8_t)((value >> 24) & 0xFFU);
+}
+
+static void AppTcpCommand_InitThroughputPattern(void)
+{
+  if (TcpCommandThroughputPatternReady != 0U)
+  {
+    return;
+  }
+
+  for (uint32_t i = 0U; i < sizeof(TcpCommandThroughputBuffer); i++)
+  {
+    TcpCommandThroughputBuffer[i] = (uint8_t)((i * 37U + 13U) & 0xFFU);
+  }
+  TcpCommandThroughputPatternReady = 1U;
 }
 
 static UINT AppTcpCommand_SendText(const char *text)
@@ -480,13 +640,286 @@ static UINT AppTcpCommand_SendTiny1CBinary(const char *name, uint8_t frame_comma
   return AppTcpCommand_SendBinaryFrame(header, frame, frame_len);
 }
 
+static UINT AppTcpCommand_SendTcpThroughput(const char *args)
+{
+  const char *cursor = args;
+  uint32_t mib = APP_TCP_COMMAND_THR_DEFAULT_MIB;
+  uint32_t total_bytes;
+  uint32_t sent_bytes = 0U;
+  ULONG start_tick;
+  ULONG elapsed_ticks;
+  ULONG elapsed_ms;
+  char line[160];
+  int len;
+
+  cursor = AppTcpCommand_SkipSpaces(cursor);
+  if (*cursor != '\0')
+  {
+    if (AppTcpCommand_ParseU32(&cursor, &mib) != NX_SUCCESS)
+    {
+      return AppTcpCommand_SendText("ERR usage: TCPTHR [MiB]\r\n");
+    }
+  }
+
+  if (mib == 0U)
+  {
+    mib = APP_TCP_COMMAND_THR_DEFAULT_MIB;
+  }
+  if (mib > APP_TCP_COMMAND_THR_MAX_MIB)
+  {
+    mib = APP_TCP_COMMAND_THR_MAX_MIB;
+  }
+
+  AppTcpCommand_InitThroughputPattern();
+  total_bytes = mib * 1024U * 1024U;
+
+  len = snprintf(line,
+                 sizeof(line),
+                 "STM32N6_THR V1 MODE=TCP BYTES=%lu CHUNK=%lu\r\nBEGIN_STM32N6_THR\r\n",
+                 (unsigned long)total_bytes,
+                 (unsigned long)APP_TCP_COMMAND_TX_CHUNK_SIZE);
+  if ((len <= 0) || ((uint32_t)len >= sizeof(line)))
+  {
+    return AppTcpCommand_SendText("ERR TCPTHR header failed\r\n");
+  }
+
+  if (AppTcpCommand_SendText(line) != NX_SUCCESS)
+  {
+    return NX_NOT_SUCCESSFUL;
+  }
+
+  start_tick = tx_time_get();
+  while (sent_bytes < total_bytes)
+  {
+    uint32_t chunk = total_bytes - sent_bytes;
+    UINT status;
+
+    if (chunk > sizeof(TcpCommandThroughputBuffer))
+    {
+      chunk = sizeof(TcpCommandThroughputBuffer);
+    }
+
+    status = AppTcpCommand_SendBytes(TcpCommandThroughputBuffer, chunk);
+    if (status != NX_SUCCESS)
+    {
+      return status;
+    }
+
+    sent_bytes += chunk;
+  }
+
+  elapsed_ticks = tx_time_get() - start_tick;
+  elapsed_ms = (elapsed_ticks * 1000UL) / TX_TIMER_TICKS_PER_SECOND;
+  if (elapsed_ms == 0UL)
+  {
+    elapsed_ms = 1UL;
+  }
+
+  len = snprintf(line,
+                 sizeof(line),
+                 "\r\nEND_STM32N6_THR MODE=TCP BYTES=%lu MS=%lu\r\n",
+                 (unsigned long)sent_bytes,
+                 (unsigned long)elapsed_ms);
+  if ((len <= 0) || ((uint32_t)len >= sizeof(line)))
+  {
+    return NX_NOT_SUCCESSFUL;
+  }
+
+  return AppTcpCommand_SendText(line);
+}
+
+static UINT AppTcpCommand_SendUdpThroughput(const char *args)
+{
+  const char *cursor = args;
+  ULONG dest_ip;
+  uint32_t port = APP_TCP_COMMAND_UDP_DEFAULT_PORT;
+  uint32_t duration_ms = APP_TCP_COMMAND_UDP_DEFAULT_MS;
+  uint32_t payload_size = APP_TCP_COMMAND_UDP_DEFAULT_SIZE;
+  ULONG start_tick;
+  ULONG duration_ticks;
+  ULONG elapsed_ticks;
+  ULONG elapsed_ms;
+  uint32_t seq = 0U;
+  uint32_t sent_packets = 0U;
+  uint32_t sent_bytes = 0U;
+  uint32_t send_errors = 0U;
+  UINT status;
+  char line[176];
+  int len;
+
+  cursor = AppTcpCommand_SkipSpaces(cursor);
+  if (AppTcpCommand_ParseIPv4(&cursor, &dest_ip) != NX_SUCCESS)
+  {
+    return AppTcpCommand_SendText("ERR usage: UDPTHR <PC_IP> [port] [ms] [payload]\r\n");
+  }
+
+  cursor = AppTcpCommand_SkipSpaces(cursor);
+  if (*cursor != '\0')
+  {
+    if (AppTcpCommand_ParseU32(&cursor, &port) != NX_SUCCESS)
+    {
+      return AppTcpCommand_SendText("ERR UDPTHR port\r\n");
+    }
+  }
+
+  cursor = AppTcpCommand_SkipSpaces(cursor);
+  if (*cursor != '\0')
+  {
+    if (AppTcpCommand_ParseU32(&cursor, &duration_ms) != NX_SUCCESS)
+    {
+      return AppTcpCommand_SendText("ERR UDPTHR duration\r\n");
+    }
+  }
+
+  cursor = AppTcpCommand_SkipSpaces(cursor);
+  if (*cursor != '\0')
+  {
+    if (AppTcpCommand_ParseU32(&cursor, &payload_size) != NX_SUCCESS)
+    {
+      return AppTcpCommand_SendText("ERR UDPTHR payload\r\n");
+    }
+  }
+
+  if (port > 65535U)
+  {
+    return AppTcpCommand_SendText("ERR UDPTHR port range\r\n");
+  }
+  if (duration_ms == 0U)
+  {
+    duration_ms = APP_TCP_COMMAND_UDP_DEFAULT_MS;
+  }
+  if (duration_ms > APP_TCP_COMMAND_UDP_MAX_MS)
+  {
+    duration_ms = APP_TCP_COMMAND_UDP_MAX_MS;
+  }
+  if (payload_size < APP_TCP_COMMAND_UDP_MIN_SIZE)
+  {
+    payload_size = APP_TCP_COMMAND_UDP_MIN_SIZE;
+  }
+  if (payload_size > APP_TCP_COMMAND_UDP_MAX_SIZE)
+  {
+    payload_size = APP_TCP_COMMAND_UDP_MAX_SIZE;
+  }
+
+  AppTcpCommand_InitThroughputPattern();
+
+  status = nx_udp_socket_create(TcpCommandIp,
+                                &TcpCommandUdpThroughputSocket,
+                                "UDP throughput",
+                                NX_IP_NORMAL,
+                                NX_DONT_FRAGMENT,
+                                NX_IP_TIME_TO_LIVE,
+                                0U);
+  if (status != NX_SUCCESS)
+  {
+    App_PrintHex32("UDPTHR socket create failed: ", status);
+    return AppTcpCommand_SendText("ERR UDPTHR socket create\r\n");
+  }
+
+  status = nx_udp_socket_bind(&TcpCommandUdpThroughputSocket, NX_ANY_PORT, NX_WAIT_FOREVER);
+  if (status != NX_SUCCESS)
+  {
+    (void)nx_udp_socket_delete(&TcpCommandUdpThroughputSocket);
+    App_PrintHex32("UDPTHR bind failed: ", status);
+    return AppTcpCommand_SendText("ERR UDPTHR bind\r\n");
+  }
+
+  len = snprintf(line,
+                 sizeof(line),
+                 "OK UDPTHR START PORT=%lu MS=%lu PAYLOAD=%lu\r\n",
+                 (unsigned long)port,
+                 (unsigned long)duration_ms,
+                 (unsigned long)payload_size);
+  if ((len > 0) && ((uint32_t)len < sizeof(line)))
+  {
+    (void)AppTcpCommand_SendText(line);
+  }
+
+  duration_ticks = AppTcpCommand_MsToTicks(duration_ms);
+  start_tick = tx_time_get();
+  do
+  {
+    NX_PACKET *packet_ptr;
+
+    TcpCommandThroughputBuffer[0] = (uint8_t)'N';
+    TcpCommandThroughputBuffer[1] = (uint8_t)'6';
+    TcpCommandThroughputBuffer[2] = (uint8_t)'T';
+    TcpCommandThroughputBuffer[3] = (uint8_t)'P';
+    AppTcpCommand_WriteLE32(&TcpCommandThroughputBuffer[4], seq);
+    AppTcpCommand_WriteLE32(&TcpCommandThroughputBuffer[8], (uint32_t)tx_time_get());
+    AppTcpCommand_WriteLE16(&TcpCommandThroughputBuffer[12], (uint16_t)payload_size);
+    AppTcpCommand_WriteLE16(&TcpCommandThroughputBuffer[14], APP_TCP_COMMAND_UDP_HEADER_SIZE);
+
+    status = nx_packet_allocate(TcpCommandPacketPool, &packet_ptr, NX_UDP_PACKET, NX_WAIT_FOREVER);
+    if (status == NX_SUCCESS)
+    {
+      status = nx_packet_data_append(packet_ptr,
+                                     TcpCommandThroughputBuffer,
+                                     payload_size,
+                                     TcpCommandPacketPool,
+                                     NX_WAIT_FOREVER);
+      if (status == NX_SUCCESS)
+      {
+        status = nx_udp_socket_send(&TcpCommandUdpThroughputSocket,
+                                    packet_ptr,
+                                    dest_ip,
+                                    (UINT)port);
+        if (status == NX_SUCCESS)
+        {
+          packet_ptr = NX_NULL;
+          sent_packets++;
+          sent_bytes += payload_size;
+        }
+      }
+
+      if (packet_ptr != NX_NULL)
+      {
+        (void)nx_packet_release(packet_ptr);
+      }
+    }
+
+    if (status != NX_SUCCESS)
+    {
+      send_errors++;
+    }
+
+    seq++;
+    elapsed_ticks = tx_time_get() - start_tick;
+  } while (elapsed_ticks < duration_ticks);
+
+  elapsed_ticks = tx_time_get() - start_tick;
+  elapsed_ms = (elapsed_ticks * 1000UL) / TX_TIMER_TICKS_PER_SECOND;
+  if (elapsed_ms == 0UL)
+  {
+    elapsed_ms = 1UL;
+  }
+
+  (void)nx_udp_socket_unbind(&TcpCommandUdpThroughputSocket);
+  (void)nx_udp_socket_delete(&TcpCommandUdpThroughputSocket);
+
+  len = snprintf(line,
+                 sizeof(line),
+                 "END UDPTHR PACKETS=%lu BYTES=%lu ERR=%lu MS=%lu\r\n",
+                 (unsigned long)sent_packets,
+                 (unsigned long)sent_bytes,
+                 (unsigned long)send_errors,
+                 (unsigned long)elapsed_ms);
+  if ((len <= 0) || ((uint32_t)len >= sizeof(line)))
+  {
+    return NX_NOT_SUCCESSFUL;
+  }
+
+  return AppTcpCommand_SendText(line);
+}
+
 static UINT AppTcpCommand_Process(char *request)
 {
   char *command = AppTcpCommand_Trim(request);
+  const char *args;
 
   if ((command[0] == '\0') || AppTcpCommand_Equals(command, "HELP") || AppTcpCommand_Equals(command, "?"))
   {
-    return AppTcpCommand_SendText("OK commands: PING INFO STAT ADRAW ADGET IRPROBE IRVSYNC IRIMG IRTEMP IRDUMP IRCAPIMG IRCAPTEMP IRGETIMG IRGETTEMP IRGETIMGBASE IRGETTEMPBASE IRFASTIMG IRFASTTEMP HELP QUIT\r\n");
+    return AppTcpCommand_SendText("OK commands: PING INFO STAT TCPTHR UDPTHR ADRAW ADGET IRPROBE IRVSYNC IRIMG IRTEMP IRDUMP IRCAPIMG IRCAPTEMP IRGETIMG IRGETTEMP IRGETIMGBASE IRGETTEMPBASE IRFASTIMG IRFASTTEMP HELP QUIT\r\n");
   }
 
   if (AppTcpCommand_Equals(command, "PING"))
@@ -496,12 +929,22 @@ static UINT AppTcpCommand_Process(char *request)
 
   if (AppTcpCommand_Equals(command, "INFO"))
   {
-    return AppTcpCommand_SendText("STM32N6 NetX command server\r\nIP=192.168.1.50\r\nUDP_ECHO=5005\r\nTCP_CMD=5000\r\n");
+    return AppTcpCommand_SendText("STM32N6 NetX command server\r\nIP=192.168.1.50\r\nUDP_ECHO=5005\r\nTCP_CMD=5000\r\nTCPTHR=[MiB]\r\nUDPTHR=<PC_IP> [port] [ms] [payload]\r\n");
   }
 
   if (AppTcpCommand_Equals(command, "STAT"))
   {
     return AppTcpCommand_SendStatus();
+  }
+
+  if (AppTcpCommand_MatchCommand(command, "TCPTHR", &args) == NX_TRUE)
+  {
+    return AppTcpCommand_SendTcpThroughput(args);
+  }
+
+  if (AppTcpCommand_MatchCommand(command, "UDPTHR", &args) == NX_TRUE)
+  {
+    return AppTcpCommand_SendUdpThroughput(args);
   }
 
   if (AppTcpCommand_Equals(command, "ADRAW") || AppTcpCommand_Equals(command, "AD7606 RAW"))

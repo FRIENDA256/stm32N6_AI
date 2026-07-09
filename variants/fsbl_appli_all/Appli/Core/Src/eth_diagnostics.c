@@ -54,6 +54,37 @@ static void Ethernet_AppendHex32(char *line, uint32_t *pos, uint32_t value)
   }
 }
 
+static const char *Ethernet_GetRtl8211LinkText(uint32_t physr1)
+{
+  if ((physr1 & RTL8211_PHYSR1_LINK_RT) == 0U)
+  {
+    return "down";
+  }
+
+  if ((physr1 & RTL8211_PHYSR1_DUPLEX) == 0U)
+  {
+    if ((physr1 & RTL8211_PHYSR1_SPEED_1000M) == RTL8211_PHYSR1_SPEED_1000M)
+    {
+      return "1000M-HD";
+    }
+    if ((physr1 & RTL8211_PHYSR1_SPEED_100M) == RTL8211_PHYSR1_SPEED_100M)
+    {
+      return "100M-HD";
+    }
+    return "10M-HD";
+  }
+
+  if ((physr1 & RTL8211_PHYSR1_SPEED_1000M) == RTL8211_PHYSR1_SPEED_1000M)
+  {
+    return "1000M-FD";
+  }
+  if ((physr1 & RTL8211_PHYSR1_SPEED_100M) == RTL8211_PHYSR1_SPEED_100M)
+  {
+    return "100M-FD";
+  }
+  return "10M-FD";
+}
+
 static uint32_t Ethernet_IsRtl8211At(uint32_t addr)
 {
   uint32_t phy_id1;
@@ -213,6 +244,8 @@ void Ethernet_PrintRxSummary(void)
   Ethernet_AppendHex32(line, &pos, phycr2);
   Ethernet_AppendText(line, &pos, " physr1=");
   Ethernet_AppendHex32(line, &pos, physr1);
+  Ethernet_AppendText(line, &pos, " link=");
+  Ethernet_AppendText(line, &pos, Ethernet_GetRtl8211LinkText(physr1));
 
   if (HAL_ETH_GetMACConfig(&heth1, &mac_config) == HAL_OK)
   {

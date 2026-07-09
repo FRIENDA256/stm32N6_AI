@@ -397,6 +397,7 @@ static VOID NetXDuo_StatusThreadEntry(ULONG thread_input)
       {
         link_was_up = NX_TRUE;
         App_Print("NetX link: up\r\n");
+        Ethernet_PrintRxSummary();
       }
       HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
 #if (APP_NETX_ENABLE_PERIODIC_STATS == 1U)
