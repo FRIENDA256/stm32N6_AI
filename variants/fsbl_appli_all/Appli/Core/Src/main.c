@@ -20,6 +20,8 @@
 #include "app_threadx.h"
 #include "main.h"
 #include "cacheaxi.h"
+#include "csi.h"
+#include "dcmipp.h"
 #include "eth.h"
 #include "gpdma.h"
 #include "i2c.h"
@@ -42,6 +44,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#ifndef APP_ENABLE_DCMIPP_BOOT_INIT
+#define APP_ENABLE_DCMIPP_BOOT_INIT 0
+#endif
 
 /* USER CODE END PD */
 
@@ -49,6 +54,8 @@
 /* USER CODE BEGIN PM */
 
 /* USER CODE END PM */
+extern DMA_HandleTypeDef handle_GPDMA1_Channel8 ;
+extern DMA_HandleTypeDef handle_GPDMA1_Channel9 ;
 extern DMA_HandleTypeDef handle_GPDMA1_Channel10 ;
 extern DMA_HandleTypeDef handle_GPDMA1_Channel11 ;
 
@@ -104,9 +111,33 @@ int main(void)
   MX_CACHEAXI_Init();
   MX_I2C2_Init();
   MX_SPI3_Init();
+  MX_I2C1_Init();
   SystemIsolation_Config();
   /* USER CODE BEGIN 2 */
   App_Print("FSBL->Appli all Ethernet start\r\n");
+#if APP_ENABLE_DCMIPP_BOOT_INIT
+  {
+    uint32_t dcmipp_stage = 0U;
+    uint32_t dcmipp_error = 0U;
+    HAL_StatusTypeDef dcmipp_status;
+
+    App_Print("DCMIPP boot init start\r\n");
+    dcmipp_status = App_DCMIPP_DiagnosticInit(&dcmipp_stage, &dcmipp_error);
+    if (dcmipp_status == HAL_OK)
+    {
+      App_Print("DCMIPP boot init OK\r\n");
+    }
+    else
+    {
+      App_Print("DCMIPP boot init failed\r\n");
+      App_PrintHex32("DCMIPP boot stage: ", dcmipp_stage);
+      App_PrintHex32("DCMIPP boot status: ", (uint32_t)dcmipp_status);
+      App_PrintHex32("DCMIPP boot error: ", dcmipp_error);
+    }
+  }
+#else
+  App_Print("DCMIPP boot init disabled\r\n");
+#endif
   Ethernet_PrintClockDebug();
 
   /* USER CODE END 2 */
@@ -148,6 +179,8 @@ int main(void)
   RIMC_MasterConfig_t RIMC_master = {0};
   RIMC_master.MasterCID = RIF_CID_1;
   RIMC_master.SecPriv = RIF_ATTRIBUTE_SEC | RIF_ATTRIBUTE_NPRIV;
+  HAL_RIF_RIMC_ConfigMasterAttributes(RIF_MASTER_INDEX_DCMIPP, &RIMC_master);
+
   HAL_RIF_RIMC_ConfigMasterAttributes(RIF_MASTER_INDEX_ETH1, &RIMC_master);
 
   HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_ETH1,
@@ -192,6 +225,16 @@ int main(void)
   /* RIF-Aware IPs Config */
 
   /* set up GPDMA configuration */
+  /* set GPDMA1 channel 8 used by SPI3 */
+  if (HAL_DMA_ConfigChannelAttributes(&handle_GPDMA1_Channel8,DMA_CHANNEL_SEC|DMA_CHANNEL_PRIV|DMA_CHANNEL_SRC_SEC|DMA_CHANNEL_DEST_SEC)!= HAL_OK )
+  {
+    Error_Handler();
+  }
+  /* set GPDMA1 channel 9 used by SPI3 */
+  if (HAL_DMA_ConfigChannelAttributes(&handle_GPDMA1_Channel9,DMA_CHANNEL_SEC|DMA_CHANNEL_PRIV|DMA_CHANNEL_SRC_SEC|DMA_CHANNEL_DEST_SEC)!= HAL_OK )
+  {
+    Error_Handler();
+  }
   /* set GPDMA1 channel 10 used by SPI4 */
   if (HAL_DMA_ConfigChannelAttributes(&handle_GPDMA1_Channel10,DMA_CHANNEL_SEC|DMA_CHANNEL_PRIV|DMA_CHANNEL_SRC_SEC|DMA_CHANNEL_DEST_SEC)!= HAL_OK )
   {
@@ -205,10 +248,12 @@ int main(void)
 
   /* set up GPIO configuration */
   HAL_GPIO_ConfigPinAttributes(GPIOB,GPIO_PIN_0,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOC,GPIO_PIN_1,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
   HAL_GPIO_ConfigPinAttributes(GPIOC,GPIO_PIN_10,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
   HAL_GPIO_ConfigPinAttributes(GPIOC,GPIO_PIN_11,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
   HAL_GPIO_ConfigPinAttributes(GPIOC,GPIO_PIN_12,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
   HAL_GPIO_ConfigPinAttributes(GPIOD,GPIO_PIN_1,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOD,GPIO_PIN_2,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
   HAL_GPIO_ConfigPinAttributes(GPIOD,GPIO_PIN_3,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
   HAL_GPIO_ConfigPinAttributes(GPIOD,GPIO_PIN_4,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
   HAL_GPIO_ConfigPinAttributes(GPIOD,GPIO_PIN_7,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
@@ -235,6 +280,7 @@ int main(void)
   HAL_GPIO_ConfigPinAttributes(GPIOG,GPIO_PIN_3,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
   HAL_GPIO_ConfigPinAttributes(GPIOG,GPIO_PIN_4,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
   HAL_GPIO_ConfigPinAttributes(GPIOH,GPIO_PIN_7,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
+  HAL_GPIO_ConfigPinAttributes(GPIOH,GPIO_PIN_9,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
   HAL_GPIO_ConfigPinAttributes(GPION,GPIO_PIN_0,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
   HAL_GPIO_ConfigPinAttributes(GPION,GPIO_PIN_1,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
   HAL_GPIO_ConfigPinAttributes(GPION,GPIO_PIN_2,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
@@ -269,6 +315,16 @@ int main(void)
   HAL_GPIO_ConfigPinAttributes(GPIOP,GPIO_PIN_15,GPIO_PIN_SEC|GPIO_PIN_NPRIV);
 
 /* USER CODE BEGIN RIF_Init 1 */
+  /* CubeMX groups DCMIPP with ETH as non-privileged above. DCMIPP writes image
+     buffers through its own bus master, so keep it aligned with the camera
+     reference project: secure + privileged. */
+  RIMC_master.MasterCID = RIF_CID_1;
+  RIMC_master.SecPriv = RIF_ATTRIBUTE_SEC | RIF_ATTRIBUTE_PRIV;
+  HAL_RIF_RIMC_ConfigMasterAttributes(RIF_MASTER_INDEX_DCMIPP, &RIMC_master);
+  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_DCMIPP,
+                                         RIF_ATTRIBUTE_SEC | RIF_ATTRIBUTE_PRIV);
+  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_CSI,
+                                         RIF_ATTRIBUTE_SEC | RIF_ATTRIBUTE_PRIV);
 
 /* USER CODE END RIF_Init 1 */
 /* USER CODE BEGIN RIF_Init 2 */

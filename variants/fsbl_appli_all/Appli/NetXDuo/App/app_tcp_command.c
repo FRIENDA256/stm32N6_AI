@@ -9,7 +9,9 @@
 
 #include "app_tcp_command.h"
 #include "ad7606_spi_dma.h"
+#include "app_camera_imx219.h"
 #include "app_console.h"
+#include "dcmipp.h"
 #include "tiny1c_port_stm32_hal.h"
 #include <stdio.h>
 #include <string.h>
@@ -26,6 +28,8 @@
 #define APP_TCP_COMMAND_IR_PAUSE_AD7606   1U
 #define APP_TCP_COMMAND_IR_AD_WAIT_MS     200U
 #define APP_TCP_COMMAND_IR_AD_POLL_MS     2U
+#define APP_TCP_COMMAND_CAM_WAIT_MS       3000U
+#define APP_TCP_COMMAND_CAM_POLL_MS       10U
 #define APP_TCP_COMMAND_THR_DEFAULT_MIB   32U
 #define APP_TCP_COMMAND_THR_MAX_MIB       256U
 #define APP_TCP_COMMAND_UDP_DEFAULT_PORT  5010U
@@ -653,6 +657,32 @@ static UINT AppTcpCommand_SendStatus(void)
   return AppTcpCommand_SendText(line);
 }
 
+static UINT AppTcpCommand_SendCameraInit(void)
+{
+  char line[128];
+  uint32_t stage = 0U;
+  uint32_t hal_error = 0U;
+  HAL_StatusTypeDef status;
+
+  status = App_DCMIPP_DiagnosticInit(&stage, &hal_error);
+  if (status == HAL_OK)
+  {
+    snprintf(line, sizeof(line),
+             "OK CAMINIT stage=0 status=0 hal=0x%08lX\r\n",
+             (unsigned long)hal_error);
+  }
+  else
+  {
+    snprintf(line, sizeof(line),
+             "ERR CAMINIT stage=%lu status=%lu hal=0x%08lX\r\n",
+             (unsigned long)stage,
+             (unsigned long)status,
+             (unsigned long)hal_error);
+  }
+
+  return AppTcpCommand_SendText(line);
+}
+
 static UINT AppTcpCommand_SendTiny1CResult(const char *name, uint8_t tiny1c_command)
 {
   char line[80];
@@ -678,6 +708,207 @@ static UINT AppTcpCommand_SendTiny1CResult(const char *name, uint8_t tiny1c_comm
   line[pos] = '\0';
 
   return AppTcpCommand_SendText(line);
+}
+
+static UINT AppTcpCommand_SendCameraResult(const char *name,
+                                           HAL_StatusTypeDef (*fn)(AppCamera_Result_t *))
+{
+  AppCamera_Result_t result;
+  HAL_StatusTypeDef status;
+  char line[192];
+  int len;
+
+  status = fn(&result);
+  if (status == HAL_OK)
+  {
+    len = snprintf(line,
+                   sizeof(line),
+                   "OK %s stage=0 id=0x%04lX size=%lux%lu\r\n",
+                   name,
+                   (unsigned long)result.sensor_id,
+                   (unsigned long)result.width,
+                   (unsigned long)result.height);
+  }
+  else
+  {
+    len = snprintf(line,
+                   sizeof(line),
+                   "ERR %s stage=%lu hal=%lu imx=%ld halerr=0x%08lX id=0x%04lX\r\n",
+                   name,
+                   (unsigned long)result.stage,
+                   (unsigned long)result.hal_status,
+                   (long)result.imx_status,
+                   (unsigned long)result.hal_error,
+                   (unsigned long)result.sensor_id);
+  }
+
+  if ((len <= 0) || ((uint32_t)len >= sizeof(line)))
+  {
+    return AppTcpCommand_SendText("ERR CAM result format failed\r\n");
+  }
+
+  return AppTcpCommand_SendText(line);
+}
+
+static UINT AppTcpCommand_SendCameraStatus(void)
+{
+  AppCamera_Status_t status;
+  char line[448];
+  int len;
+
+  AppCamera_GetStatus(&status);
+  len = snprintf(line,
+                 sizeof(line),
+                 "OK CAMSTAT init=%lu cfg=%lu dcfg=%lu scfg=%lu stream=%lu id=0x%04lX size=%lux%lu bytes=%lu buf=0x%08lX frame=%lu hw=%lu vsync=%lu sof=%lu eof=%lu perr=%lu cerr=%lu derr=0x%08lX mode=0x%04X line=0x%04X flen=0x%04X p1sr=0x%08lX sr0=0x%08lX sr1=0x%08lX err1=0x%08lX err2=0x%08lX\r\n",
+                 (unsigned long)status.initialized,
+                 (unsigned long)status.configured,
+                 (unsigned long)status.dcmipp_configured,
+                 (unsigned long)status.sensor_configured,
+                 (unsigned long)status.streaming,
+                 (unsigned long)status.sensor_id,
+                 (unsigned long)status.width,
+                 (unsigned long)status.height,
+                 (unsigned long)status.frame_bytes,
+                 (unsigned long)status.buffer_addr,
+                 (unsigned long)status.frame_count,
+                 (unsigned long)status.hw_frame_count,
+                 (unsigned long)status.vsync_count,
+                 (unsigned long)status.sof_count,
+                 (unsigned long)status.eof_count,
+                 (unsigned long)status.pipe_error_count,
+                 (unsigned long)status.csi_error_count,
+                 (unsigned long)status.dcmipp_error,
+                 (unsigned int)status.mode_reg,
+                 (unsigned int)status.line_reg,
+                 (unsigned int)status.frame_reg,
+                 (unsigned long)status.p1sr,
+                 (unsigned long)status.sr0,
+                 (unsigned long)status.sr1,
+                 (unsigned long)status.csi_err1,
+                 (unsigned long)status.csi_err2);
+
+  if ((len <= 0) || ((uint32_t)len >= sizeof(line)))
+  {
+    return AppTcpCommand_SendText("ERR CAMSTAT format failed\r\n");
+  }
+
+  return AppTcpCommand_SendText(line);
+}
+
+static UINT AppTcpCommand_SendCameraFrame(void)
+{
+  AppCamera_Status_t status;
+  AppCamera_Result_t camera_result;
+  const uint8_t *frame;
+  uint32_t frame_len;
+  uint32_t crc32;
+  uint32_t frame_count;
+  uint32_t hw_frame_count;
+  uint32_t restart_stream;
+  ULONG start_tick;
+  ULONG timeout_ticks;
+  ULONG poll_ticks;
+  char header[224];
+  int len;
+  UINT send_status;
+
+  AppCamera_GetStatus(&status);
+  frame_count = status.frame_count;
+  hw_frame_count = status.hw_frame_count;
+  if ((frame_count == 0U) && (hw_frame_count == 0U))
+  {
+    if (status.streaming == 0U)
+    {
+      return AppTcpCommand_SendText("ERR CAMGET camera not streaming\r\n");
+    }
+
+    start_tick = tx_time_get();
+    timeout_ticks = AppTcpCommand_MsToTicks(APP_TCP_COMMAND_CAM_WAIT_MS);
+    poll_ticks = AppTcpCommand_MsToTicks(APP_TCP_COMMAND_CAM_POLL_MS);
+    do
+    {
+      tx_thread_sleep(poll_ticks);
+      AppCamera_GetFrameCounters(&frame_count, &hw_frame_count);
+      if ((frame_count != 0U) || (hw_frame_count != 0U))
+      {
+        break;
+      }
+    } while ((tx_time_get() - start_tick) < timeout_ticks);
+
+    if ((frame_count == 0U) && (hw_frame_count == 0U))
+    {
+      return AppTcpCommand_SendText("ERR CAMGET no captured frame timeout\r\n");
+    }
+    AppCamera_GetStatus(&status);
+  }
+
+  restart_stream = status.streaming;
+  if (restart_stream != 0U)
+  {
+    if (AppCamera_FreezeLatestFrame(&camera_result) != HAL_OK)
+    {
+      len = snprintf(header,
+                     sizeof(header),
+                     "ERR CAMGET freeze stage=%lu hal=%lu imx=%ld halerr=0x%08lX\r\n",
+                     (unsigned long)camera_result.stage,
+                     (unsigned long)camera_result.hal_status,
+                     (long)camera_result.imx_status,
+                     (unsigned long)camera_result.hal_error);
+      if ((len <= 0) || ((uint32_t)len >= sizeof(header)))
+      {
+        return AppTcpCommand_SendText("ERR CAMGET freeze failed\r\n");
+      }
+      return AppTcpCommand_SendText(header);
+    }
+    AppCamera_GetStatus(&status);
+  }
+
+  frame = AppCamera_GetFrameBuffer();
+  frame_len = AppCamera_GetFrameBytes();
+  if ((frame == NULL) || (frame_len == 0U) || (frame_len > AppCamera_GetFrameBufferSize()))
+  {
+    if (restart_stream != 0U)
+    {
+      (void)AppCamera_Start(&camera_result);
+    }
+    return AppTcpCommand_SendText("ERR CAMGET invalid frame buffer\r\n");
+  }
+
+  crc32 = AppTcpCommand_Crc32(frame, frame_len);
+  len = snprintf(header,
+                 sizeof(header),
+                 "STM32N6_BIN V1 SOURCE=IMX219 KIND=rgb565 MODE=frozen WIDTH=%lu HEIGHT=%lu BYTES=%lu FRAME=%lu HW=%lu CRC32=0x%08lX\r\nBEGIN_STM32N6_BINARY\r\n",
+                 (unsigned long)APP_CAMERA_WIDTH,
+                 (unsigned long)APP_CAMERA_HEIGHT,
+                 (unsigned long)frame_len,
+                 (unsigned long)status.frame_count,
+                 (unsigned long)status.hw_frame_count,
+                 (unsigned long)crc32);
+  if ((len <= 0) || ((uint32_t)len >= sizeof(header)))
+  {
+    if (restart_stream != 0U)
+    {
+      (void)AppCamera_Start(&camera_result);
+    }
+    return AppTcpCommand_SendText("ERR CAMGET header failed\r\n");
+  }
+
+  send_status = AppTcpCommand_SendBinaryFrame(header, frame, frame_len);
+  if (restart_stream != 0U)
+  {
+    if (AppCamera_Start(&camera_result) != HAL_OK)
+    {
+      App_Print("CAMGET restart failed\r\n");
+    }
+  }
+
+  return send_status;
+}
+
+static UINT AppTcpCommand_SendCameraIrq(uint32_t enabled)
+{
+  App_DCMIPP_SetIrqEnabled(enabled);
+  return AppTcpCommand_SendText((enabled != 0U) ? "OK CAMIRQON\r\n" : "OK CAMIRQOFF\r\n");
 }
 
 static UINT AppTcpCommand_SendTiny1CCaptureDumpResult(const char *name, uint8_t capture_command)
@@ -1110,7 +1341,7 @@ static UINT AppTcpCommand_Process(char *request)
 
   if ((command[0] == '\0') || AppTcpCommand_Equals(command, "HELP") || AppTcpCommand_Equals(command, "?"))
   {
-    return AppTcpCommand_SendText("OK commands: PING INFO STAT TCPTHR TCPTHRZ UDPTHR UDPTHRZ ADRAW ADGET IRPROBE IRVSYNC IRIMG IRTEMP IRDUMP IRCAPIMG IRCAPTEMP IRGETIMG IRGETTEMP IRGETIMGBASE IRGETTEMPBASE IRFASTIMG IRFASTTEMP HELP QUIT\r\n");
+    return AppTcpCommand_SendText("OK commands: PING INFO STAT CAMINIT CAMPROBE CAMCFG CAMCFGDCMIPP CAMCFGSENSOR CAMSTART CAMSTOP CAMSTAT CAMGET CAMIRQON CAMIRQOFF TCPTHR TCPTHRZ UDPTHR UDPTHRZ ADRAW ADGET IRPROBE IRVSYNC IRIMG IRTEMP IRDUMP IRCAPIMG IRCAPTEMP IRGETIMG IRGETTEMP IRGETIMGBASE IRGETTEMPBASE IRFASTIMG IRFASTTEMP HELP QUIT\r\n");
   }
 
   if (AppTcpCommand_Equals(command, "PING"))
@@ -1126,6 +1357,72 @@ static UINT AppTcpCommand_Process(char *request)
   if (AppTcpCommand_Equals(command, "STAT"))
   {
     return AppTcpCommand_SendStatus();
+  }
+
+  if (AppTcpCommand_Equals(command, "CAMINIT") ||
+      AppTcpCommand_Equals(command, "DCMIPPINIT") ||
+      AppTcpCommand_Equals(command, "CSIINIT"))
+  {
+    return AppTcpCommand_SendCameraInit();
+  }
+
+  if (AppTcpCommand_Equals(command, "CAMPROBE") ||
+      AppTcpCommand_Equals(command, "IMX219PROBE"))
+  {
+    return AppTcpCommand_SendCameraResult("CAMPROBE", AppCamera_Probe);
+  }
+
+  if (AppTcpCommand_Equals(command, "CAMCFG") ||
+      AppTcpCommand_Equals(command, "CAMCONFIG") ||
+      AppTcpCommand_Equals(command, "IMX219CFG"))
+  {
+    return AppTcpCommand_SendCameraResult("CAMCFG", AppCamera_Config);
+  }
+
+  if (AppTcpCommand_Equals(command, "CAMCFGDCMIPP") ||
+      AppTcpCommand_Equals(command, "DCMIPPCFG"))
+  {
+    return AppTcpCommand_SendCameraResult("CAMCFGDCMIPP", AppCamera_ConfigDcmippOnly);
+  }
+
+  if (AppTcpCommand_Equals(command, "CAMCFGSENSOR") ||
+      AppTcpCommand_Equals(command, "IMX219SENSORCFG"))
+  {
+    return AppTcpCommand_SendCameraResult("CAMCFGSENSOR", AppCamera_ConfigSensorOnly);
+  }
+
+  if (AppTcpCommand_Equals(command, "CAMSTART") ||
+      AppTcpCommand_Equals(command, "IMX219START"))
+  {
+    return AppTcpCommand_SendCameraResult("CAMSTART", AppCamera_Start);
+  }
+
+  if (AppTcpCommand_Equals(command, "CAMSTOP") ||
+      AppTcpCommand_Equals(command, "IMX219STOP"))
+  {
+    return AppTcpCommand_SendCameraResult("CAMSTOP", AppCamera_Stop);
+  }
+
+  if (AppTcpCommand_Equals(command, "CAMSTAT") ||
+      AppTcpCommand_Equals(command, "CAMSTATUS"))
+  {
+    return AppTcpCommand_SendCameraStatus();
+  }
+
+  if (AppTcpCommand_Equals(command, "CAMGET") ||
+      AppTcpCommand_Equals(command, "CAMRGB565"))
+  {
+    return AppTcpCommand_SendCameraFrame();
+  }
+
+  if (AppTcpCommand_Equals(command, "CAMIRQON"))
+  {
+    return AppTcpCommand_SendCameraIrq(1U);
+  }
+
+  if (AppTcpCommand_Equals(command, "CAMIRQOFF"))
+  {
+    return AppTcpCommand_SendCameraIrq(0U);
   }
 
   if (AppTcpCommand_MatchCommand(command, "TCPTHRZ", &args) == NX_TRUE)

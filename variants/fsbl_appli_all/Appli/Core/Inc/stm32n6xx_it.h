@@ -54,10 +54,15 @@ void UsageFault_Handler(void);
 void SecureFault_Handler(void);
 void DebugMon_Handler(void);
 void EXTI8_IRQHandler(void);
+void DCMIPP_IRQHandler(void);
+void GPDMA1_Channel8_IRQHandler(void);
+void GPDMA1_Channel9_IRQHandler(void);
 void GPDMA1_Channel10_IRQHandler(void);
 void GPDMA1_Channel11_IRQHandler(void);
+void SPI3_IRQHandler(void);
 void SPI4_IRQHandler(void);
 void ETH1_IRQHandler(void);
+void CSI_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */

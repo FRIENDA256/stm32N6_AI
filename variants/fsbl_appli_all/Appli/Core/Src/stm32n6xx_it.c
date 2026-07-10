@@ -56,9 +56,13 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern DCMIPP_HandleTypeDef hdcmipp;
 extern ETH_HandleTypeDef heth1;
+extern DMA_HandleTypeDef handle_GPDMA1_Channel9;
+extern DMA_HandleTypeDef handle_GPDMA1_Channel8;
 extern DMA_HandleTypeDef handle_GPDMA1_Channel11;
 extern DMA_HandleTypeDef handle_GPDMA1_Channel10;
+extern SPI_HandleTypeDef hspi3;
 extern SPI_HandleTypeDef hspi4;
 /* USER CODE BEGIN EV */
 
@@ -192,6 +196,48 @@ void EXTI8_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles DCMIPP global interrupt.
+  */
+void DCMIPP_IRQHandler(void)
+{
+  /* USER CODE BEGIN DCMIPP_IRQn 0 */
+
+  /* USER CODE END DCMIPP_IRQn 0 */
+  HAL_DCMIPP_IRQHandler(&hdcmipp);
+  /* USER CODE BEGIN DCMIPP_IRQn 1 */
+
+  /* USER CODE END DCMIPP_IRQn 1 */
+}
+
+/**
+  * @brief This function handles GPDMA1 Channel 8 global interrupt.
+  */
+void GPDMA1_Channel8_IRQHandler(void)
+{
+  /* USER CODE BEGIN GPDMA1_Channel8_IRQn 0 */
+
+  /* USER CODE END GPDMA1_Channel8_IRQn 0 */
+  HAL_DMA_IRQHandler(&handle_GPDMA1_Channel8);
+  /* USER CODE BEGIN GPDMA1_Channel8_IRQn 1 */
+
+  /* USER CODE END GPDMA1_Channel8_IRQn 1 */
+}
+
+/**
+  * @brief This function handles GPDMA1 Channel 9 global interrupt.
+  */
+void GPDMA1_Channel9_IRQHandler(void)
+{
+  /* USER CODE BEGIN GPDMA1_Channel9_IRQn 0 */
+
+  /* USER CODE END GPDMA1_Channel9_IRQn 0 */
+  HAL_DMA_IRQHandler(&handle_GPDMA1_Channel9);
+  /* USER CODE BEGIN GPDMA1_Channel9_IRQn 1 */
+
+  /* USER CODE END GPDMA1_Channel9_IRQn 1 */
+}
+
+/**
   * @brief This function handles GPDMA1 Channel 10 global interrupt.
   */
 void GPDMA1_Channel10_IRQHandler(void)
@@ -217,6 +263,20 @@ void GPDMA1_Channel11_IRQHandler(void)
   /* USER CODE BEGIN GPDMA1_Channel11_IRQn 1 */
 
   /* USER CODE END GPDMA1_Channel11_IRQn 1 */
+}
+
+/**
+  * @brief This function handles SPI3 global interrupt.
+  */
+void SPI3_IRQHandler(void)
+{
+  /* USER CODE BEGIN SPI3_IRQn 0 */
+
+  /* USER CODE END SPI3_IRQn 0 */
+  HAL_SPI_IRQHandler(&hspi3);
+  /* USER CODE BEGIN SPI3_IRQn 1 */
+
+  /* USER CODE END SPI3_IRQn 1 */
 }
 
 /**
@@ -246,6 +306,20 @@ void ETH1_IRQHandler(void)
   /* USER CODE BEGIN ETH1_IRQn 1 */
 
   /* USER CODE END ETH1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles CSI global interrupt.
+  */
+void CSI_IRQHandler(void)
+{
+  /* USER CODE BEGIN CSI_IRQn 0 */
+
+  /* USER CODE END CSI_IRQn 0 */
+  HAL_DCMIPP_CSI_IRQHandler(&hdcmipp);
+  /* USER CODE BEGIN CSI_IRQn 1 */
+
+  /* USER CODE END CSI_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

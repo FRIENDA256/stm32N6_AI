@@ -1,9 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    i2c.h
+  * @file    dcmipp.h
   * @brief   This file contains all the function prototypes for
-  *          the i2c.c file
+  *          the dcmipp.c file
   ******************************************************************************
   * @attention
   *
@@ -18,8 +18,8 @@
   */
 /* USER CODE END Header */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __I2C_H__
-#define __I2C_H__
+#ifndef __DCMIPP_H__
+#define __DCMIPP_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,18 +32,17 @@ extern "C" {
 
 /* USER CODE END Includes */
 
-extern I2C_HandleTypeDef hi2c1;
-
-extern I2C_HandleTypeDef hi2c2;
+extern DCMIPP_HandleTypeDef hdcmipp;
 
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
 
-void MX_I2C1_Init(void);
-void MX_I2C2_Init(void);
+void MX_DCMIPP_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+HAL_StatusTypeDef App_DCMIPP_DiagnosticInit(uint32_t *failed_stage, uint32_t *hal_error);
+void App_DCMIPP_SetIrqEnabled(uint32_t enabled);
 
 /* USER CODE END Prototypes */
 
@@ -51,5 +50,4 @@ void MX_I2C2_Init(void);
 }
 #endif
 
-#endif /* __I2C_H__ */
-
+#endif /* __DCMIPP_H__ */

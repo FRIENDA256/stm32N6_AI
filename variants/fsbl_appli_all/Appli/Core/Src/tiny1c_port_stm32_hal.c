@@ -11,6 +11,7 @@
 #include <stddef.h>
 
 #define TINY1C_UART_TX_CHUNK_MAX 0xFFFFU
+#define TINY1C_SPI3_USE_DMA      1U
 
 extern volatile ULONG _tx_thread_system_state;
 
@@ -18,6 +19,10 @@ static uint8_t tiny1c_spi_tx[TINY1C_DEFAULT_SPI_CHUNK_LEN];
 static uint8_t tiny1c_spi_rx[TINY1C_DEFAULT_SPI_CHUNK_LEN];
 static uint8_t tiny1c_frame[TINY1C_DEFAULT_FRAME_LEN];
 static uint8_t tiny1c_initialized;
+static volatile uint8_t tiny1c_spi_dma_active;
+static volatile uint8_t tiny1c_spi_dma_done;
+static volatile uint8_t tiny1c_spi_dma_error;
+static volatile uint32_t tiny1c_spi_dma_hal_error;
 
 tiny1c_t g_tiny1c;
 
@@ -139,8 +144,10 @@ static int Tiny1C_STM32_SpiTxRx(void *ctx,
                                 uint32_t len,
                                 uint32_t timeout_ms)
 {
+#if (TINY1C_SPI3_USE_DMA == 1U)
   HAL_StatusTypeDef status;
-  uint32_t primask;
+  uint32_t start_tick;
+#endif
 
   (void)ctx;
 
@@ -149,19 +156,66 @@ static int Tiny1C_STM32_SpiTxRx(void *ctx,
     return -1;
   }
 
-  primask = __get_PRIMASK();
-  __disable_irq();
-  status = HAL_SPI_TransmitReceive(&hspi3,
-                                   (uint8_t *)tx,
-                                   rx,
-                                   (uint16_t)len,
-                                   timeout_ms);
-  if (primask == 0U)
+#if (TINY1C_SPI3_USE_DMA == 1U)
+  if (_tx_thread_system_state == 0U)
   {
-    __enable_irq();
+    tiny1c_spi_dma_active = 1U;
+    tiny1c_spi_dma_done = 0U;
+    tiny1c_spi_dma_error = 0U;
+    tiny1c_spi_dma_hal_error = 0U;
+
+    status = HAL_SPI_TransmitReceive_DMA(&hspi3,
+                                         (uint8_t *)tx,
+                                         rx,
+                                         (uint16_t)len);
+    if (status == HAL_OK)
+    {
+      start_tick = HAL_GetTick();
+      while ((tiny1c_spi_dma_done == 0U) && (tiny1c_spi_dma_error == 0U))
+      {
+        if ((timeout_ms != HAL_MAX_DELAY) && ((HAL_GetTick() - start_tick) >= timeout_ms))
+        {
+          (void)HAL_SPI_Abort(&hspi3);
+          tiny1c_spi_dma_active = 0U;
+          return -1;
+        }
+        tx_thread_sleep(1U);
+      }
+
+      tiny1c_spi_dma_active = 0U;
+      return (tiny1c_spi_dma_error == 0U) ? 0 : -1;
+    }
+
+    tiny1c_spi_dma_active = 0U;
+  }
+#endif
+
+  return (HAL_SPI_TransmitReceive(&hspi3,
+                                  (uint8_t *)tx,
+                                  rx,
+                                  (uint16_t)len,
+                                  timeout_ms) == HAL_OK) ? 0 : -1;
+}
+
+void Tiny1C_STM32_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+  if ((hspi == NULL) || (hspi->Instance != SPI3) || (tiny1c_spi_dma_active == 0U))
+  {
+    return;
   }
 
-  return (status == HAL_OK) ? 0 : -1;
+  tiny1c_spi_dma_done = 1U;
+}
+
+void Tiny1C_STM32_ErrorCallback(SPI_HandleTypeDef *hspi)
+{
+  if ((hspi == NULL) || (hspi->Instance != SPI3) || (tiny1c_spi_dma_active == 0U))
+  {
+    return;
+  }
+
+  tiny1c_spi_dma_hal_error = HAL_SPI_GetError(hspi);
+  tiny1c_spi_dma_error = 1U;
 }
 
 static int Tiny1C_STM32_VsyncRead(void *ctx)

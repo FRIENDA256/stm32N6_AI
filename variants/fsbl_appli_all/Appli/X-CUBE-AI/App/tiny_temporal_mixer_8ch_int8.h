@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    tiny_temporal_mixer_8ch_int8.h
   * @author  STEdgeAI
-  * @date    2026-07-07 22:26:30
+  * @date    2026-07-09 22:46:29
   * @brief   Minimal description of the generated c-implemention of the network
   ******************************************************************************
   * @attention

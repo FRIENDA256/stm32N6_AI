@@ -39,7 +39,7 @@
  * --Ocache-opt = true
  * --output-info-file = "c_info"
  * --onnx-input = "C:/Users/lenovo/.stm32cubemx/tiny_temporal_mixer_8ch_int8_output/tiny_temporal_mixer_8ch_int8_qdq_OE_3_3_0.onnx"
- * --out-dir-prefix = "C:/Users/lenovo/AppData/Local/Temp/mxAI_workspace471456254732008948933754023902028/neural_art__tiny_temporal_mixer_8ch_int8/"
+ * --out-dir-prefix = "C:/Users/lenovo/AppData/Local/Temp/mxAI_workspace1223810381180016037318820955393902/neural_art__tiny_temporal_mixer_8ch_int8/"
  * --network-name = "tiny_temporal_mixer_8ch_int8"
  * --all-buffers-info = true
  * --mvei = true

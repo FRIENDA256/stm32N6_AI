@@ -27,7 +27,8 @@
 #define AD_SPI_DMA_ERROR_START_HEADER    3U
 #define AD_SPI_DMA_ERROR_START_BODY      4U
 #define AD_SPI_DMA_ERROR_HAL             5U
-#define AD_SPI_QUALITY_REPORT_PERIOD_MS  5000U
+#define AD_SPI_QUALITY_REPORT_PERIOD_MS  30000U
+#define AD_SPI_ERROR_DETAIL_LOG          0U
 #define AD_SPI_IRQ_TO_CS_SETTLE_MS       1U
 #define AD_SPI_LED_NO_FRAME_TIMEOUT_MS   1500U
 #define AD_SPI_LED_ERROR_HOLD_MS         3000U
@@ -833,12 +834,17 @@ static void AD7606_SPI4_SaveLatestFrame(uint32_t irq_count_snapshot,
 
 static void AD7606_SPI4_ReportDmaError(uint32_t irq_count_snapshot, uint8_t error_code, uint32_t hal_error)
 {
+#if (AD_SPI_ERROR_DETAIL_LOG != 0U)
   char line[192];
   int len = snprintf(line, sizeof(line), "SPI4 DMA error irq=%lu code=%u hal=0x%08lX\r\n",
                      (unsigned long)irq_count_snapshot,
                      (unsigned int)error_code,
                      (unsigned long)hal_error);
+#endif
+
   SPI4_QualityTest_RecordDmaError(error_code, hal_error);
+
+#if (AD_SPI_ERROR_DETAIL_LOG != 0U)
   if (len > 0)
   {
     App_Print(line);
@@ -872,6 +878,9 @@ static void AD7606_SPI4_ReportDmaError(uint32_t irq_count_snapshot, uint8_t erro
       App_Print(line);
     }
   }
+#else
+  (void)irq_count_snapshot;
+#endif
 }
 
 static void AD7606_SPI4_DumpRawFrame(uint32_t irq_count_snapshot,

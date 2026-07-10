@@ -1,5 +1,5 @@
 param(
-  [ValidateSet("ADGET", "ADNET", "IRGETIMG", "IRGETIMAGE", "IRGETTEMP", "IRNETIMG", "IRNETTEMP")]
+  [ValidateSet("ADGET", "ADNET", "IRGETIMG", "IRGETIMAGE", "IRGETTEMP", "IRNETIMG", "IRNETTEMP", "CAMGET")]
   [string]$Command = "IRGETIMG",
   [string]$InputRaw = "",
   [ValidateSet("auto", "image", "temp")]
@@ -10,6 +10,8 @@ param(
   [string]$OutputDir = ".\tools\net_captures",
   [ValidateSet("auto", "even", "odd")]
   [string]$ImageLane = "auto",
+  [ValidateSet("le", "be")]
+  [string]$Rgb565Endian = "le",
   [ValidateSet("row-auto", "le", "be")]
   [string]$TempEndian = "row-auto",
   [ValidateSet("none", "despeckle", "median3")]
@@ -510,6 +512,118 @@ function Write-BmpGray8Palette {
   }
 }
 
+function Convert-Rgb565ToRgb24 {
+  param(
+    [byte[]]$Frame,
+    [int]$Width,
+    [int]$Height,
+    [ValidateSet("le", "be")]
+    [string]$Endian = "le"
+  )
+
+  $pixelCount = $Width * $Height
+  $rgb = New-Object byte[] ($pixelCount * 3)
+
+  for ($i = 0; $i -lt $pixelCount; $i++) {
+    $offset = $i * 2
+    if ($Endian -eq "be") {
+      $value = (([int]$Frame[$offset]) -shl 8) -bor ([int]$Frame[$offset + 1])
+    }
+    else {
+      $value = ([int]$Frame[$offset]) -bor (([int]$Frame[$offset + 1]) -shl 8)
+    }
+
+    $r5 = ($value -shr 11) -band 0x1F
+    $g6 = ($value -shr 5) -band 0x3F
+    $b5 = $value -band 0x1F
+    $dst = $i * 3
+    $rgb[$dst] = [byte][Math]::Round(($r5 * 255.0) / 31.0)
+    $rgb[$dst + 1] = [byte][Math]::Round(($g6 * 255.0) / 63.0)
+    $rgb[$dst + 2] = [byte][Math]::Round(($b5 * 255.0) / 31.0)
+  }
+
+  return $rgb
+}
+
+function Write-BmpRgb24 {
+  param(
+    [string]$Path,
+    [byte[]]$Rgb,
+    [int]$Width,
+    [int]$Height
+  )
+
+  $srcRowBytes = $Width * 3
+  $rowStride = (($srcRowBytes + 3) -band (-bnot 3))
+  $imageSize = $rowStride * $Height
+  $pixelOffset = 14 + 40
+  $fileSize = $pixelOffset + $imageSize
+  $padding = New-Object byte[] ($rowStride - $srcRowBytes)
+  $stream = [System.IO.File]::Open($Path, [System.IO.FileMode]::Create, [System.IO.FileAccess]::Write)
+  $writer = [System.IO.BinaryWriter]::new($stream)
+
+  try {
+    $writer.Write([byte[]](0x42, 0x4D))
+    $writer.Write([uint32]$fileSize)
+    $writer.Write([uint16]0)
+    $writer.Write([uint16]0)
+    $writer.Write([uint32]$pixelOffset)
+    $writer.Write([uint32]40)
+    $writer.Write([int32]$Width)
+    $writer.Write([int32]$Height)
+    $writer.Write([uint16]1)
+    $writer.Write([uint16]24)
+    $writer.Write([uint32]0)
+    $writer.Write([uint32]$imageSize)
+    $writer.Write([int32]2835)
+    $writer.Write([int32]2835)
+    $writer.Write([uint32]0)
+    $writer.Write([uint32]0)
+
+    for ($y = $Height - 1; $y -ge 0; $y--) {
+      $rowOffset = $y * $srcRowBytes
+      for ($x = 0; $x -lt $Width; $x++) {
+        $src = $rowOffset + ($x * 3)
+        $writer.Write($Rgb[$src + 2])
+        $writer.Write($Rgb[$src + 1])
+        $writer.Write($Rgb[$src])
+      }
+      if ($padding.Length -gt 0) {
+        $writer.Write($padding)
+      }
+    }
+  }
+  finally {
+    $writer.Dispose()
+    $stream.Dispose()
+  }
+}
+
+function Save-Imx219Visual {
+  param(
+    [byte[]]$Frame,
+    [hashtable]$Fields,
+    [string]$BasePath,
+    [ValidateSet("le", "be")]
+    [string]$Rgb565Endian
+  )
+
+  $width = if ($Fields.ContainsKey("WIDTH")) { [int]$Fields["WIDTH"] } else { 640 }
+  $height = if ($Fields.ContainsKey("HEIGHT")) { [int]$Fields["HEIGHT"] } else { 480 }
+  $expectedBytes = $width * $height * 2
+
+  if ($Frame.Length -ne $expectedBytes) {
+    Write-Warning "IMX219 frame length does not match ${width}x${height}x2; skip BMP."
+    return
+  }
+
+  $bmpPath = $BasePath + "_rgb565.bmp"
+  $rgb = Convert-Rgb565ToRgb24 -Frame $Frame -Width $width -Height $height -Endian $Rgb565Endian
+  Write-BmpRgb24 -Path $bmpPath -Rgb $rgb -Width $width -Height $height
+  Write-Host "Saved bmp : $bmpPath"
+  Write-Host "Display mode: IMX219 RGB565, endian=$Rgb565Endian"
+}
+
 function Save-Tiny1CVisual {
   param(
     [byte[]]$Frame,
@@ -794,6 +908,9 @@ try {
   elseif ($source -eq "ad7606") {
     $kind = "ad7606"
   }
+  elseif ($source -eq "imx219") {
+    $kind = "imx219_rgb565"
+  }
 
   $basePath = Join-Path $OutputDir ("${kind}_${stamp}")
   $rawPath = $basePath + ".raw"
@@ -810,6 +927,9 @@ try {
   }
   elseif ($source -eq "ad7606") {
     Show-Ad7606Summary -Frame $payload -CsvPath ($basePath + "_samples.csv")
+  }
+  elseif ($source -eq "imx219") {
+    Save-Imx219Visual -Frame $payload -Fields $fields -BasePath $basePath -Rgb565Endian $Rgb565Endian
   }
 }
 finally {

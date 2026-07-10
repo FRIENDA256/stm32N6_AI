@@ -231,7 +231,7 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
   return ret;
 }
 
-  /* USER CODE BEGIN 0 */
+/* USER CODE BEGIN 0 */
 #if (APP_NETX_ENABLE_PERIODIC_STATS == 1U)
 static void NetXDuo_AppendText(char *line, uint32_t *pos, const char *text)
 {

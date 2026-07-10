@@ -81,6 +81,8 @@ void Error_Handler(void);
 #define AD_IRQ_Pin GPIO_PIN_8
 #define AD_IRQ_GPIO_Port GPIOE
 #define AD_IRQ_EXTI_IRQn EXTI8_IRQn
+#define EN_MODULE_Pin GPIO_PIN_2
+#define EN_MODULE_GPIO_Port GPIOD
 #define TINY1C_VSYNC_Pin GPIO_PIN_7
 #define TINY1C_VSYNC_GPIO_Port GPIOH
 #define TINY1C_CS_Pin GPIO_PIN_7
