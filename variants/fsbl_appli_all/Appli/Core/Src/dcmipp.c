@@ -23,6 +23,8 @@
 /* USER CODE BEGIN 0 */
 #include "app_console.h"
 
+#define APP_DCMIPP_IRQ_PRIORITY 10U
+
 #define APP_DCMIPP_CSI_DPHY_DATA_LANE_ERROR_IT                               \
   (DCMIPP_CSI_IT_ECTRLDL1 | DCMIPP_CSI_IT_ESYNCESCDL1 | DCMIPP_CSI_IT_EESCDL1 | \
    DCMIPP_CSI_IT_ESOTSYNCDL1 | DCMIPP_CSI_IT_ESOTDL1 | DCMIPP_CSI_IT_ECTRLDL0 | \
@@ -135,9 +137,9 @@ void HAL_DCMIPP_MspInit(DCMIPP_HandleTypeDef* dcmippHandle)
     __HAL_RCC_CSI_RELEASE_RESET();
 
     /* DCMIPP interrupt Init */
-    HAL_NVIC_SetPriority(DCMIPP_IRQn, 7, 0);
+    HAL_NVIC_SetPriority(DCMIPP_IRQn, APP_DCMIPP_IRQ_PRIORITY, 0);
     HAL_NVIC_EnableIRQ(DCMIPP_IRQn);
-    HAL_NVIC_SetPriority(CSI_IRQn, 7, 0);
+    HAL_NVIC_SetPriority(CSI_IRQn, APP_DCMIPP_IRQ_PRIORITY, 0);
     HAL_NVIC_EnableIRQ(CSI_IRQn);
   /* USER CODE BEGIN DCMIPP_MspInit 1 */
     __HAL_RCC_DCMIPP_FORCE_RESET();
@@ -295,9 +297,9 @@ void App_DCMIPP_SetIrqEnabled(uint32_t enabled)
     App_DCMIPP_ClearCsiFlags();
     HAL_NVIC_ClearPendingIRQ(DCMIPP_IRQn);
     HAL_NVIC_ClearPendingIRQ(CSI_IRQn);
-    HAL_NVIC_SetPriority(DCMIPP_IRQn, 7, 0);
+    HAL_NVIC_SetPriority(DCMIPP_IRQn, APP_DCMIPP_IRQ_PRIORITY, 0);
     HAL_NVIC_EnableIRQ(DCMIPP_IRQn);
-    HAL_NVIC_SetPriority(CSI_IRQn, 7, 0);
+    HAL_NVIC_SetPriority(CSI_IRQn, APP_DCMIPP_IRQ_PRIORITY, 0);
     HAL_NVIC_EnableIRQ(CSI_IRQn);
   }
   else

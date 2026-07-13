@@ -234,7 +234,7 @@ def udp_test(args):
 
 def main():
     parser = argparse.ArgumentParser(description="STM32N6 NetX TCP/UDP throughput test")
-    parser.add_argument("--host", default="192.168.1.50")
+    parser.add_argument("--host", default="192.168.6.50")
     parser.add_argument("--tcp-port", type=int, default=5000)
     parser.add_argument("--mode", choices=["tcp", "udp", "both"], default="both")
     parser.add_argument("--tcp-mib", type=int, default=32)

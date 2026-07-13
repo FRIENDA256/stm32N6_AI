@@ -1351,7 +1351,7 @@ static UINT AppTcpCommand_Process(char *request)
 
   if (AppTcpCommand_Equals(command, "INFO"))
   {
-    return AppTcpCommand_SendText("STM32N6 NetX command server\r\nIP=192.168.1.50\r\nUDP_ECHO=5005\r\nTCP_CMD=5000\r\nTCPTHR/TCPTHRZ=[MiB]\r\nUDPTHR/UDPTHRZ=<PC_IP> [port] [ms] [payload]\r\n");
+    return AppTcpCommand_SendText("STM32N6 NetX command server\r\nIP=192.168.6.50\r\nUDP_ECHO=5005\r\nTCP_CMD=5000\r\nTCPTHR/TCPTHRZ=[MiB]\r\nUDPTHR/UDPTHRZ=<PC_IP> [port] [ms] [payload]\r\n");
   }
 
   if (AppTcpCommand_Equals(command, "STAT"))
@@ -1562,7 +1562,7 @@ static VOID AppTcpCommand_ThreadEntry(ULONG thread_input)
     return;
   }
 
-  App_Print("TCP cmd: 192.168.1.50:5000\r\n");
+  App_Print("TCP cmd: 192.168.6.50:5000\r\n");
 
   for (;;)
   {

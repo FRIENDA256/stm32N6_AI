@@ -56,7 +56,7 @@ static VOID AppUdpEcho_ThreadEntry(ULONG thread_input)
     return;
   }
 
-  App_Print("UDP echo: 192.168.1.50:5005\r\n");
+  App_Print("UDP echo: 192.168.6.50:5005\r\n");
 
   for (;;)
   {

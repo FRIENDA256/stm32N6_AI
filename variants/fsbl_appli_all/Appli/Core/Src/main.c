@@ -114,6 +114,12 @@ int main(void)
   MX_I2C1_Init();
   SystemIsolation_Config();
   /* USER CODE BEGIN 2 */
+  /*
+   * Keep the AD7606 EXTI below the Ethernet interrupt.  This runtime
+   * override remains effective even if CubeMX regenerates gpio.c.
+   */
+  HAL_NVIC_SetPriority(AD_IRQ_EXTI_IRQn, 8U, 0U);
+  HAL_NVIC_EnableIRQ(AD_IRQ_EXTI_IRQn);
   App_Print("FSBL->Appli all Ethernet start\r\n");
 #if APP_ENABLE_DCMIPP_BOOT_INIT
   {

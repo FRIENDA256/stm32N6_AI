@@ -932,7 +932,7 @@ def command_for_mode(mode: str) -> list[str]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Capture and analyze Tiny1-C frames over the STM32N6 TCP command port.")
-    parser.add_argument("--host", default="192.168.1.50")
+    parser.add_argument("--host", default="192.168.6.50")
     parser.add_argument("--port", type=int, default=5000)
     parser.add_argument(
         "--command",

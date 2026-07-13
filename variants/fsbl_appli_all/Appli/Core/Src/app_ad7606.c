@@ -15,7 +15,8 @@
 #include <string.h>
 
 #define APP_AD7606_THREAD_STACK_SIZE  4096U
-#define APP_AD7606_THREAD_PRIORITY    9U
+/* Keep acquisition below the NetX command/echo threads during bulk TX. */
+#define APP_AD7606_THREAD_PRIORITY    14U
 #define APP_AD7606_THREAD_SLEEP_TICKS 1U
 
 static TX_THREAD AppAd7606Thread;

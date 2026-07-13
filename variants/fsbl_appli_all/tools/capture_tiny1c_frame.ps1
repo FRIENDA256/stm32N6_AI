@@ -8,7 +8,7 @@ param(
   [ValidateSet("auto", "even", "odd")]
   [string]$ImageLane = "auto",
   [string]$InputRaw = "",
-  [string]$HostAddress = "192.168.1.50",
+  [string]$HostAddress = "192.168.6.50",
   [int]$TcpPort = 5000,
   [int]$TimeoutMs = 90000,
   [string]$OutputDir = ".\tools\captures",

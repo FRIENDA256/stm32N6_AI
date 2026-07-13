@@ -8,7 +8,7 @@ Known-good smoke test:
 
 ```powershell
 $tcp = [System.Net.Sockets.TcpClient]::new()
-$tcp.Connect("192.168.1.50", 5000)
+$tcp.Connect("192.168.6.50", 5000)
 $stream = $tcp.GetStream()
 $cmd = [Text.Encoding]::ASCII.GetBytes("PING`r`n")
 [void]$stream.Write($cmd, 0, $cmd.Length)
@@ -93,17 +93,17 @@ FSBL->Appli all Ethernet start
 ETH HCLK Hz: ...
 ETH kernel Hz: ...
 NetX init OK
-IP: 192.168.1.50/24
+IP: 192.168.6.50/24
 NetX link: up
-UDP echo: 192.168.1.50:5005
-TCP cmd: 192.168.1.50:5000
+UDP echo: 192.168.6.50:5005
+TCP cmd: 192.168.6.50:5000
 ```
 
 PC-side quick test:
 
 ```powershell
 arp -d *
-ping 192.168.1.50
+ping 192.168.6.50
 ```
 
 Then run the TCP `PING` test shown at the top of this document.

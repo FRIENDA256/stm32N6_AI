@@ -40,7 +40,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define APP_NETX_IP_ADDRESS              IP_ADDRESS(192, 168, 1, 50)
+#define APP_NETX_IP_ADDRESS              IP_ADDRESS(192, 168, 6, 50)
 #define APP_NETX_NET_MASK                IP_ADDRESS(255, 255, 255, 0)
 #define APP_NETX_PACKET_PAYLOAD_SIZE     1536U
 #define APP_NETX_PACKET_POOL_COUNT       40U
@@ -384,7 +384,7 @@ static VOID NetXDuo_StatusThreadEntry(ULONG thread_input)
 
   (void)thread_input;
 
-  App_Print("IP: 192.168.1.50/24\r\n");
+  App_Print("IP: 192.168.6.50/24\r\n");
 
   for (;;)
   {

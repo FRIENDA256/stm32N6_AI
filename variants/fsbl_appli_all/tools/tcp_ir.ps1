@@ -1,6 +1,6 @@
 param(
   [string]$Command = "IRPROBE",
-  [string]$HostAddress = "192.168.1.50",
+  [string]$HostAddress = "192.168.6.50",
   [int]$Port = 5000,
   [int]$TimeoutMs = 20000
 )
