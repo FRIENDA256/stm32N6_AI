@@ -302,6 +302,7 @@ uint32_t AD7606_SPI4_CopyLatestFrame(uint8_t *dest, uint32_t dest_len, AD7606_SP
       continue;
     }
 
+    __DMB();
     total_len = (uint32_t)ad_spi_latest_info.total_len;
     if ((total_len == 0U) || (total_len > AD_SPI_MAX_FRAME_SIZE) || (dest_len < total_len))
     {
@@ -314,9 +315,88 @@ uint32_t AD7606_SPI4_CopyLatestFrame(uint8_t *dest, uint32_t dest_len, AD7606_SP
       *info = ad_spi_latest_info;
     }
 
-    if (seq_before == ad_spi_latest_update_seq)
+    __DMB();
+    if ((seq_before == ad_spi_latest_update_seq) &&
+        ((ad_spi_latest_update_seq & 1U) == 0U))
     {
       return total_len;
+    }
+  }
+
+  return 0U;
+}
+
+uint32_t AD7606_SPI4_CopyLatestRawSamples(uint8_t *dest,
+                                          uint32_t dest_len,
+                                          AD7606_SPI4_FrameInfo_t *frame_info,
+                                          AD7606_SPI4_RawInfo_t *raw_info)
+{
+  if ((dest == NULL) || (ad_spi_latest_valid == 0U))
+  {
+    return 0U;
+  }
+
+  for (uint32_t attempt = 0U; attempt < 8U; attempt++)
+  {
+    uint32_t seq_before = ad_spi_latest_update_seq;
+    AD7606_SPI4_FrameInfo_t local_frame_info;
+    AD7606_SPI4_RawInfo_t local_raw_info;
+    const uint8_t *payload;
+    uint32_t expected_payload_len;
+
+    if ((seq_before & 1U) != 0U)
+    {
+      continue;
+    }
+
+    __DMB();
+    local_frame_info = ad_spi_latest_info;
+    if ((local_frame_info.frame_type != AD_FRAME_TYPE_RAW_SYNC) ||
+        (local_frame_info.total_len < (AD_SPI_HEADER_SIZE + AD_RAW_PAYLOAD_HEADER_SIZE + AD_SPI_CRC_SIZE)) ||
+        (local_frame_info.total_len > AD_SPI_MAX_FRAME_SIZE))
+    {
+      return 0U;
+    }
+
+    payload = &ad_spi_latest_frame[AD_SPI_HEADER_SIZE];
+    local_raw_info.points = ReadLE16(&payload[0]);
+    local_raw_info.channels = payload[2];
+    local_raw_info.bytes_per_sample = payload[3];
+    local_raw_info.block_start = ReadLE64(&payload[4]);
+    local_raw_info.block_end = ReadLE64(&payload[12]);
+    expected_payload_len = AD_RAW_PAYLOAD_HEADER_SIZE +
+                           ((uint32_t)local_raw_info.points *
+                            (uint32_t)local_raw_info.channels *
+                            (uint32_t)local_raw_info.bytes_per_sample);
+    local_raw_info.sample_bytes = expected_payload_len - AD_RAW_PAYLOAD_HEADER_SIZE;
+
+    if ((local_raw_info.points == 0U) ||
+        (local_raw_info.channels == 0U) ||
+        (local_raw_info.channels > AD_RAW_MAX_CHANNELS) ||
+        (local_raw_info.bytes_per_sample != 2U) ||
+        (expected_payload_len > local_frame_info.payload_len) ||
+        (dest_len < local_raw_info.sample_bytes))
+    {
+      return 0U;
+    }
+
+    memcpy(dest,
+           &payload[AD_RAW_PAYLOAD_HEADER_SIZE],
+           local_raw_info.sample_bytes);
+
+    __DMB();
+    if ((seq_before == ad_spi_latest_update_seq) &&
+        ((ad_spi_latest_update_seq & 1U) == 0U))
+    {
+      if (frame_info != NULL)
+      {
+        *frame_info = local_frame_info;
+      }
+      if (raw_info != NULL)
+      {
+        *raw_info = local_raw_info;
+      }
+      return local_raw_info.sample_bytes;
     }
   }
 
@@ -826,9 +906,11 @@ static void AD7606_SPI4_SaveLatestFrame(uint32_t irq_count_snapshot,
   info.crc_ok = 1U;
 
   ad_spi_latest_update_seq++;
+  __DMB();
   memcpy(ad_spi_latest_frame, ad_spi_rx_frame, total_len);
   ad_spi_latest_info = info;
   ad_spi_latest_valid = 1U;
+  __DMB();
   ad_spi_latest_update_seq++;
 }
 

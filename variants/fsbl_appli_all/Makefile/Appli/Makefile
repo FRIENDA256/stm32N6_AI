@@ -42,6 +42,7 @@ C_SOURCES =  \
 ../../Appli/NetXDuo/App/app_netxduo.c \
 ../../Appli/Core/Src/ad7606_spi_dma.c \
 ../../Appli/Core/Src/app_ad7606.c \
+../../Appli/Core/Src/app_ai.c \
 ../../Appli/Core/Src/app_callbacks.c \
 ../../Appli/Core/Src/app_camera_imx219.c \
 ../../Appli/Core/Src/app_console.c \

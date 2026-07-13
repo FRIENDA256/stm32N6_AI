@@ -24,6 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "app_ad7606.h"
+#include "app_ai.h"
 #include "app_console.h"
 #include "main.h"
 
@@ -71,6 +72,14 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   /* USER CODE BEGIN App_ThreadX_Init */
 #if (APP_AD7606_AUTOSTART == 1U)
   ret = App_AD7606_Start((TX_BYTE_POOL *)memory_ptr);
+  if (ret == TX_SUCCESS)
+  {
+    UINT ai_status = App_AI_Start((TX_BYTE_POOL *)memory_ptr);
+    if (ai_status != TX_SUCCESS)
+    {
+      App_PrintHex32("AI start failed, acquisition continues: ", ai_status);
+    }
+  }
 #else
   HAL_NVIC_DisableIRQ(AD_IRQ_EXTI_IRQn);
   App_Print("AD7606 autostart disabled for Ethernet bring-up\r\n");

@@ -32,12 +32,26 @@ typedef struct
   uint8_t crc_ok;
 } AD7606_SPI4_FrameInfo_t;
 
+typedef struct
+{
+  uint16_t points;
+  uint8_t channels;
+  uint8_t bytes_per_sample;
+  uint32_t sample_bytes;
+  uint64_t block_start;
+  uint64_t block_end;
+} AD7606_SPI4_RawInfo_t;
+
 void AD7606_SPI4_Init(void);
 void AD7606_SPI4_Task(uint32_t now_tick);
 void AD7606_SPI4_RequestRawDump(void);
 void AD7606_SPI4_SetPaused(uint8_t paused);
 uint8_t AD7606_SPI4_IsIdle(void);
 uint32_t AD7606_SPI4_CopyLatestFrame(uint8_t *dest, uint32_t dest_len, AD7606_SPI4_FrameInfo_t *info);
+uint32_t AD7606_SPI4_CopyLatestRawSamples(uint8_t *dest,
+                                          uint32_t dest_len,
+                                          AD7606_SPI4_FrameInfo_t *frame_info,
+                                          AD7606_SPI4_RawInfo_t *raw_info);
 void AD7606_SPI4_TxRxCpltCallback(SPI_HandleTypeDef *hspi);
 void AD7606_SPI4_ErrorCallback(SPI_HandleTypeDef *hspi);
 void AD7606_SPI4_EXTI_RisingCallback(uint16_t GPIO_Pin);

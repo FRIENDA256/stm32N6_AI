@@ -9,6 +9,7 @@
 
 #include "app_tcp_command.h"
 #include "ad7606_spi_dma.h"
+#include "app_ai.h"
 #include "app_camera_imx219.h"
 #include "app_console.h"
 #include "dcmipp.h"
@@ -653,6 +654,42 @@ static UINT AppTcpCommand_SendStatus(void)
   AppTcpCommand_AppendHex32(line, &pos, sizeof(line), interface_capability);
   AppTcpCommand_AppendText(line, &pos, sizeof(line), "\r\n");
   line[pos] = '\0';
+
+  return AppTcpCommand_SendText(line);
+}
+
+static UINT AppTcpCommand_SendAIStatus(void)
+{
+  App_AI_Status_t status;
+  char line[320];
+  int len;
+
+  App_AI_GetStatus(&status);
+  len = snprintf(line,
+                 sizeof(line),
+                 "OK AISTAT init=%lu ready=%lu fault=%lu weights=%lu runs=%lu skips=%lu resets=%lu copy_err=%lu run_err=%lu last_seq=%lu ts=%lu sample=%lu infer_ms=%lu top=%u out=%d,%d,%d,%d prep=s16_shift8\r\n",
+                 (unsigned long)status.initialized,
+                 (unsigned long)status.ready,
+                 (unsigned long)status.fault,
+                 (unsigned long)status.weights_ok,
+                 (unsigned long)status.run_count,
+                 (unsigned long)status.skip_count,
+                 (unsigned long)status.window_reset_count,
+                 (unsigned long)status.copy_error_count,
+                 (unsigned long)status.run_error_count,
+                 (unsigned long)status.last_frame_seq,
+                 (unsigned long)status.last_timestamp_ms,
+                 (unsigned long)status.last_sample_counter,
+                 (unsigned long)status.last_inference_ms,
+                 (unsigned int)status.last_top_index,
+                 (int)status.last_output[0],
+                 (int)status.last_output[1],
+                 (int)status.last_output[2],
+                 (int)status.last_output[3]);
+  if ((len <= 0) || ((uint32_t)len >= sizeof(line)))
+  {
+    return NX_NOT_SUCCESSFUL;
+  }
 
   return AppTcpCommand_SendText(line);
 }
@@ -1341,7 +1378,7 @@ static UINT AppTcpCommand_Process(char *request)
 
   if ((command[0] == '\0') || AppTcpCommand_Equals(command, "HELP") || AppTcpCommand_Equals(command, "?"))
   {
-    return AppTcpCommand_SendText("OK commands: PING INFO STAT CAMINIT CAMPROBE CAMCFG CAMCFGDCMIPP CAMCFGSENSOR CAMSTART CAMSTOP CAMSTAT CAMGET CAMIRQON CAMIRQOFF TCPTHR TCPTHRZ UDPTHR UDPTHRZ ADRAW ADGET IRPROBE IRVSYNC IRIMG IRTEMP IRDUMP IRCAPIMG IRCAPTEMP IRGETIMG IRGETTEMP IRGETIMGBASE IRGETTEMPBASE IRFASTIMG IRFASTTEMP HELP QUIT\r\n");
+    return AppTcpCommand_SendText("OK commands: PING INFO STAT AISTAT CAMINIT CAMPROBE CAMCFG CAMCFGDCMIPP CAMCFGSENSOR CAMSTART CAMSTOP CAMSTAT CAMGET CAMIRQON CAMIRQOFF TCPTHR TCPTHRZ UDPTHR UDPTHRZ ADRAW ADGET IRPROBE IRVSYNC IRIMG IRTEMP IRDUMP IRCAPIMG IRCAPTEMP IRGETIMG IRGETTEMP IRGETIMGBASE IRGETTEMPBASE IRFASTIMG IRFASTTEMP HELP QUIT\r\n");
   }
 
   if (AppTcpCommand_Equals(command, "PING"))
@@ -1357,6 +1394,12 @@ static UINT AppTcpCommand_Process(char *request)
   if (AppTcpCommand_Equals(command, "STAT"))
   {
     return AppTcpCommand_SendStatus();
+  }
+
+  if (AppTcpCommand_Equals(command, "AISTAT") ||
+      AppTcpCommand_Equals(command, "AI"))
+  {
+    return AppTcpCommand_SendAIStatus();
   }
 
   if (AppTcpCommand_Equals(command, "CAMINIT") ||
