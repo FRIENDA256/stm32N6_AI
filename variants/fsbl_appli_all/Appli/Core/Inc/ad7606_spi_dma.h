@@ -18,6 +18,8 @@ extern "C" {
 #include <stdint.h>
 
 #define AD7606_SPI4_MAX_FRAME_SIZE 8240U
+#define AD7606_SPI4_AI_WINDOW_POINTS 1024U
+#define AD7606_SPI4_AI_WINDOW_BYTES  16384U
 
 typedef struct
 {
@@ -52,6 +54,10 @@ uint32_t AD7606_SPI4_CopyLatestRawSamples(uint8_t *dest,
                                           uint32_t dest_len,
                                           AD7606_SPI4_FrameInfo_t *frame_info,
                                           AD7606_SPI4_RawInfo_t *raw_info);
+uint32_t AD7606_SPI4_CopyLatestRawWindow(uint8_t *dest,
+                                         uint32_t dest_len,
+                                         AD7606_SPI4_FrameInfo_t *frame_info,
+                                         AD7606_SPI4_RawInfo_t *raw_info);
 void AD7606_SPI4_TxRxCpltCallback(SPI_HandleTypeDef *hspi);
 void AD7606_SPI4_ErrorCallback(SPI_HandleTypeDef *hspi);
 void AD7606_SPI4_EXTI_RisingCallback(uint16_t GPIO_Pin);

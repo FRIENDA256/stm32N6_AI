@@ -28,8 +28,7 @@ LL_ATON_DECLARE_NAMED_NN_INSTANCE_AND_INTERFACE(tiny_temporal_mixer_8ch_int8);
 #define APP_AI_CACHE_LINE_BYTES        32U
 #define APP_AI_CHANNELS                8U
 #define APP_AI_WINDOW_SAMPLES         1024U
-#define APP_AI_RAW_MAX_POINTS         512U
-#define APP_AI_RAW_SAMPLE_BYTES       (APP_AI_RAW_MAX_POINTS * APP_AI_CHANNELS * 2U)
+#define APP_AI_RAW_SAMPLE_BYTES       AD7606_SPI4_AI_WINDOW_BYTES
 #define APP_AI_INPUT_BYTES             (APP_AI_CHANNELS * APP_AI_WINDOW_SAMPLES)
 #define APP_AI_OUTPUT_BYTES            4U
 #define APP_AI_AD_INPUT_SHIFT          8U
@@ -52,7 +51,6 @@ LL_ATON_DECLARE_NAMED_NN_INSTANCE_AND_INTERFACE(tiny_temporal_mixer_8ch_int8);
 static TX_THREAD AppAIThread;
 static volatile App_AI_Status_t AppAIStatus;
 __attribute__((aligned(32))) static uint8_t AppAIRawSamples[APP_AI_RAW_SAMPLE_BYTES];
-__attribute__((aligned(32))) static int8_t AppAIHistory[APP_AI_CHANNELS][APP_AI_WINDOW_SAMPLES];
 
 static uint32_t AppAI_StatusLock(void)
 {
@@ -140,45 +138,26 @@ static int16_t AppAI_ReadLE16S(const uint8_t *data)
   return (int16_t)value;
 }
 
-static void AppAI_AppendRawFrame(const uint8_t *raw_samples,
-                                 const AD7606_SPI4_RawInfo_t *raw_info)
+static void AppAI_CopyRawWindowToInput(const uint8_t *raw_samples,
+                                       const AD7606_SPI4_RawInfo_t *raw_info,
+                                       int8_t *input_buffer)
 {
-  uint32_t points;
-  uint32_t channels;
-
-  if ((raw_samples == NULL) || (raw_info == NULL) ||
+  if ((raw_samples == NULL) || (raw_info == NULL) || (input_buffer == NULL) ||
       (raw_info->channels != APP_AI_CHANNELS) ||
-      (raw_info->points == 0U) ||
-      (raw_info->points > APP_AI_WINDOW_SAMPLES))
+      (raw_info->points != APP_AI_WINDOW_SAMPLES) ||
+      (raw_info->bytes_per_sample != 2U))
   {
     return;
   }
 
-  points = raw_info->points;
-  channels = raw_info->channels;
-
   for (uint32_t channel = 0U; channel < APP_AI_CHANNELS; channel++)
   {
-    (void)memmove(AppAIHistory[channel],
-                  &AppAIHistory[channel][points],
-                  APP_AI_WINDOW_SAMPLES - points);
-
-    for (uint32_t point = 0U; point < points; point++)
+    for (uint32_t point = 0U; point < APP_AI_WINDOW_SAMPLES; point++)
     {
-      uint32_t raw_offset = ((point * channels) + channel) * raw_info->bytes_per_sample;
-      AppAIHistory[channel][APP_AI_WINDOW_SAMPLES - points + point] =
+      uint32_t raw_offset = ((point * APP_AI_CHANNELS) + channel) * raw_info->bytes_per_sample;
+      input_buffer[(channel * APP_AI_WINDOW_SAMPLES) + point] =
         AppAI_ConvertSample(AppAI_ReadLE16S(&raw_samples[raw_offset]));
     }
-  }
-}
-
-static void AppAI_CopyHistoryToInput(int8_t *input_buffer)
-{
-  for (uint32_t channel = 0U; channel < APP_AI_CHANNELS; channel++)
-  {
-    (void)memcpy(&input_buffer[channel * APP_AI_WINDOW_SAMPLES],
-                 AppAIHistory[channel],
-                 APP_AI_WINDOW_SAMPLES);
   }
 }
 
@@ -268,6 +247,14 @@ static void AppAI_ConfigureHardware(void)
   npu_cache_init();
   npu_cache_enable();
   npu_cache_invalidate();
+
+  {
+    uint32_t primask = AppAI_StatusLock();
+
+    AppAIStatus.npu_clock_hz = HAL_RCC_GetNPUClockFreq();
+    AppAIStatus.npuram_clock_hz = HAL_RCC_GetNPURAMSClockFreq();
+    AppAI_StatusUnlock(primask);
+  }
 }
 
 static void AppAI_InitializeActivationMemory(void)
@@ -281,7 +268,8 @@ static void AppAI_InitializeActivationMemory(void)
 
 static uint8_t AppAI_RunInference(int8_t *input_buffer,
                                   int8_t *output_buffer,
-                                  uint32_t *elapsed_ms)
+                                  uint32_t *elapsed_ms,
+                                  int32_t *last_run_status)
 {
   const LL_ATON_RT_RetValues_t done = LL_ATON_RT_DONE;
   LL_ATON_RT_RetValues_t run_status;
@@ -299,20 +287,29 @@ static uint8_t AppAI_RunInference(int8_t *input_buffer,
       tx_thread_relinquish();
     }
 
+    if (run_status == done)
+    {
+      break;
+    }
+
     if ((HAL_GetTick() - start_tick) > APP_AI_RUN_TIMEOUT_MS)
     {
+      *elapsed_ms = HAL_GetTick() - start_tick;
+      *last_run_status = (int32_t)run_status;
       return 0U;
     }
-  } while (run_status != done);
+  } while (1);
 
   AppAI_CacheInvalidateAligned((uintptr_t)output_buffer, APP_AI_OUTPUT_BYTES);
   *elapsed_ms = HAL_GetTick() - start_tick;
+  *last_run_status = (int32_t)run_status;
   return 1U;
 }
 
 static void AppAI_RecordRun(const AD7606_SPI4_FrameInfo_t *frame_info,
                             const int8_t *output_buffer,
-                            uint32_t inference_ms)
+                            uint32_t inference_ms,
+                            int32_t run_status)
 {
   uint32_t primask;
   uint8_t top_index = 0U;
@@ -331,6 +328,16 @@ static void AppAI_RecordRun(const AD7606_SPI4_FrameInfo_t *frame_info,
   AppAIStatus.last_timestamp_ms = frame_info->timestamp_ms;
   AppAIStatus.last_sample_counter = frame_info->sample_counter;
   AppAIStatus.last_inference_ms = inference_ms;
+  AppAIStatus.inference_total_ms += inference_ms;
+  if (inference_ms > AppAIStatus.max_inference_ms)
+  {
+    AppAIStatus.max_inference_ms = inference_ms;
+  }
+  if (inference_ms > APP_AI_RUN_TIMEOUT_MS)
+  {
+    AppAIStatus.deadline_miss_count++;
+  }
+  AppAIStatus.last_run_status = run_status;
   AppAIStatus.last_top_index = top_index;
   (void)memcpy((void *)AppAIStatus.last_output, output_buffer, APP_AI_OUTPUT_BYTES);
   AppAI_StatusUnlock(primask);
@@ -344,8 +351,8 @@ static VOID AppAI_ThreadEntry(ULONG thread_input)
   AD7606_SPI4_RawInfo_t raw_info;
   uint32_t copied_bytes;
   uint32_t inference_ms;
+  int32_t run_status;
   uint32_t last_frame_seq = 0U;
-  uint32_t history_valid = 0U;
   uint8_t have_last_frame = 0U;
   int8_t *input_buffer;
   int8_t *output_buffer;
@@ -411,13 +418,13 @@ static VOID AppAI_ThreadEntry(ULONG thread_input)
 
   for (;;)
   {
-    copied_bytes = AD7606_SPI4_CopyLatestRawSamples(AppAIRawSamples,
-                                                     sizeof(AppAIRawSamples),
-                                                     &frame_info,
-                                                     &raw_info);
+    copied_bytes = AD7606_SPI4_CopyLatestRawWindow(AppAIRawSamples,
+                                                   sizeof(AppAIRawSamples),
+                                                   &frame_info,
+                                                   &raw_info);
     if ((copied_bytes == 0U) || (raw_info.bytes_per_sample != 2U) ||
         (raw_info.channels != APP_AI_CHANNELS) ||
-        (raw_info.points == 0U) || (raw_info.points > APP_AI_RAW_MAX_POINTS))
+        (raw_info.points != APP_AI_WINDOW_SAMPLES))
     {
       tx_thread_sleep(APP_AI_THREAD_SLEEP_TICKS);
       continue;
@@ -438,40 +445,26 @@ static VOID AppAI_ThreadEntry(ULONG thread_input)
       {
         AppAIStatus.skip_count += frame_delta - 1U;
       }
-      AppAIStatus.window_reset_count++;
       AppAI_StatusUnlock(primask);
-      (void)memset(AppAIHistory, 0, sizeof(AppAIHistory));
-      history_valid = 0U;
     }
     last_frame_seq = frame_info.frame_seq;
     have_last_frame = 1U;
 
-    AppAI_AppendRawFrame(AppAIRawSamples, &raw_info);
-    history_valid += raw_info.points;
-    if (history_valid > APP_AI_WINDOW_SAMPLES)
-    {
-      history_valid = APP_AI_WINDOW_SAMPLES;
-    }
-
-    if (history_valid < APP_AI_WINDOW_SAMPLES)
-    {
-      tx_thread_sleep(APP_AI_THREAD_SLEEP_TICKS);
-      continue;
-    }
-
-    AppAI_CopyHistoryToInput(input_buffer);
-    if (AppAI_RunInference(input_buffer, output_buffer, &inference_ms) == 0U)
+    AppAI_CopyRawWindowToInput(AppAIRawSamples, &raw_info, input_buffer);
+    if (AppAI_RunInference(input_buffer, output_buffer, &inference_ms, &run_status) == 0U)
     {
       uint32_t primask = AppAI_StatusLock();
 
       AppAIStatus.run_error_count++;
+      AppAIStatus.last_run_error_ms = inference_ms;
+      AppAIStatus.last_run_status = run_status;
       AppAI_StatusUnlock(primask);
       LL_ATON_RT_Reset_Network(&NN_Instance_tiny_temporal_mixer_8ch_int8);
       tx_thread_sleep(APP_AI_THREAD_SLEEP_TICKS);
       continue;
     }
 
-    AppAI_RecordRun(&frame_info, output_buffer, inference_ms);
+    AppAI_RecordRun(&frame_info, output_buffer, inference_ms, run_status);
     LL_ATON_RT_Reset_Network(&NN_Instance_tiny_temporal_mixer_8ch_int8);
     tx_thread_sleep(APP_AI_THREAD_SLEEP_TICKS);
   }
@@ -484,7 +477,6 @@ UINT App_AI_Start(TX_BYTE_POOL *byte_pool)
 
   (void)memset((void *)&AppAIStatus, 0, sizeof(AppAIStatus));
   (void)memset(AppAIRawSamples, 0, sizeof(AppAIRawSamples));
-  (void)memset(AppAIHistory, 0, sizeof(AppAIHistory));
 
   status = AppAI_ByteAllocate(byte_pool, &thread_stack, APP_AI_THREAD_STACK_SIZE);
   if (status != TX_SUCCESS)

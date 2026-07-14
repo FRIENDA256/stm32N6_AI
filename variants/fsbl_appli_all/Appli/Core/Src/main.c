@@ -121,29 +121,7 @@ int main(void)
   HAL_NVIC_SetPriority(AD_IRQ_EXTI_IRQn, 8U, 0U);
   HAL_NVIC_EnableIRQ(AD_IRQ_EXTI_IRQn);
   App_Print("FSBL->Appli all Ethernet start\r\n");
-#if APP_ENABLE_DCMIPP_BOOT_INIT
-  {
-    uint32_t dcmipp_stage = 0U;
-    uint32_t dcmipp_error = 0U;
-    HAL_StatusTypeDef dcmipp_status;
 
-    App_Print("DCMIPP boot init start\r\n");
-    dcmipp_status = App_DCMIPP_DiagnosticInit(&dcmipp_stage, &dcmipp_error);
-    if (dcmipp_status == HAL_OK)
-    {
-      App_Print("DCMIPP boot init OK\r\n");
-    }
-    else
-    {
-      App_Print("DCMIPP boot init failed\r\n");
-      App_PrintHex32("DCMIPP boot stage: ", dcmipp_stage);
-      App_PrintHex32("DCMIPP boot status: ", (uint32_t)dcmipp_status);
-      App_PrintHex32("DCMIPP boot error: ", dcmipp_error);
-    }
-  }
-#else
-  App_Print("DCMIPP boot init disabled\r\n");
-#endif
   Ethernet_PrintClockDebug();
 
   /* USER CODE END 2 */

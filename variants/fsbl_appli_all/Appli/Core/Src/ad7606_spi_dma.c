@@ -145,9 +145,15 @@ static uint8_t ad_spi_led_on;
 static uint8_t ad_spi_tx_dummy[AD_SPI_MAX_FRAME_SIZE];
 static uint8_t ad_spi_rx_frame[AD_SPI_MAX_FRAME_SIZE];
 static uint8_t ad_spi_latest_frame[AD_SPI_MAX_FRAME_SIZE];
+static uint8_t ad_spi_latest_raw_window[AD7606_SPI4_AI_WINDOW_BYTES];
 static AD7606_SPI4_FrameInfo_t ad_spi_latest_info;
+static AD7606_SPI4_RawInfo_t ad_spi_latest_raw_window_info;
 static volatile uint32_t ad_spi_latest_update_seq;
 static volatile uint8_t ad_spi_latest_valid;
+static volatile uint8_t ad_spi_latest_raw_window_valid;
+static uint32_t ad_spi_latest_raw_frame_seq;
+static uint16_t ad_spi_latest_raw_window_points;
+static uint8_t ad_spi_latest_raw_have_frame;
 
 void AD7606_SPI4_Init(void)
 {
@@ -156,7 +162,9 @@ void AD7606_SPI4_Init(void)
   memset(ad_spi_tx_dummy, 0xFF, sizeof(ad_spi_tx_dummy));
   memset(ad_spi_rx_frame, 0x00, sizeof(ad_spi_rx_frame));
   memset(ad_spi_latest_frame, 0x00, sizeof(ad_spi_latest_frame));
+  memset(ad_spi_latest_raw_window, 0x00, sizeof(ad_spi_latest_raw_window));
   memset(&ad_spi_latest_info, 0x00, sizeof(ad_spi_latest_info));
+  memset(&ad_spi_latest_raw_window_info, 0x00, sizeof(ad_spi_latest_raw_window_info));
 
   ad_irq_count = 0U;
   ad_irq_pending = 0U;
@@ -170,6 +178,10 @@ void AD7606_SPI4_Init(void)
   ad_spi_paused = 0U;
   ad_spi_latest_update_seq = 0U;
   ad_spi_latest_valid = 0U;
+  ad_spi_latest_raw_window_valid = 0U;
+  ad_spi_latest_raw_frame_seq = 0U;
+  ad_spi_latest_raw_window_points = 0U;
+  ad_spi_latest_raw_have_frame = 0U;
 
   HAL_GPIO_WritePin(AD_CS_GPIO_Port, AD_CS_Pin, GPIO_PIN_SET);
   SPI4_QualityTest_ClearWindow(now_tick);
@@ -397,6 +409,58 @@ uint32_t AD7606_SPI4_CopyLatestRawSamples(uint8_t *dest,
         *raw_info = local_raw_info;
       }
       return local_raw_info.sample_bytes;
+    }
+  }
+
+  return 0U;
+}
+
+uint32_t AD7606_SPI4_CopyLatestRawWindow(uint8_t *dest,
+                                         uint32_t dest_len,
+                                         AD7606_SPI4_FrameInfo_t *frame_info,
+                                         AD7606_SPI4_RawInfo_t *raw_info)
+{
+  if ((dest == NULL) || (ad_spi_latest_raw_window_valid == 0U) ||
+      (dest_len < AD7606_SPI4_AI_WINDOW_BYTES))
+  {
+    return 0U;
+  }
+
+  for (uint32_t attempt = 0U; attempt < 8U; attempt++)
+  {
+    uint32_t seq_before = ad_spi_latest_update_seq;
+    AD7606_SPI4_FrameInfo_t local_frame_info;
+    AD7606_SPI4_RawInfo_t local_raw_info;
+
+    if ((seq_before & 1U) != 0U)
+    {
+      continue;
+    }
+
+    __DMB();
+    local_frame_info = ad_spi_latest_info;
+    local_raw_info = ad_spi_latest_raw_window_info;
+    if ((local_raw_info.points != AD7606_SPI4_AI_WINDOW_POINTS) ||
+        (local_raw_info.sample_bytes != AD7606_SPI4_AI_WINDOW_BYTES))
+    {
+      return 0U;
+    }
+
+    memcpy(dest, ad_spi_latest_raw_window, AD7606_SPI4_AI_WINDOW_BYTES);
+
+    __DMB();
+    if ((seq_before == ad_spi_latest_update_seq) &&
+        ((ad_spi_latest_update_seq & 1U) == 0U))
+    {
+      if (frame_info != NULL)
+      {
+        *frame_info = local_frame_info;
+      }
+      if (raw_info != NULL)
+      {
+        *raw_info = local_raw_info;
+      }
+      return AD7606_SPI4_AI_WINDOW_BYTES;
     }
   }
 
@@ -889,6 +953,14 @@ static void AD7606_SPI4_SaveLatestFrame(uint32_t irq_count_snapshot,
                                         uint32_t crc_actual)
 {
   AD7606_SPI4_FrameInfo_t info;
+  const uint8_t *raw_payload = NULL;
+  uint32_t raw_sample_bytes = 0U;
+  uint64_t raw_block_start = 0U;
+  uint64_t raw_block_end = 0U;
+  uint16_t raw_points = 0U;
+  uint8_t raw_channels = 0U;
+  uint8_t raw_bytes_per_sample = 0U;
+  uint8_t raw_format_valid = 0U;
 
   if ((total_len == 0U) || (total_len > AD_SPI_MAX_FRAME_SIZE))
   {
@@ -905,11 +977,92 @@ static void AD7606_SPI4_SaveLatestFrame(uint32_t irq_count_snapshot,
   info.frame_type = frame_type;
   info.crc_ok = 1U;
 
+  if ((frame_type == AD_FRAME_TYPE_RAW_SYNC) &&
+      (payload_len >= AD_RAW_PAYLOAD_HEADER_SIZE))
+  {
+    const uint8_t *payload = &ad_spi_rx_frame[AD_SPI_HEADER_SIZE];
+
+    raw_points = ReadLE16(&payload[0]);
+    raw_channels = payload[2];
+    raw_bytes_per_sample = payload[3];
+    raw_block_start = ReadLE64(&payload[4]);
+    raw_block_end = ReadLE64(&payload[12]);
+    raw_sample_bytes = (uint32_t)raw_points * raw_channels * raw_bytes_per_sample;
+    if ((raw_points > 0U) &&
+        (raw_points <= AD7606_SPI4_AI_WINDOW_POINTS) &&
+        (raw_channels == AD_RAW_MAX_CHANNELS) &&
+        (raw_bytes_per_sample == 2U) &&
+        ((AD_RAW_PAYLOAD_HEADER_SIZE + raw_sample_bytes) <= payload_len) &&
+        (raw_sample_bytes <= AD7606_SPI4_AI_WINDOW_BYTES))
+    {
+      raw_payload = &payload[AD_RAW_PAYLOAD_HEADER_SIZE];
+      raw_format_valid = 1U;
+    }
+  }
+
   ad_spi_latest_update_seq++;
   __DMB();
   memcpy(ad_spi_latest_frame, ad_spi_rx_frame, total_len);
   ad_spi_latest_info = info;
   ad_spi_latest_valid = 1U;
+
+  if (raw_format_valid != 0U)
+  {
+    uint8_t continuous = 0U;
+
+    if ((ad_spi_latest_raw_have_frame != 0U) &&
+        (frame_seq == (ad_spi_latest_raw_frame_seq + 1U)) &&
+        (raw_channels == ad_spi_latest_raw_window_info.channels) &&
+        (raw_bytes_per_sample == ad_spi_latest_raw_window_info.bytes_per_sample) &&
+        (raw_block_start == (ad_spi_latest_raw_window_info.block_end + 1U)))
+    {
+      continuous = 1U;
+    }
+
+    if (continuous == 0U)
+    {
+      ad_spi_latest_raw_window_points = 0U;
+      ad_spi_latest_raw_window_info.block_start = raw_block_start;
+    }
+
+    if (((uint32_t)ad_spi_latest_raw_window_points + raw_points) > AD7606_SPI4_AI_WINDOW_POINTS)
+    {
+      uint32_t drop_points = (uint32_t)ad_spi_latest_raw_window_points + raw_points -
+                             AD7606_SPI4_AI_WINDOW_POINTS;
+      uint32_t drop_bytes = drop_points * raw_channels * raw_bytes_per_sample;
+      uint32_t keep_bytes = ((uint32_t)ad_spi_latest_raw_window_points *
+                             raw_channels * raw_bytes_per_sample) - drop_bytes;
+
+      memmove(ad_spi_latest_raw_window,
+              &ad_spi_latest_raw_window[drop_bytes],
+              keep_bytes);
+      ad_spi_latest_raw_window_points -= (uint16_t)drop_points;
+      ad_spi_latest_raw_window_info.block_start += drop_points;
+    }
+
+    memcpy(&ad_spi_latest_raw_window[(uint32_t)ad_spi_latest_raw_window_points *
+                                     raw_channels * raw_bytes_per_sample],
+           raw_payload,
+           raw_sample_bytes);
+    ad_spi_latest_raw_window_points += raw_points;
+    ad_spi_latest_raw_window_info.points = ad_spi_latest_raw_window_points;
+    ad_spi_latest_raw_window_info.channels = raw_channels;
+    ad_spi_latest_raw_window_info.bytes_per_sample = raw_bytes_per_sample;
+    ad_spi_latest_raw_window_info.sample_bytes =
+      (uint32_t)ad_spi_latest_raw_window_points * raw_channels * raw_bytes_per_sample;
+    ad_spi_latest_raw_window_info.block_end = raw_block_end;
+    ad_spi_latest_raw_frame_seq = frame_seq;
+    ad_spi_latest_raw_have_frame = 1U;
+    ad_spi_latest_raw_window_valid =
+      (ad_spi_latest_raw_window_points == AD7606_SPI4_AI_WINDOW_POINTS) ? 1U : 0U;
+  }
+  else
+  {
+    ad_spi_latest_raw_window_valid = 0U;
+    ad_spi_latest_raw_have_frame = 0U;
+    ad_spi_latest_raw_window_points = 0U;
+  }
+
   __DMB();
   ad_spi_latest_update_seq++;
 }

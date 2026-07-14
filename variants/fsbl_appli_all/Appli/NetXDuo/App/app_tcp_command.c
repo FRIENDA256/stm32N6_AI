@@ -661,13 +661,16 @@ static UINT AppTcpCommand_SendStatus(void)
 static UINT AppTcpCommand_SendAIStatus(void)
 {
   App_AI_Status_t status;
-  char line[320];
+  char line[448];
   int len;
+  uint32_t average_inference_ms;
 
   App_AI_GetStatus(&status);
+  average_inference_ms = (status.run_count != 0U) ?
+                         (status.inference_total_ms / status.run_count) : 0U;
   len = snprintf(line,
                  sizeof(line),
-                 "OK AISTAT init=%lu ready=%lu fault=%lu weights=%lu runs=%lu skips=%lu resets=%lu copy_err=%lu run_err=%lu last_seq=%lu ts=%lu sample=%lu infer_ms=%lu top=%u out=%d,%d,%d,%d prep=s16_shift8\r\n",
+                 "OK AISTAT init=%lu ready=%lu fault=%lu weights=%lu runs=%lu skips=%lu resets=%lu copy_err=%lu run_err=%lu late=%lu npu_hz=%lu nram_hz=%lu infer_ms=%lu avg_ms=%lu max_ms=%lu err_ms=%lu rt=%ld last_seq=%lu ts=%lu sample=%lu top=%u out=%d,%d,%d,%d prep=s16_shift8_window1024\r\n",
                  (unsigned long)status.initialized,
                  (unsigned long)status.ready,
                  (unsigned long)status.fault,
@@ -677,10 +680,17 @@ static UINT AppTcpCommand_SendAIStatus(void)
                  (unsigned long)status.window_reset_count,
                  (unsigned long)status.copy_error_count,
                  (unsigned long)status.run_error_count,
+                 (unsigned long)status.deadline_miss_count,
+                 (unsigned long)status.npu_clock_hz,
+                 (unsigned long)status.npuram_clock_hz,
+                 (unsigned long)status.last_inference_ms,
+                 (unsigned long)average_inference_ms,
+                 (unsigned long)status.max_inference_ms,
+                 (unsigned long)status.last_run_error_ms,
+                 (long)status.last_run_status,
                  (unsigned long)status.last_frame_seq,
                  (unsigned long)status.last_timestamp_ms,
                  (unsigned long)status.last_sample_counter,
-                 (unsigned long)status.last_inference_ms,
                  (unsigned int)status.last_top_index,
                  (int)status.last_output[0],
                  (int)status.last_output[1],

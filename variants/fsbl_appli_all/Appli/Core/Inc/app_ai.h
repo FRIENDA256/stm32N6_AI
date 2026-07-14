@@ -29,6 +29,13 @@ typedef struct
   uint32_t window_reset_count;
   uint32_t copy_error_count;
   uint32_t run_error_count;
+  uint32_t deadline_miss_count;
+  uint32_t npu_clock_hz;
+  uint32_t npuram_clock_hz;
+  uint32_t inference_total_ms;
+  uint32_t max_inference_ms;
+  uint32_t last_run_error_ms;
+  int32_t last_run_status;
   uint32_t last_frame_seq;
   uint32_t last_timestamp_ms;
   uint32_t last_sample_counter;
