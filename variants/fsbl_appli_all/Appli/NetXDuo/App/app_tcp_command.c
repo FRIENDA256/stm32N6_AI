@@ -12,6 +12,7 @@
 #include "app_ai.h"
 #include "app_camera_imx219.h"
 #include "app_console.h"
+#include "app_ir_capture.h"
 #include "dcmipp.h"
 #include "tiny1c_port_stm32_hal.h"
 #include <stdio.h>
@@ -26,9 +27,8 @@
 #define APP_TCP_COMMAND_LOG_INTERVAL      8UL
 #define APP_TCP_COMMAND_AD_WAIT_MS        3000U
 #define APP_TCP_COMMAND_AD_POLL_MS        20U
-#define APP_TCP_COMMAND_IR_PAUSE_AD7606   1U
-#define APP_TCP_COMMAND_IR_AD_WAIT_MS     200U
-#define APP_TCP_COMMAND_IR_AD_POLL_MS     2U
+#define APP_TCP_COMMAND_AD_PAUSE_WAIT_MS  1000U
+#define APP_TCP_COMMAND_IR_WAIT_MS        7000U
 #define APP_TCP_COMMAND_CAM_WAIT_MS       3000U
 #define APP_TCP_COMMAND_CAM_POLL_MS       10U
 #define APP_TCP_COMMAND_THR_DEFAULT_MIB   32U
@@ -61,36 +61,36 @@ typedef struct
 
 static ULONG AppTcpCommand_MsToTicks(uint32_t ms);
 
-static void AppTcpCommand_IrCaptureBegin(void)
+static UINT AppTcpCommand_IrCaptureBegin(uint8_t *resume_after)
 {
-#if (APP_TCP_COMMAND_IR_PAUSE_AD7606 == 1U)
-  ULONG start_tick;
-  ULONG timeout_ticks;
-  ULONG poll_ticks;
+  App_IRCapture_Status_t capture_status;
+  UINT status;
 
-  AD7606_SPI4_SetPaused(1U);
-
-  start_tick = tx_time_get();
-  timeout_ticks = AppTcpCommand_MsToTicks(APP_TCP_COMMAND_IR_AD_WAIT_MS);
-  poll_ticks = AppTcpCommand_MsToTicks(APP_TCP_COMMAND_IR_AD_POLL_MS);
-
-  while (AD7606_SPI4_IsIdle() == 0U)
+  if (resume_after == NULL)
   {
-    if ((tx_time_get() - start_tick) >= timeout_ticks)
-    {
-      App_Print("AD7606 pause wait timeout before Tiny1C capture\r\n");
-      break;
-    }
-    tx_thread_sleep(poll_ticks);
+    return NX_PTR_ERROR;
   }
-#endif
+
+  App_IRCapture_GetStatus(&capture_status);
+  *resume_after = (capture_status.paused == 0U) ? 1U : 0U;
+  status = App_IRCapture_Pause(AppTcpCommand_MsToTicks(APP_TCP_COMMAND_IR_WAIT_MS));
+
+  if (status != TX_SUCCESS)
+  {
+    *resume_after = 0U;
+    App_PrintHex32("IR background pause failed: ", status);
+    return NX_NOT_SUCCESSFUL;
+  }
+
+  return NX_SUCCESS;
 }
 
-static void AppTcpCommand_IrCaptureEnd(void)
+static void AppTcpCommand_IrCaptureEnd(uint8_t resume_after)
 {
-#if (APP_TCP_COMMAND_IR_PAUSE_AD7606 == 1U)
-  AD7606_SPI4_SetPaused(0U);
-#endif
+  if (resume_after != 0U)
+  {
+    App_IRCapture_Resume();
+  }
 }
 
 static UINT AppTcpCommand_ByteAllocate(TX_BYTE_POOL *byte_pool, UCHAR **memory, ULONG size)
@@ -670,7 +670,7 @@ static UINT AppTcpCommand_SendAIStatus(void)
                          (status.inference_total_ms / status.run_count) : 0U;
   len = snprintf(line,
                  sizeof(line),
-                 "OK AISTAT init=%lu ready=%lu fault=%lu weights=%lu runs=%lu skips=%lu resets=%lu copy_err=%lu run_err=%lu late=%lu npu_hz=%lu nram_hz=%lu infer_ms=%lu avg_ms=%lu max_ms=%lu err_ms=%lu rt=%ld last_seq=%lu ts=%lu sample=%lu top=%u out=%d,%d,%d,%d prep=s16_shift8_window1024\r\n",
+                 "OK AISTAT init=%lu ready=%lu fault=%lu weights=%lu runs=%lu skips=%lu resets=%lu copy_err=%lu run_err=%lu late=%lu npu_hz=%lu nram_hz=%lu target_hz=%lu infer_ms=%lu avg_ms=%lu max_ms=%lu err_ms=%lu rt=%ld last_seq=%lu ts=%lu sample=%lu top=%u out=%d,%d,%d,%d prep=s16_qscale0p006754_window1024\r\n",
                  (unsigned long)status.initialized,
                  (unsigned long)status.ready,
                  (unsigned long)status.fault,
@@ -683,6 +683,7 @@ static UINT AppTcpCommand_SendAIStatus(void)
                  (unsigned long)status.deadline_miss_count,
                  (unsigned long)status.npu_clock_hz,
                  (unsigned long)status.npuram_clock_hz,
+                 (unsigned long)status.target_rate_hz,
                  (unsigned long)status.last_inference_ms,
                  (unsigned long)average_inference_ms,
                  (unsigned long)status.max_inference_ms,
@@ -696,6 +697,276 @@ static UINT AppTcpCommand_SendAIStatus(void)
                  (int)status.last_output[1],
                  (int)status.last_output[2],
                  (int)status.last_output[3]);
+  if ((len <= 0) || ((uint32_t)len >= sizeof(line)))
+  {
+    return NX_NOT_SUCCESSFUL;
+  }
+
+  return AppTcpCommand_SendText(line);
+}
+
+static UINT AppTcpCommand_SendIRStatus(void)
+{
+  App_IRCapture_Status_t status;
+  uint32_t image_fps_x100 = 0U;
+  uint32_t temp_fps_x100 = 0U;
+  char line[320];
+  int len;
+
+  App_IRCapture_GetStatus(&status);
+  if (status.schedule_elapsed_ms != 0U)
+  {
+    image_fps_x100 = (uint32_t)(((uint64_t)status.image_count * 100000ULL) /
+                                status.schedule_elapsed_ms);
+    temp_fps_x100 = (uint32_t)(((uint64_t)status.temp_count * 100000ULL) /
+                               status.schedule_elapsed_ms);
+  }
+
+  len = snprintf(line,
+                 sizeof(line),
+                 "OK IRSTAT init=%lu run=%lu pause=%lu active=%lu image=%lu temp=%lu img_fps=%lu.%02lu temp_fps=%lu.%02lu err=%lu late=%lu img_seq=%lu temp_seq=%lu last=0x%02X last_ms=%lu max_ms=%lu elapsed_ms=%lu\r\n",
+                 (unsigned long)status.initialized,
+                 (unsigned long)status.running,
+                 (unsigned long)status.paused,
+                 (unsigned long)status.active,
+                 (unsigned long)status.image_count,
+                 (unsigned long)status.temp_count,
+                 (unsigned long)(image_fps_x100 / 100U),
+                 (unsigned long)(image_fps_x100 % 100U),
+                 (unsigned long)(temp_fps_x100 / 100U),
+                 (unsigned long)(temp_fps_x100 % 100U),
+                 (unsigned long)status.capture_error_count,
+                 (unsigned long)status.deadline_miss_count,
+                 (unsigned long)status.image_sequence,
+                 (unsigned long)status.temp_sequence,
+                 (unsigned int)status.last_command,
+                 (unsigned long)status.last_capture_ms,
+                 (unsigned long)status.max_capture_ms,
+                 (unsigned long)status.schedule_elapsed_ms);
+  if ((len <= 0) || ((uint32_t)len >= sizeof(line)))
+  {
+    return NX_NOT_SUCCESSFUL;
+  }
+
+  return AppTcpCommand_SendText(line);
+}
+
+static UINT AppTcpCommand_SendIRPause(uint8_t paused)
+{
+  App_IRCapture_Status_t capture_status;
+  char line[96];
+  UINT status = TX_SUCCESS;
+  int len;
+
+  if (paused != 0U)
+  {
+    status = App_IRCapture_Pause(AppTcpCommand_MsToTicks(APP_TCP_COMMAND_IR_WAIT_MS));
+  }
+  else
+  {
+    App_IRCapture_Resume();
+  }
+
+  App_IRCapture_GetStatus(&capture_status);
+  if (status != TX_SUCCESS)
+  {
+    len = snprintf(line,
+                   sizeof(line),
+                   "ERR IRPAUSE status=0x%08lX pause=%lu active=%lu\r\n",
+                   (unsigned long)status,
+                   (unsigned long)capture_status.paused,
+                   (unsigned long)capture_status.active);
+  }
+  else
+  {
+    len = snprintf(line,
+                   sizeof(line),
+                   "OK %s pause=%lu active=%lu\r\n",
+                   (paused != 0U) ? "IRPAUSE" : "IRRESUME",
+                   (unsigned long)capture_status.paused,
+                   (unsigned long)capture_status.active);
+  }
+
+  if ((len <= 0) || ((uint32_t)len >= sizeof(line)))
+  {
+    return NX_NOT_SUCCESSFUL;
+  }
+
+  return AppTcpCommand_SendText(line);
+}
+
+static UINT AppTcpCommand_SendIRRestart(void)
+{
+  App_IRCapture_Status_t capture_status;
+  uint8_t resume_ir_capture;
+  tiny1c_status_t status;
+  char line[112];
+  int len;
+
+  if (AppTcpCommand_IrCaptureBegin(&resume_ir_capture) != NX_SUCCESS)
+  {
+    return AppTcpCommand_SendText("ERR IRRESTART background busy\r\n");
+  }
+
+  status = Tiny1C_STM32_RestartPreview();
+  AppTcpCommand_IrCaptureEnd(resume_ir_capture);
+  App_IRCapture_GetStatus(&capture_status);
+
+  len = snprintf(line,
+                 sizeof(line),
+                 "%s IRRESTART status=%lu pause=%lu active=%lu\r\n",
+                 (status == TINY1C_STATUS_OK) ? "OK" : "ERR",
+                 (unsigned long)status,
+                 (unsigned long)capture_status.paused,
+                 (unsigned long)capture_status.active);
+  if ((len <= 0) || ((uint32_t)len >= sizeof(line)))
+  {
+    return NX_NOT_SUCCESSFUL;
+  }
+
+  return AppTcpCommand_SendText(line);
+}
+
+static UINT AppTcpCommand_SendIRSpi50Test(const char *args)
+{
+  const char *cursor = AppTcpCommand_SkipSpaces(args);
+  Tiny1C_STM32_SpiTestResult_t result;
+  tiny1c_status_t status;
+  uint8_t resume_ir_capture;
+  uint32_t iterations = 3U;
+  uint32_t blocking_avg_ms;
+  uint32_t dma_avg_ms;
+  char line[512];
+  int len;
+
+  if (*cursor != '\0')
+  {
+    if (AppTcpCommand_ParseU32(&cursor, &iterations) != NX_SUCCESS)
+    {
+      return AppTcpCommand_SendText("ERR usage: IRSPI50 [1..10]\r\n");
+    }
+    cursor = AppTcpCommand_SkipSpaces(cursor);
+    if (*cursor != '\0')
+    {
+      return AppTcpCommand_SendText("ERR usage: IRSPI50 [1..10]\r\n");
+    }
+  }
+  if ((iterations == 0U) || (iterations > 10U))
+  {
+    return AppTcpCommand_SendText("ERR usage: IRSPI50 [1..10]\r\n");
+  }
+
+  if (AppTcpCommand_IrCaptureBegin(&resume_ir_capture) != NX_SUCCESS)
+  {
+    return AppTcpCommand_SendText("ERR IRSPI50 background busy\r\n");
+  }
+
+  status = Tiny1C_STM32_RunSpi50Test(iterations, &result);
+  if (result.restore_hal_status == (uint32_t)HAL_OK)
+  {
+    AppTcpCommand_IrCaptureEnd(resume_ir_capture);
+  }
+
+  blocking_avg_ms = result.blocking.total_ms / iterations;
+  dma_avg_ms = result.dma.total_ms / iterations;
+  len = snprintf(line,
+                 sizeof(line),
+                 "%s IRSPI50 n=%lu test_hz=%lu restored_hz=%lu switch=%lu priority=%lu restore=%lu "
+                 "block_ok=%lu block_err=%lu block_avg_ms=%lu block_max_ms=%lu block_jumps=%lu block_jump_max=%lu block_delta=%lu block_crc=0x%08lX block_hal=0x%08lX "
+                 "dma_eq_ok=%lu dma_eq_err=%lu dma_eq_avg_ms=%lu dma_eq_max_ms=%lu dma_eq_jumps=%lu dma_eq_jump_max=%lu dma_eq_delta=%lu dma_eq_crc=0x%08lX dma_eq_hal=0x%08lX\r\n",
+                 (status == TINY1C_STATUS_OK) ? "OK" : "ERR",
+                 (unsigned long)result.iterations,
+                 (unsigned long)result.test_hz,
+                 (unsigned long)result.restored_hz,
+                 (unsigned long)result.switch_hal_status,
+                 (unsigned long)result.priority_hal_status,
+                 (unsigned long)result.restore_hal_status,
+                 (unsigned long)result.blocking.ok_count,
+                 (unsigned long)result.blocking.error_count,
+                 (unsigned long)blocking_avg_ms,
+                 (unsigned long)result.blocking.max_ms,
+                 (unsigned long)result.blocking.total_jumps,
+                 (unsigned long)result.blocking.max_jumps,
+                 (unsigned long)result.blocking.max_delta,
+                 (unsigned long)result.blocking.last_crc32,
+                 (unsigned long)result.blocking.last_hal_error,
+                 (unsigned long)result.dma.ok_count,
+                 (unsigned long)result.dma.error_count,
+                 (unsigned long)dma_avg_ms,
+                 (unsigned long)result.dma.max_ms,
+                 (unsigned long)result.dma.total_jumps,
+                 (unsigned long)result.dma.max_jumps,
+                 (unsigned long)result.dma.max_delta,
+                 (unsigned long)result.dma.last_crc32,
+                 (unsigned long)result.dma.last_hal_error);
+  if ((len <= 0) || ((uint32_t)len >= sizeof(line)))
+  {
+    return NX_NOT_SUCCESSFUL;
+  }
+
+  return AppTcpCommand_SendText(line);
+}
+
+static UINT AppTcpCommand_SendIRSpi50DmaTest(const char *args)
+{
+  const char *cursor = AppTcpCommand_SkipSpaces(args);
+  Tiny1C_STM32_SpiTestResult_t result;
+  tiny1c_status_t status;
+  uint8_t resume_ir_capture;
+  uint32_t iterations = 50U;
+  uint32_t dma_avg_ms;
+  char line[384];
+  int len;
+
+  if (*cursor != '\0')
+  {
+    if (AppTcpCommand_ParseU32(&cursor, &iterations) != NX_SUCCESS)
+    {
+      return AppTcpCommand_SendText("ERR usage: IRSPI50DMA [1..100]\r\n");
+    }
+    cursor = AppTcpCommand_SkipSpaces(cursor);
+    if (*cursor != '\0')
+    {
+      return AppTcpCommand_SendText("ERR usage: IRSPI50DMA [1..100]\r\n");
+    }
+  }
+  if ((iterations == 0U) || (iterations > 100U))
+  {
+    return AppTcpCommand_SendText("ERR usage: IRSPI50DMA [1..100]\r\n");
+  }
+
+  if (AppTcpCommand_IrCaptureBegin(&resume_ir_capture) != NX_SUCCESS)
+  {
+    return AppTcpCommand_SendText("ERR IRSPI50DMA background busy\r\n");
+  }
+
+  status = Tiny1C_STM32_RunSpi50DmaTest(iterations, &result);
+  if (result.restore_hal_status == (uint32_t)HAL_OK)
+  {
+    AppTcpCommand_IrCaptureEnd(resume_ir_capture);
+  }
+
+  dma_avg_ms = result.dma.total_ms / iterations;
+  len = snprintf(line,
+                 sizeof(line),
+                 "%s IRSPI50DMA n=%lu test_hz=%lu restored_hz=%lu switch=%lu priority=%lu restore=%lu "
+                 "ok=%lu err=%lu avg_ms=%lu max_ms=%lu jumps=%lu jump_max=%lu delta=%lu crc=0x%08lX hal=0x%08lX\r\n",
+                 (status == TINY1C_STATUS_OK) ? "OK" : "ERR",
+                 (unsigned long)result.iterations,
+                 (unsigned long)result.test_hz,
+                 (unsigned long)result.restored_hz,
+                 (unsigned long)result.switch_hal_status,
+                 (unsigned long)result.priority_hal_status,
+                 (unsigned long)result.restore_hal_status,
+                 (unsigned long)result.dma.ok_count,
+                 (unsigned long)result.dma.error_count,
+                 (unsigned long)dma_avg_ms,
+                 (unsigned long)result.dma.max_ms,
+                 (unsigned long)result.dma.total_jumps,
+                 (unsigned long)result.dma.max_jumps,
+                 (unsigned long)result.dma.max_delta,
+                 (unsigned long)result.dma.last_crc32,
+                 (unsigned long)result.dma.last_hal_error);
   if ((len <= 0) || ((uint32_t)len >= sizeof(line)))
   {
     return NX_NOT_SUCCESSFUL;
@@ -734,9 +1005,15 @@ static UINT AppTcpCommand_SendTiny1CResult(const char *name, uint8_t tiny1c_comm
 {
   char line[80];
   ULONG pos = 0UL;
+  uint8_t resume_ir_capture;
   tiny1c_status_t status;
 
+  if (AppTcpCommand_IrCaptureBegin(&resume_ir_capture) != NX_SUCCESS)
+  {
+    return AppTcpCommand_SendText("ERR Tiny1C background busy\r\n");
+  }
   status = Tiny1C_STM32_ProcessCommand(tiny1c_command);
+  AppTcpCommand_IrCaptureEnd(resume_ir_capture);
   if (status == TINY1C_STATUS_OK)
   {
     AppTcpCommand_AppendText(line, &pos, sizeof(line), "OK ");
@@ -962,15 +1239,19 @@ static UINT AppTcpCommand_SendTiny1CCaptureDumpResult(const char *name, uint8_t 
 {
   char line[80];
   ULONG pos = 0UL;
+  uint8_t resume_ir_capture;
   tiny1c_status_t status;
 
-  AppTcpCommand_IrCaptureBegin();
+  if (AppTcpCommand_IrCaptureBegin(&resume_ir_capture) != NX_SUCCESS)
+  {
+    return AppTcpCommand_SendText("ERR Tiny1C background busy\r\n");
+  }
   status = Tiny1C_STM32_ProcessCommand(capture_command);
-  AppTcpCommand_IrCaptureEnd();
   if (status == TINY1C_STATUS_OK)
   {
     status = Tiny1C_STM32_ProcessCommand((uint8_t)'b');
   }
+  AppTcpCommand_IrCaptureEnd(resume_ir_capture);
 
   if (status == TINY1C_STATUS_OK)
   {
@@ -988,6 +1269,73 @@ static UINT AppTcpCommand_SendTiny1CCaptureDumpResult(const char *name, uint8_t 
   AppTcpCommand_AppendText(line, &pos, sizeof(line), name);
   AppTcpCommand_AppendText(line, &pos, sizeof(line), "\r\n");
   line[pos] = '\0';
+
+  return AppTcpCommand_SendText(line);
+}
+
+static UINT AppTcpCommand_SendADStatus(void)
+{
+  AD7606_SPI4_FrameInfo_t info;
+  uint32_t frame_len;
+  char line[256];
+  int len;
+
+  (void)memset(&info, 0, sizeof(info));
+  frame_len = AD7606_SPI4_CopyLatestFrame(TcpCommandAdFrame,
+                                          sizeof(TcpCommandAdFrame),
+                                          &info);
+  len = snprintf(line,
+                 sizeof(line),
+                 "OK ADSTAT paused=%u idle=%u latest=%u irq=%lu seq=%lu type=0x%02X "
+                 "bytes=%lu crc_ok=%u\r\n",
+                 (unsigned int)AD7606_SPI4_IsPaused(),
+                 (unsigned int)AD7606_SPI4_IsIdle(),
+                 (unsigned int)((frame_len != 0U) ? 1U : 0U),
+                 (unsigned long)info.irq_count,
+                 (unsigned long)info.frame_seq,
+                 (unsigned int)info.frame_type,
+                 (unsigned long)frame_len,
+                 (unsigned int)info.crc_ok);
+  if ((len <= 0) || ((uint32_t)len >= sizeof(line)))
+  {
+    return NX_NOT_SUCCESSFUL;
+  }
+
+  return AppTcpCommand_SendText(line);
+}
+
+static UINT AppTcpCommand_SendADPause(uint8_t paused)
+{
+  ULONG start_tick;
+  ULONG wait_ticks;
+  char line[96];
+  int len;
+
+  AD7606_SPI4_SetPaused(paused);
+  if (paused != 0U)
+  {
+    start_tick = tx_time_get();
+    wait_ticks = AppTcpCommand_MsToTicks(APP_TCP_COMMAND_AD_PAUSE_WAIT_MS);
+    while (AD7606_SPI4_IsIdle() == 0U)
+    {
+      if ((tx_time_get() - start_tick) >= wait_ticks)
+      {
+        return AppTcpCommand_SendText("ERR ADPAUSE timeout paused=1 idle=0\r\n");
+      }
+      tx_thread_sleep(1U);
+    }
+  }
+
+  len = snprintf(line,
+                 sizeof(line),
+                 "OK %s paused=%u idle=%u\r\n",
+                 (paused != 0U) ? "ADPAUSE" : "ADRESUME",
+                 (unsigned int)AD7606_SPI4_IsPaused(),
+                 (unsigned int)AD7606_SPI4_IsIdle());
+  if ((len <= 0) || ((uint32_t)len >= sizeof(line)))
+  {
+    return NX_NOT_SUCCESSFUL;
+  }
 
   return AppTcpCommand_SendText(line);
 }
@@ -1054,19 +1402,26 @@ static UINT AppTcpCommand_SendTiny1CBinary(const char *name, uint8_t frame_comma
   char header[192];
   int len;
 
-  AppTcpCommand_IrCaptureBegin();
+  UINT send_status;
+  uint8_t resume_ir_capture;
+
+  if (AppTcpCommand_IrCaptureBegin(&resume_ir_capture) != NX_SUCCESS)
+  {
+    return AppTcpCommand_SendText("ERR Tiny1C background busy\r\n");
+  }
   status = (baseline_mode != 0U) ?
     Tiny1C_STM32_CaptureFrameBaseline(frame_command) :
     Tiny1C_STM32_CaptureFrame(frame_command);
-  AppTcpCommand_IrCaptureEnd();
   if (status != TINY1C_STATUS_OK)
   {
+    AppTcpCommand_IrCaptureEnd(resume_ir_capture);
     return AppTcpCommand_SendText("ERR Tiny1C capture failed\r\n");
   }
 
   status = Tiny1C_STM32_GetLatestFrame(&frame, &frame_len, &actual_command, &crc32);
   if (status != TINY1C_STATUS_OK)
   {
+    AppTcpCommand_IrCaptureEnd(resume_ir_capture);
     return AppTcpCommand_SendText("ERR Tiny1C no frame\r\n");
   }
 
@@ -1082,10 +1437,13 @@ static UINT AppTcpCommand_SendTiny1CBinary(const char *name, uint8_t frame_comma
                  (unsigned long)crc32);
   if ((len <= 0) || ((uint32_t)len >= sizeof(header)))
   {
+    AppTcpCommand_IrCaptureEnd(resume_ir_capture);
     return AppTcpCommand_SendText("ERR Tiny1C header failed\r\n");
   }
 
-  return AppTcpCommand_SendBinaryFrame(header, frame, frame_len);
+  send_status = AppTcpCommand_SendBinaryFrame(header, frame, frame_len);
+  AppTcpCommand_IrCaptureEnd(resume_ir_capture);
+  return send_status;
 }
 
 static UINT AppTcpCommand_SendTcpThroughput(const char *args, uint8_t fill_payload)
@@ -1388,7 +1746,7 @@ static UINT AppTcpCommand_Process(char *request)
 
   if ((command[0] == '\0') || AppTcpCommand_Equals(command, "HELP") || AppTcpCommand_Equals(command, "?"))
   {
-    return AppTcpCommand_SendText("OK commands: PING INFO STAT AISTAT CAMINIT CAMPROBE CAMCFG CAMCFGDCMIPP CAMCFGSENSOR CAMSTART CAMSTOP CAMSTAT CAMGET CAMIRQON CAMIRQOFF TCPTHR TCPTHRZ UDPTHR UDPTHRZ ADRAW ADGET IRPROBE IRVSYNC IRIMG IRTEMP IRDUMP IRCAPIMG IRCAPTEMP IRGETIMG IRGETTEMP IRGETIMGBASE IRGETTEMPBASE IRFASTIMG IRFASTTEMP HELP QUIT\r\n");
+    return AppTcpCommand_SendText("OK commands: PING INFO STAT AISTAT IRSTAT IRPAUSE IRRESUME IRRESTART IRSPI50 IRSPI50DMA ADSTAT ADPAUSE ADRESUME CAMINIT CAMPROBE CAMCFG CAMCFGDCMIPP CAMCFGSENSOR CAMSTART CAMSTOP CAMSTAT CAMGET CAMIRQON CAMIRQOFF TCPTHR TCPTHRZ UDPTHR UDPTHRZ ADRAW ADGET IRPROBE IRVSYNC IRIMG IRTEMP IRDUMP IRCAPIMG IRCAPTEMP IRGETIMG IRGETTEMP IRGETIMGBASE IRGETTEMPBASE IRFASTIMG IRFASTTEMP HELP QUIT\r\n");
   }
 
   if (AppTcpCommand_Equals(command, "PING"))
@@ -1410,6 +1768,37 @@ static UINT AppTcpCommand_Process(char *request)
       AppTcpCommand_Equals(command, "AI"))
   {
     return AppTcpCommand_SendAIStatus();
+  }
+
+  if (AppTcpCommand_Equals(command, "IRSTAT") ||
+      AppTcpCommand_Equals(command, "IRSTATUS"))
+  {
+    return AppTcpCommand_SendIRStatus();
+  }
+
+  if (AppTcpCommand_Equals(command, "IRPAUSE"))
+  {
+    return AppTcpCommand_SendIRPause(1U);
+  }
+
+  if (AppTcpCommand_Equals(command, "IRRESUME"))
+  {
+    return AppTcpCommand_SendIRPause(0U);
+  }
+
+  if (AppTcpCommand_Equals(command, "IRRESTART"))
+  {
+    return AppTcpCommand_SendIRRestart();
+  }
+
+  if (AppTcpCommand_MatchCommand(command, "IRSPI50", &args) == NX_TRUE)
+  {
+    return AppTcpCommand_SendIRSpi50Test(args);
+  }
+
+  if (AppTcpCommand_MatchCommand(command, "IRSPI50DMA", &args) == NX_TRUE)
+  {
+    return AppTcpCommand_SendIRSpi50DmaTest(args);
   }
 
   if (AppTcpCommand_Equals(command, "CAMINIT") ||
@@ -1496,6 +1885,22 @@ static UINT AppTcpCommand_Process(char *request)
   if (AppTcpCommand_MatchCommand(command, "UDPTHR", &args) == NX_TRUE)
   {
     return AppTcpCommand_SendUdpThroughput(args, 1U);
+  }
+
+  if (AppTcpCommand_Equals(command, "ADSTAT") ||
+      AppTcpCommand_Equals(command, "ADSTATUS"))
+  {
+    return AppTcpCommand_SendADStatus();
+  }
+
+  if (AppTcpCommand_Equals(command, "ADPAUSE"))
+  {
+    return AppTcpCommand_SendADPause(1U);
+  }
+
+  if (AppTcpCommand_Equals(command, "ADRESUME"))
+  {
+    return AppTcpCommand_SendADPause(0U);
   }
 
   if (AppTcpCommand_Equals(command, "ADRAW") || AppTcpCommand_Equals(command, "AD7606 RAW"))

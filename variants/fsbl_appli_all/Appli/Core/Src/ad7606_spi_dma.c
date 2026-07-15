@@ -276,11 +276,14 @@ void AD7606_SPI4_SetPaused(uint8_t paused)
 {
   __disable_irq();
   ad_spi_paused = (paused != 0U) ? 1U : 0U;
-  if (ad_spi_paused != 0U)
-  {
-    ad_irq_pending = 0U;
-  }
+  /* Never resume from an IRQ edge captured while the receiver was paused. */
+  ad_irq_pending = 0U;
   __enable_irq();
+}
+
+uint8_t AD7606_SPI4_IsPaused(void)
+{
+  return ad_spi_paused;
 }
 
 uint8_t AD7606_SPI4_IsIdle(void)
@@ -420,7 +423,8 @@ uint32_t AD7606_SPI4_CopyLatestRawWindow(uint8_t *dest,
                                          AD7606_SPI4_FrameInfo_t *frame_info,
                                          AD7606_SPI4_RawInfo_t *raw_info)
 {
-  if ((dest == NULL) || (ad_spi_latest_raw_window_valid == 0U) ||
+  if ((dest == NULL) || (ad_spi_paused != 0U) ||
+      (ad_spi_latest_raw_window_valid == 0U) ||
       (dest_len < AD7606_SPI4_AI_WINDOW_BYTES))
   {
     return 0U;
@@ -1360,7 +1364,7 @@ void AD7606_SPI4_ErrorCallback(SPI_HandleTypeDef *hspi)
 
 void AD7606_SPI4_EXTI_RisingCallback(uint16_t GPIO_Pin)
 {
-  if (GPIO_Pin == AD_IRQ_Pin)
+  if ((GPIO_Pin == AD_IRQ_Pin) && (ad_spi_paused == 0U))
   {
     ad_irq_count++;
     ad_irq_pending = 1U;

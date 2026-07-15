@@ -18,6 +18,8 @@ extern "C" {
 
 #include <stdint.h>
 
+#define APP_AI_TARGET_RATE_HZ 25U
+
 typedef struct
 {
   uint32_t initialized;
@@ -32,6 +34,7 @@ typedef struct
   uint32_t deadline_miss_count;
   uint32_t npu_clock_hz;
   uint32_t npuram_clock_hz;
+  uint32_t target_rate_hz;
   uint32_t inference_total_ms;
   uint32_t max_inference_ms;
   uint32_t last_run_error_ms;

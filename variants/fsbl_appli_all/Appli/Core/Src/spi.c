@@ -49,6 +49,7 @@ void MX_SPI3_Init(void)
   hspi3.Init.CLKPolarity = SPI_POLARITY_HIGH;
   hspi3.Init.CLKPhase = SPI_PHASE_2EDGE;
   hspi3.Init.NSS = SPI_NSS_SOFT;
+  /* Keep margin for Tiny1C DMA transfers while the other data paths are active. */
   hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
   hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
@@ -201,6 +202,14 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
     HAL_NVIC_SetPriority(SPI3_IRQn, 9, 0);
     HAL_NVIC_EnableIRQ(SPI3_IRQn);
   /* USER CODE BEGIN SPI3_MspInit 1 */
+
+    /* Match the edge rate used by the known-good standalone Tiny1C firmware. */
+    GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF6_SPI3;
+    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /* USER CODE END SPI3_MspInit 1 */
   }

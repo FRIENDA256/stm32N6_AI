@@ -45,9 +45,18 @@ extern "C" {
 
 #define TX_APP_MEM_POOL_SIZE                     16384
 
-#define NX_APP_MEM_POOL_SIZE                     98304
+#define NX_APP_MEM_POOL_SIZE                     30720
 
 /* USER CODE BEGIN EC */
+
+/* Acquisition, AI and future scheduler threads share this application pool. */
+#undef TX_APP_MEM_POOL_SIZE
+#define TX_APP_MEM_POOL_SIZE                     65536
+
+/* CubeMX regenerates NX_APP_MEM_POOL_SIZE from its GUI value. Keep enough
+   room for the 40-packet Ethernet pool and the NetX worker stacks. */
+#undef NX_APP_MEM_POOL_SIZE
+#define NX_APP_MEM_POOL_SIZE                     98304
 
 /* USER CODE END EC */
 

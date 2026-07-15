@@ -21,7 +21,6 @@
 #include "main.h"
 #include "cacheaxi.h"
 #include "csi.h"
-#include "dcmipp.h"
 #include "eth.h"
 #include "gpdma.h"
 #include "i2c.h"
@@ -167,9 +166,6 @@ int main(void)
 
   HAL_RIF_RIMC_ConfigMasterAttributes(RIF_MASTER_INDEX_ETH1, &RIMC_master);
 
-  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_ETH1,
-                                         RIF_ATTRIBUTE_SEC | RIF_ATTRIBUTE_NPRIV);
-
   /* RISAF Config */
   RISAF_BaseRegionConfig_t risaf_base_config;
   __HAL_RCC_RISAF_CLK_ENABLE();
@@ -192,12 +188,11 @@ int main(void)
 
   /* set up base region configuration for XSPI1*/
   /* region 1 is secure */
-  risaf_base_config.EndAddress = 0x1ffffff;
+  risaf_base_config.EndAddress = 0x3ffffff;
   HAL_RIF_RISAF_ConfigBaseRegion(RISAF11, RISAF_REGION_1, &risaf_base_config);
 
   /* set up base region configuration for CPUAXI_RAM0*/
   /* region 1 is secure */
-  /* Keep CPUAXI_RAM0 fully visible to CPU and DMA masters for ETH/NetX buffers. */
   risaf_base_config.EndAddress = 0xfffff;
   HAL_RIF_RISAF_ConfigBaseRegion(RISAF2, RISAF_REGION_1, &risaf_base_config);
 
@@ -309,6 +304,8 @@ int main(void)
                                          RIF_ATTRIBUTE_SEC | RIF_ATTRIBUTE_PRIV);
   HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_CSI,
                                          RIF_ATTRIBUTE_SEC | RIF_ATTRIBUTE_PRIV);
+  HAL_RIF_RISC_SetSlaveSecureAttributes(RIF_RISC_PERIPH_INDEX_ETH1,
+                                         RIF_ATTRIBUTE_SEC | RIF_ATTRIBUTE_NPRIV);
 
 /* USER CODE END RIF_Init 1 */
 /* USER CODE BEGIN RIF_Init 2 */

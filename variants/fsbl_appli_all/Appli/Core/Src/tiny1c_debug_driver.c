@@ -714,7 +714,7 @@ tiny1c_status_t Tiny1C_PreviewStart(tiny1c_t *dev)
   return TINY1C_STATUS_OK;
 }
 
-tiny1c_status_t Tiny1C_EnsurePreviewStarted(tiny1c_t *dev)
+static tiny1c_status_t Tiny1C_EnsurePreviewStartedWithMode(tiny1c_t *dev, uint8_t verbose)
 {
   if (dev == NULL)
   {
@@ -723,7 +723,10 @@ tiny1c_status_t Tiny1C_EnsurePreviewStarted(tiny1c_t *dev)
 
   if (dev->preview_started != 0U)
   {
-    Tiny1C_Print(dev, "[Tiny1C] preview already started\r\n");
+    if (verbose != 0U)
+    {
+      Tiny1C_Print(dev, "[Tiny1C] preview already started\r\n");
+    }
     return TINY1C_STATUS_OK;
   }
 
@@ -737,6 +740,11 @@ tiny1c_status_t Tiny1C_EnsurePreviewStarted(tiny1c_t *dev)
   return TINY1C_STATUS_ERROR;
 }
 
+tiny1c_status_t Tiny1C_EnsurePreviewStarted(tiny1c_t *dev)
+{
+  return Tiny1C_EnsurePreviewStartedWithMode(dev, 1U);
+}
+
 static tiny1c_status_t Tiny1C_ReadFrameWithMode(tiny1c_t *dev, uint8_t command, uint8_t direct_mode, uint8_t verbose)
 {
   if ((dev == NULL) || (Tiny1C_CommandIsFrame(command) == 0U))
@@ -744,7 +752,7 @@ static tiny1c_status_t Tiny1C_ReadFrameWithMode(tiny1c_t *dev, uint8_t command, 
     return TINY1C_STATUS_ERROR;
   }
 
-  if (Tiny1C_EnsurePreviewStarted(dev) != TINY1C_STATUS_OK)
+  if (Tiny1C_EnsurePreviewStartedWithMode(dev, verbose) != TINY1C_STATUS_OK)
   {
     return TINY1C_STATUS_ERROR;
   }
@@ -821,6 +829,11 @@ tiny1c_status_t Tiny1C_ReadFrameBaseline(tiny1c_t *dev, uint8_t command)
 tiny1c_status_t Tiny1C_ReadFrameDirect(tiny1c_t *dev, uint8_t command)
 {
   return Tiny1C_ReadFrameWithMode(dev, command, 1U, 1U);
+}
+
+tiny1c_status_t Tiny1C_ReadFrameQuiet(tiny1c_t *dev, uint8_t command)
+{
+  return Tiny1C_ReadFrameWithMode(dev, command, (dev != NULL) ? dev->config.use_direct_read : 0U, 0U);
 }
 
 tiny1c_status_t Tiny1C_FastReadTest(tiny1c_t *dev, uint8_t command, uint32_t frame_count, uint8_t direct_mode)

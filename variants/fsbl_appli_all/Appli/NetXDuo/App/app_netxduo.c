@@ -225,13 +225,16 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
   App_Print("NetX init OK\r\n");
   /* USER CODE END MX_NetXDuo_MEM_POOL */
 
+  /* USER CODE BEGIN 0 */
+  /* USER CODE END 0 */
+
   /* USER CODE BEGIN MX_NetXDuo_Init */
   /* USER CODE END MX_NetXDuo_Init */
 
   return ret;
 }
 
-/* USER CODE BEGIN 0 */
+/* USER CODE BEGIN 1 */
 #if (APP_NETX_ENABLE_PERIODIC_STATS == 1U)
 static void NetXDuo_AppendText(char *line, uint32_t *pos, const char *text)
 {
@@ -478,8 +481,4 @@ static VOID NetXDuo_LinkThreadEntry(ULONG thread_input)
     tx_thread_sleep(APP_NETX_LINK_CHECK_PERIOD);
   }
 }
-/* USER CODE END 0 */
-
-/* USER CODE BEGIN 1 */
-
 /* USER CODE END 1 */

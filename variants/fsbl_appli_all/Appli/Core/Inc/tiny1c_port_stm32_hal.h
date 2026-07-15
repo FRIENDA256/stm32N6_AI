@@ -10,11 +10,42 @@ extern "C" {
 
 extern tiny1c_t g_tiny1c;
 
+typedef struct
+{
+  uint32_t ok_count;
+  uint32_t error_count;
+  uint32_t total_ms;
+  uint32_t max_ms;
+  uint32_t total_jumps;
+  uint32_t max_jumps;
+  uint32_t max_delta;
+  uint32_t last_crc32;
+  uint32_t last_hal_error;
+} Tiny1C_STM32_SpiModeStats_t;
+
+typedef struct
+{
+  uint32_t iterations;
+  uint32_t test_hz;
+  uint32_t restored_hz;
+  uint32_t switch_hal_status;
+  uint32_t priority_hal_status;
+  uint32_t restore_hal_status;
+  Tiny1C_STM32_SpiModeStats_t blocking;
+  Tiny1C_STM32_SpiModeStats_t dma;
+} Tiny1C_STM32_SpiTestResult_t;
+
 void Tiny1C_STM32_GpioInit(void);
 tiny1c_status_t Tiny1C_STM32_Init(void);
 tiny1c_status_t Tiny1C_STM32_ProcessCommand(uint8_t command);
 tiny1c_status_t Tiny1C_STM32_CaptureFrame(uint8_t frame_command);
 tiny1c_status_t Tiny1C_STM32_CaptureFrameBaseline(uint8_t frame_command);
+tiny1c_status_t Tiny1C_STM32_CaptureFrameQuiet(uint8_t frame_command);
+tiny1c_status_t Tiny1C_STM32_RestartPreview(void);
+tiny1c_status_t Tiny1C_STM32_RunSpi50Test(uint32_t iterations,
+                                          Tiny1C_STM32_SpiTestResult_t *result);
+tiny1c_status_t Tiny1C_STM32_RunSpi50DmaTest(uint32_t iterations,
+                                             Tiny1C_STM32_SpiTestResult_t *result);
 tiny1c_status_t Tiny1C_STM32_GetLatestFrame(const uint8_t **data,
                                             uint32_t *len,
                                             uint8_t *frame_command,

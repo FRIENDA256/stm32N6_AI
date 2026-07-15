@@ -182,8 +182,20 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL1.PLLFractional = 0;
   RCC_OscInitStruct.PLL1.PLLP1 = 1;
   RCC_OscInitStruct.PLL1.PLLP2 = 1;
-  RCC_OscInitStruct.PLL2.PLLState = RCC_PLL_NONE;
-  RCC_OscInitStruct.PLL3.PLLState = RCC_PLL_NONE;
+  RCC_OscInitStruct.PLL2.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL2.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL2.PLLM = 1;
+  RCC_OscInitStruct.PLL2.PLLN = 25;
+  RCC_OscInitStruct.PLL2.PLLFractional = 0;
+  RCC_OscInitStruct.PLL2.PLLP1 = 1;
+  RCC_OscInitStruct.PLL2.PLLP2 = 1;
+  RCC_OscInitStruct.PLL3.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL3.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL3.PLLM = 1;
+  RCC_OscInitStruct.PLL3.PLLN = 25;
+  RCC_OscInitStruct.PLL3.PLLFractional = 0;
+  RCC_OscInitStruct.PLL3.PLLP1 = 1;
+  RCC_OscInitStruct.PLL3.PLLP2 = 1;
   RCC_OscInitStruct.PLL4.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL4.PLLSource = RCC_PLLSOURCE_HSI;
   RCC_OscInitStruct.PLL4.PLLM = 1;
@@ -214,10 +226,10 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.IC1Selection.ClockDivider = 2;
   RCC_ClkInitStruct.IC2Selection.ClockSelection = RCC_ICCLKSOURCE_PLL1;
   RCC_ClkInitStruct.IC2Selection.ClockDivider = 3;
-  RCC_ClkInitStruct.IC6Selection.ClockSelection = RCC_ICCLKSOURCE_PLL1;
+  RCC_ClkInitStruct.IC6Selection.ClockSelection = RCC_ICCLKSOURCE_PLL2;
   RCC_ClkInitStruct.IC6Selection.ClockDivider = 2;
-  RCC_ClkInitStruct.IC11Selection.ClockSelection = RCC_ICCLKSOURCE_PLL1;
-  RCC_ClkInitStruct.IC11Selection.ClockDivider = 3;
+  RCC_ClkInitStruct.IC11Selection.ClockSelection = RCC_ICCLKSOURCE_PLL2;
+  RCC_ClkInitStruct.IC11Selection.ClockDivider = 2;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct) != HAL_OK)
   {

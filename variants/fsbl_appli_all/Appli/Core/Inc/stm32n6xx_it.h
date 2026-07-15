@@ -63,8 +63,9 @@ void SPI3_IRQHandler(void);
 void SPI4_IRQHandler(void);
 void ETH1_IRQHandler(void);
 void CSI_IRQHandler(void);
-void CACHEAXI_IRQHandler(void);
 /* USER CODE BEGIN EFP */
+
+void CACHEAXI_IRQHandler(void);
 
 /* USER CODE END EFP */
 

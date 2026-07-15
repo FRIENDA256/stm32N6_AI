@@ -120,6 +120,7 @@ tiny1c_status_t Tiny1C_EnsurePreviewStarted(tiny1c_t *dev);
 tiny1c_status_t Tiny1C_ReadFrame(tiny1c_t *dev, uint8_t command);
 tiny1c_status_t Tiny1C_ReadFrameBaseline(tiny1c_t *dev, uint8_t command);
 tiny1c_status_t Tiny1C_ReadFrameDirect(tiny1c_t *dev, uint8_t command);
+tiny1c_status_t Tiny1C_ReadFrameQuiet(tiny1c_t *dev, uint8_t command);
 tiny1c_status_t Tiny1C_FastReadTest(tiny1c_t *dev, uint8_t command, uint32_t frame_count, uint8_t direct_mode);
 tiny1c_status_t Tiny1C_DumpCurrentFrameHex(tiny1c_t *dev);
 tiny1c_status_t Tiny1C_DumpCurrentFrameBinary(tiny1c_t *dev);

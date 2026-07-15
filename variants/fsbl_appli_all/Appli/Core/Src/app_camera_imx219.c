@@ -16,8 +16,8 @@
 #include <string.h>
 
 #define APP_CAMERA_LINE_LENGTH        3560U
-/* 1067 lines measured about 49.5 fps on this board; 2200 lines targets 24 fps. */
-#define APP_CAMERA_FRAME_LENGTH       2200U
+/* 2200 lines measured about 24 fps on this board; 4400 lines targets 12 fps. */
+#define APP_CAMERA_FRAME_LENGTH       4400U
 #define APP_CAMERA_OP_PLL_MULT        0x0039U
 #define APP_CAMERA_EXPOSURE_LINES     0x0418U
 #define APP_CAMERA_ANALOG_GAIN        0x80U

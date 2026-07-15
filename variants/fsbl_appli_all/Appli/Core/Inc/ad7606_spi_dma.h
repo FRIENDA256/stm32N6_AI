@@ -48,6 +48,7 @@ void AD7606_SPI4_Init(void);
 void AD7606_SPI4_Task(uint32_t now_tick);
 void AD7606_SPI4_RequestRawDump(void);
 void AD7606_SPI4_SetPaused(uint8_t paused);
+uint8_t AD7606_SPI4_IsPaused(void);
 uint8_t AD7606_SPI4_IsIdle(void);
 uint32_t AD7606_SPI4_CopyLatestFrame(uint8_t *dest, uint32_t dest_len, AD7606_SPI4_FrameInfo_t *info);
 uint32_t AD7606_SPI4_CopyLatestRawSamples(uint8_t *dest,

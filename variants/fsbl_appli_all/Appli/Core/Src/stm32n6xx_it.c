@@ -64,8 +64,9 @@ extern DMA_HandleTypeDef handle_GPDMA1_Channel11;
 extern DMA_HandleTypeDef handle_GPDMA1_Channel10;
 extern SPI_HandleTypeDef hspi3;
 extern SPI_HandleTypeDef hspi4;
-extern void NPU_CACHE_IRQHandler(void);
 /* USER CODE BEGIN EV */
+
+extern void NPU_CACHE_IRQHandler(void);
 
 /* USER CODE END EV */
 
@@ -323,14 +324,11 @@ void CSI_IRQHandler(void)
   /* USER CODE END CSI_IRQn 1 */
 }
 
-/**
-  * @brief This function handles the CACHEAXI interrupt.
-  */
+/* USER CODE BEGIN 1 */
+
 void CACHEAXI_IRQHandler(void)
 {
   NPU_CACHE_IRQHandler();
 }
-
-/* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */

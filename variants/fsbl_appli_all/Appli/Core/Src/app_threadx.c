@@ -26,6 +26,7 @@
 #include "app_ad7606.h"
 #include "app_ai.h"
 #include "app_console.h"
+#include "app_ir_capture.h"
 #include "main.h"
 
 /* USER CODE END Includes */
@@ -74,7 +75,13 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   ret = App_AD7606_Start((TX_BYTE_POOL *)memory_ptr);
   if (ret == TX_SUCCESS)
   {
+    UINT ir_status = App_IRCapture_Start((TX_BYTE_POOL *)memory_ptr);
     UINT ai_status = App_AI_Start((TX_BYTE_POOL *)memory_ptr);
+
+    if (ir_status != TX_SUCCESS)
+    {
+      App_PrintHex32("IR capture start failed, acquisition continues: ", ir_status);
+    }
     if (ai_status != TX_SUCCESS)
     {
       App_PrintHex32("AI start failed, acquisition continues: ", ai_status);

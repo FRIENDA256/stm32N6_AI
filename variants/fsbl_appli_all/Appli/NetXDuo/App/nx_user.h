@@ -61,6 +61,9 @@
 
 /* USER CODE BEGIN 1 */
 
+#define NX_ENABLE_INTERFACE_CAPABILITY
+#define NX_IP_PERIODIC_RATE                     1000
+
 /* USER CODE END 1 */
 
 /* Define various build options for the NetX Duo port. The application should
@@ -86,7 +89,9 @@
 
 /* If defined, the link driver is able to specify extra capability, such as
    checksum offloading features. */
+/*
 #define NX_ENABLE_INTERFACE_CAPABILITY
+*/
 
 /* NX_PHYSICAL_HEADER Specifies the size in bytes of the physical header of
    the frame. */
@@ -299,7 +304,13 @@
 
 /* This defines specifies the number of ThreadX timer ticks in one second.
    The default value is based on ThreadX timer interrupt. */
-#define NX_IP_PERIODIC_RATE                     1000
+/*
+#ifdef TX_TIMER_TICKS_PER_SECOND
+#define NX_IP_PERIODIC_RATE         			TX_TIMER_TICKS_PER_SECOND
+#else
+#define NX_IP_PERIODIC_RATE         			100
+#endif
+*/
 
 /* Defined, NX_ENABLE_IP_RAW_PACKET_FILTER allows an application to install a
    filter for incoming raw packets. This feature is disabled by default. */

@@ -66,12 +66,12 @@ void MX_ETH1_Init(void)
   TxConfig.ChecksumCtrl = ETH_CHECKSUM_IPHDR_PAYLOAD_INSERT_PHDR_CALC;
   TxConfig.CRCPadCtrl = ETH_CRC_PAD_INSERT;
   heth1.Instance = ETH1;
-  MACAddr[0] = 0x02;
-  MACAddr[1] = 0x00;
-  MACAddr[2] = 0x00;
+  MACAddr[0] = 0x00;
+  MACAddr[1] = 0x80;
+  MACAddr[2] = 0xE1;
   MACAddr[3] = 0x00;
   MACAddr[4] = 0x00;
-  MACAddr[5] = 0x01;
+  MACAddr[5] = 0x00;
   heth1.Init.MACAddr = &MACAddr[0];
   heth1.Init.MediaInterface = HAL_ETH_RGMII_MODE;
   for (int ch = 0; ch < ETH_DMA_CH_CNT; ch++)
@@ -82,6 +82,14 @@ void MX_ETH1_Init(void)
   heth1.Init.RxBuffLen = 1536;
 
   /* USER CODE BEGIN MACADDRESS */
+
+  /* Locally administered unicast address used by this board firmware. */
+  MACAddr[0] = 0x02;
+  MACAddr[1] = 0x00;
+  MACAddr[2] = 0x00;
+  MACAddr[3] = 0x00;
+  MACAddr[4] = 0x00;
+  MACAddr[5] = 0x01;
 
   /* USER CODE END MACADDRESS */
 
@@ -109,11 +117,9 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
   /** Initializes the peripherals clock
   */
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ETH1;
-    /* DK uses HCLK=100 MHz for ETH. This Appli inherits HCLK=200 MHz, so feed
-       ETH1 from IC12/PLL1 at 100 MHz instead. */
     PeriphClkInitStruct.Eth1ClockSelection = RCC_ETH1CLKSOURCE_IC12;
-    PeriphClkInitStruct.ICSelection[RCC_IC12].ClockSelection = RCC_ICCLKSOURCE_PLL1;
-    PeriphClkInitStruct.ICSelection[RCC_IC12].ClockDivider = 12;
+    PeriphClkInitStruct.ICSelection[RCC_IC12].ClockSelection = RCC_ICCLKSOURCE_PLL3;
+    PeriphClkInitStruct.ICSelection[RCC_IC12].ClockDivider = 16;
 
   /* USER CODE BEGIN MACADDRESS */
 
@@ -139,7 +145,7 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
     PD3     ------> ETH1_PHY_INTN
     PF10     ------> ETH1_RGMII_RX_CTL
     PF7     ------> ETH1_RGMII_RX_CLK
-    PF5     ------> ETH1_CLK (not fitted on this board; keep PF5 unconfigured)
+    PF5     ------> ETH1_CLK
     PF15     ------> ETH1_RGMII_RXD1
     PF14     ------> ETH1_RGMII_RXD0
     PF8     ------> ETH1_RGMII_RXD2
@@ -159,16 +165,9 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
     GPIO_InitStruct.Alternate = GPIO_AF11_ETH1;
     HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_15
+    GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_15
                           |GPIO_PIN_14|GPIO_PIN_8|GPIO_PIN_2|GPIO_PIN_9
                           |GPIO_PIN_11|GPIO_PIN_13|GPIO_PIN_12;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_PULLUP;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF11_ETH1;
-    HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin = GPIO_PIN_7;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
@@ -177,15 +176,15 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
 
     GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_3;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_PULLUP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF11_ETH1;
     HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
     GPIO_InitStruct.Pin = GPIO_PIN_0;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_PULLUP;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF12_ETH1;
     HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
@@ -193,6 +192,34 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
     HAL_NVIC_SetPriority(ETH1_IRQn, 7, 0);
     HAL_NVIC_EnableIRQ(ETH1_IRQn);
   /* USER CODE BEGIN ETH1_MspInit 1 */
+
+    /* PF5 ETH1_CLK is not fitted on this board. Restore the validated RGMII
+       pulls after CubeMX applies its generic ETH pin configuration. */
+    HAL_GPIO_DeInit(GPIOF, GPIO_PIN_5);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_15|GPIO_PIN_14|GPIO_PIN_8
+                          |GPIO_PIN_2|GPIO_PIN_9|GPIO_PIN_11|GPIO_PIN_13
+                          |GPIO_PIN_12;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF11_ETH1;
+    HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_7;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_3;
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
+    GPIO_InitStruct.Alternate = GPIO_AF11_ETH1;
+    HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = GPIO_PIN_0;
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+    GPIO_InitStruct.Alternate = GPIO_AF12_ETH1;
+    HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
   /* USER CODE END ETH1_MspInit 1 */
   }
@@ -218,7 +245,7 @@ void HAL_ETH_MspDeInit(ETH_HandleTypeDef* ethHandle)
     PD3     ------> ETH1_PHY_INTN
     PF10     ------> ETH1_RGMII_RX_CTL
     PF7     ------> ETH1_RGMII_RX_CLK
-    PF5     ------> ETH1_CLK (not fitted on this board; keep PF5 unconfigured)
+    PF5     ------> ETH1_CLK
     PF15     ------> ETH1_RGMII_RXD1
     PF14     ------> ETH1_RGMII_RXD0
     PF8     ------> ETH1_RGMII_RXD2
@@ -233,7 +260,7 @@ void HAL_ETH_MspDeInit(ETH_HandleTypeDef* ethHandle)
     */
     HAL_GPIO_DeInit(GPIOD, GPIO_PIN_1|GPIO_PIN_12|GPIO_PIN_3);
 
-    HAL_GPIO_DeInit(GPIOF, GPIO_PIN_10|GPIO_PIN_7|GPIO_PIN_15
+    HAL_GPIO_DeInit(GPIOF, GPIO_PIN_10|GPIO_PIN_7|GPIO_PIN_5|GPIO_PIN_15
                           |GPIO_PIN_14|GPIO_PIN_8|GPIO_PIN_2|GPIO_PIN_9
                           |GPIO_PIN_11|GPIO_PIN_13|GPIO_PIN_0|GPIO_PIN_12);
 

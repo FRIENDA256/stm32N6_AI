@@ -1,5 +1,5 @@
 param(
-  [ValidateSet("ADGET", "ADNET", "IRGETIMG", "IRGETIMAGE", "IRGETTEMP", "IRNETIMG", "IRNETTEMP", "CAMGET")]
+  [ValidateSet("ADGET", "ADNET", "IRGETIMG", "IRGETIMAGE", "IRGETTEMP", "IRNETIMG", "IRNETTEMP", "IRGETIMGBASE", "IRGETTEMPBASE", "CAMGET")]
   [string]$Command = "IRGETIMG",
   [string]$InputRaw = "",
   [ValidateSet("auto", "image", "temp")]
@@ -407,6 +407,85 @@ function Repair-TempSpeckles {
   }
 }
 
+function Measure-TempSpatialJumps {
+  param(
+    [UInt16[]]$Pixels,
+    [int]$Width,
+    [int]$Height,
+    [int]$Threshold
+  )
+
+  [uint32]$horizontal = 0
+  [uint32]$vertical = 0
+  [uint32]$comparisons = 0
+  [uint32]$maxDelta = 0
+  [uint32]$nonzero = 0
+  [uint32]$minValue = 65535
+  [uint32]$maxValue = 0
+
+  if ($Pixels.Length -ne ($Width * $Height)) {
+    return @{
+      Horizontal = 0
+      Vertical = 0
+      Total = 0
+      Comparisons = 0
+      MaxDelta = 0
+      NonZero = 0
+      Min = 0
+      Max = 0
+    }
+  }
+
+  for ($y = 0; $y -lt $Height; $y++) {
+    for ($x = 0; $x -lt $Width; $x++) {
+      $idx = ($y * $Width) + $x
+      $center = [int]$Pixels[$idx]
+      if ($center -eq 0) {
+        continue
+      }
+
+      $nonzero++
+      if ($center -lt $minValue) { $minValue = [uint32]$center }
+      if ($center -gt $maxValue) { $maxValue = [uint32]$center }
+
+      if ($x -lt ($Width - 1)) {
+        $right = [int]$Pixels[$idx + 1]
+        if ($right -ne 0) {
+          $delta = [uint32][Math]::Abs($center - $right)
+          $comparisons++
+          if ($delta -gt $Threshold) { $horizontal++ }
+          if ($delta -gt $maxDelta) { $maxDelta = $delta }
+        }
+      }
+
+      if ($y -lt ($Height - 1)) {
+        $below = [int]$Pixels[$idx + $Width]
+        if ($below -ne 0) {
+          $delta = [uint32][Math]::Abs($center - $below)
+          $comparisons++
+          if ($delta -gt $Threshold) { $vertical++ }
+          if ($delta -gt $maxDelta) { $maxDelta = $delta }
+        }
+      }
+    }
+  }
+
+  if ($nonzero -eq 0) {
+    $minValue = 0
+  }
+
+  return @{
+    Horizontal = $horizontal
+    Vertical = $vertical
+    Total = $horizontal + $vertical
+    Comparisons = $comparisons
+    MaxDelta = $maxDelta
+    NonZero = $nonzero
+    Min = $minValue
+    Max = $maxValue
+  }
+}
+
 function Get-ImageLaneScore {
   param(
     [byte[]]$Frame,
@@ -662,6 +741,7 @@ function Save-Tiny1CVisual {
 
   $tempInfo = Convert-TempFrameToU16 -Frame $Frame -Width $width -Height $height -EndianMode $TempEndian
   $pixels = $tempInfo.Pixels
+  $jumpInfo = Measure-TempSpatialJumps -Pixels $pixels -Width $width -Height $height -Threshold $TempDespikeThreshold
   $rawGrayInfo = Convert-U16ToGray8 -Pixels $pixels -PercentileStretch -Invert:$Invert
   $unfilteredBmpPath = $BasePath + "_unfiltered_8bit.bmp"
   Write-BmpGray8Palette -Path $unfilteredBmpPath -Gray $rawGrayInfo.Bytes -Width $width -Height $height
@@ -673,6 +753,8 @@ function Save-Tiny1CVisual {
   Write-Host "Saved bmp : $bmpPath"
   Write-Host "Saved raw-view bmp: $unfilteredBmpPath"
   Write-Host "Display mode: temp/u16 auto stretch, endian=$($tempInfo.ModeSummary)"
+  Write-Host "Temp raw stats: nonzero=$($jumpInfo.NonZero) min=$($jumpInfo.Min) max=$($jumpInfo.Max)"
+  Write-Host "Temp raw jumps: threshold=$TempDespikeThreshold horizontal=$($jumpInfo.Horizontal) vertical=$($jumpInfo.Vertical) total=$($jumpInfo.Total) max_delta=$($jumpInfo.MaxDelta) comparisons=$($jumpInfo.Comparisons)"
   Write-Host "Temp filter: $($filterInfo.Summary)"
   Write-Host "Pixel stats: nonzero=$($grayInfo.NonZero) min=$($grayInfo.Min) max=$($grayInfo.Max)"
 }
@@ -799,7 +881,7 @@ if (-not [string]::IsNullOrWhiteSpace($InputRaw)) {
     HEIGHT = "192"
     BYTES = [string]$payload.Length
   }
-  $stamp = Get-Date -Format "yyyyMMdd_HHmmss"
+  $stamp = Get-Date -Format "yyyyMMdd_HHmmss_fff"
   $basePath = Join-Path $OutputDir ("tiny1c_${kind}_${stamp}_offline")
   Save-Tiny1CVisual -Frame $payload -Fields $fields -BasePath $basePath -ImageLane $ImageLane -TempEndian $TempEndian -TempFilter $TempFilter -TempDespikeThreshold $TempDespikeThreshold -Invert:$Invert
   Write-Host "Offline raw : $rawPath"
@@ -900,7 +982,7 @@ try {
   }
 
   $source = $fields["SOURCE"].ToLowerInvariant()
-  $stamp = Get-Date -Format "yyyyMMdd_HHmmss"
+  $stamp = Get-Date -Format "yyyyMMdd_HHmmss_fff"
   $kind = $source
   if ($source -eq "tiny1c") {
     $kind = if (($fields.ContainsKey("CMD")) -and ($fields["CMD"].ToUpperInvariant() -eq "0xCC")) { "tiny1c_temp" } else { "tiny1c_image" }

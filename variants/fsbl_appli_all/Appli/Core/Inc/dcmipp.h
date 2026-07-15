@@ -51,3 +51,4 @@ void App_DCMIPP_SetIrqEnabled(uint32_t enabled);
 #endif
 
 #endif /* __DCMIPP_H__ */
+

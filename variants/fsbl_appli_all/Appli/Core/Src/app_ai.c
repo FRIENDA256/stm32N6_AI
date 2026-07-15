@@ -22,8 +22,9 @@
 LL_ATON_DECLARE_NAMED_NN_INSTANCE_AND_INTERFACE(tiny_temporal_mixer_8ch_int8);
 
 #define APP_AI_THREAD_STACK_SIZE       4096U
-#define APP_AI_THREAD_PRIORITY         15U
+#define APP_AI_THREAD_PRIORITY         16U
 #define APP_AI_THREAD_SLEEP_TICKS      2U
+#define APP_AI_RUN_PERIOD_TICKS        ((TX_TIMER_TICKS_PER_SECOND + APP_AI_TARGET_RATE_HZ - 1U) / APP_AI_TARGET_RATE_HZ)
 #define APP_AI_RUN_TIMEOUT_MS          5000U
 #define APP_AI_CACHE_LINE_BYTES        32U
 #define APP_AI_CHANNELS                8U
@@ -31,13 +32,15 @@ LL_ATON_DECLARE_NAMED_NN_INSTANCE_AND_INTERFACE(tiny_temporal_mixer_8ch_int8);
 #define APP_AI_RAW_SAMPLE_BYTES       AD7606_SPI4_AI_WINDOW_BYTES
 #define APP_AI_INPUT_BYTES             (APP_AI_CHANNELS * APP_AI_WINDOW_SAMPLES)
 #define APP_AI_OUTPUT_BYTES            4U
-#define APP_AI_AD_INPUT_SHIFT          8U
+#define APP_AI_INPUT_MULTIPLIER        37903L
+#define APP_AI_INPUT_SHIFT             23U
+#define APP_AI_INPUT_ROUNDING          (1L << (APP_AI_INPUT_SHIFT - 1U))
 #define APP_AI_NPURAM_BASE             0x342E0000UL
 #define APP_AI_NPURAM_BYTES            0x00056000UL
 #define APP_AI_WEIGHT_BASE             0x71000000UL
 #define APP_AI_WEIGHT_END              0x7101FFFFUL
 #define APP_AI_WEIGHT_PROBE_BYTES      256U
-#define APP_AI_WEIGHT_PROBE_SUM        0x00007E32UL
+#define APP_AI_WEIGHT_PROBE_SUM        0x00007BB1UL
 #define APP_AI_NPU_IRQ_PRIORITY        7U
 
 #if (APP_AI_INPUT_BYTES != LL_ATON_TINY_TEMPORAL_MIXER_8CH_INT8_IN_1_SIZE_BYTES)
@@ -66,6 +69,19 @@ static void AppAI_StatusUnlock(uint32_t primask)
   {
     __enable_irq();
   }
+}
+
+static ULONG AppAI_AdvanceRunDeadline(ULONG deadline)
+{
+  ULONG next_deadline = deadline + APP_AI_RUN_PERIOD_TICKS;
+  ULONG now = tx_time_get();
+
+  if ((LONG)(now - next_deadline) >= 0)
+  {
+    next_deadline = now + APP_AI_RUN_PERIOD_TICKS;
+  }
+
+  return next_deadline;
 }
 
 static UINT AppAI_ByteAllocate(TX_BYTE_POOL *byte_pool, UCHAR **memory, ULONG size)
@@ -108,15 +124,18 @@ static void AppAI_CacheInvalidateAligned(uintptr_t addr, uint32_t size)
 
 static int8_t AppAI_ConvertSample(int16_t sample)
 {
-  int32_t value = (int32_t)sample;
+  int32_t scaled = (int32_t)sample * APP_AI_INPUT_MULTIPLIER;
+  int32_t value;
 
-  if (value >= 0)
+  /* Training uses raw/32768 followed by the model input scale 0.00675407844.
+     The fixed-point factor 37903/2^23 implements raw/221.3176. */
+  if (scaled >= 0)
   {
-    value = (value + (1 << (APP_AI_AD_INPUT_SHIFT - 1U))) >> APP_AI_AD_INPUT_SHIFT;
+    value = (scaled + APP_AI_INPUT_ROUNDING) >> APP_AI_INPUT_SHIFT;
   }
   else
   {
-    value = -(((-value) + (1 << (APP_AI_AD_INPUT_SHIFT - 1U))) >> APP_AI_AD_INPUT_SHIFT);
+    value = -(((-scaled) + APP_AI_INPUT_ROUNDING) >> APP_AI_INPUT_SHIFT);
   }
 
   if (value > 127)
@@ -354,6 +373,7 @@ static VOID AppAI_ThreadEntry(ULONG thread_input)
   int32_t run_status;
   uint32_t last_frame_seq = 0U;
   uint8_t have_last_frame = 0U;
+  ULONG next_run_tick = tx_time_get();
   int8_t *input_buffer;
   int8_t *output_buffer;
 
@@ -418,6 +438,14 @@ static VOID AppAI_ThreadEntry(ULONG thread_input)
 
   for (;;)
   {
+    ULONG now_tick = tx_time_get();
+
+    if ((LONG)(now_tick - next_run_tick) < 0)
+    {
+      tx_thread_sleep(next_run_tick - now_tick);
+      continue;
+    }
+
     copied_bytes = AD7606_SPI4_CopyLatestRawWindow(AppAIRawSamples,
                                                    sizeof(AppAIRawSamples),
                                                    &frame_info,
@@ -460,13 +488,13 @@ static VOID AppAI_ThreadEntry(ULONG thread_input)
       AppAIStatus.last_run_status = run_status;
       AppAI_StatusUnlock(primask);
       LL_ATON_RT_Reset_Network(&NN_Instance_tiny_temporal_mixer_8ch_int8);
-      tx_thread_sleep(APP_AI_THREAD_SLEEP_TICKS);
+      next_run_tick = AppAI_AdvanceRunDeadline(next_run_tick);
       continue;
     }
 
     AppAI_RecordRun(&frame_info, output_buffer, inference_ms, run_status);
     LL_ATON_RT_Reset_Network(&NN_Instance_tiny_temporal_mixer_8ch_int8);
-    tx_thread_sleep(APP_AI_THREAD_SLEEP_TICKS);
+    next_run_tick = AppAI_AdvanceRunDeadline(next_run_tick);
   }
 }
 
@@ -477,6 +505,7 @@ UINT App_AI_Start(TX_BYTE_POOL *byte_pool)
 
   (void)memset((void *)&AppAIStatus, 0, sizeof(AppAIStatus));
   (void)memset(AppAIRawSamples, 0, sizeof(AppAIRawSamples));
+  AppAIStatus.target_rate_hz = APP_AI_TARGET_RATE_HZ;
 
   status = AppAI_ByteAllocate(byte_pool, &thread_stack, APP_AI_THREAD_STACK_SIZE);
   if (status != TX_SUCCESS)

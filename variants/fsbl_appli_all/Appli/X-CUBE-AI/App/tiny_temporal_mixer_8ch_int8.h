@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    tiny_temporal_mixer_8ch_int8.h
   * @author  STEdgeAI
-  * @date    2026-07-09 22:46:29
+  * @date    2026-07-14 22:53:38
   * @brief   Minimal description of the generated c-implemention of the network
   ******************************************************************************
   * @attention
@@ -34,7 +34,7 @@
 
 /************************** OUTPUTS *******************************************/
 #define LL_ATON_TINY_TEMPORAL_MIXER_8CH_INT8_OUT_NUM        (1)    // Total number of output buffers
-// Output buffer 1 -- Quantize_52_out_0
+// Output buffer 1 -- Quantize_54_out_0
 #define LL_ATON_TINY_TEMPORAL_MIXER_8CH_INT8_OUT_1_ALIGNMENT   (32)
 #define LL_ATON_TINY_TEMPORAL_MIXER_8CH_INT8_OUT_1_SIZE_BYTES  (4)
 

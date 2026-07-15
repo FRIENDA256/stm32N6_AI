@@ -88,7 +88,6 @@ void MX_DCMIPP_Init(void)
   pCSI_Config.DataLaneMapping = DCMIPP_CSI_PHYSICAL_DATA_LANES;
   pCSI_Config.NumberOfLanes = DCMIPP_CSI_TWO_DATA_LANES;
   HAL_DCMIPP_CSI_SetConfig(&hdcmipp, &pCSI_Config);
-  __HAL_DCMIPP_CSI_DPHY_DISABLE_IT(CSI, APP_DCMIPP_CSI_DPHY_DATA_LANE_ERROR_IT);
   pPipeConfig.FrameRate = DCMIPP_FRAME_RATE_ALL;
   pPipeConfig.PixelPipePitch = 1280;
   pPipeConfig.PixelPackerFormat = DCMIPP_PIXEL_PACKER_FORMAT_RGB565_1;
@@ -102,6 +101,8 @@ void MX_DCMIPP_Init(void)
   }
   /* USER CODE BEGIN DCMIPP_Init 2 */
 
+  __HAL_DCMIPP_CSI_DPHY_DISABLE_IT(CSI, APP_DCMIPP_CSI_DPHY_DATA_LANE_ERROR_IT);
+
   /* USER CODE END DCMIPP_Init 2 */
 
 }
@@ -110,10 +111,11 @@ void HAL_DCMIPP_MspInit(DCMIPP_HandleTypeDef* dcmippHandle)
 {
 
   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
-  RIMC_MasterConfig_t RIMC_master = {0};
   if(dcmippHandle->Instance==DCMIPP)
   {
   /* USER CODE BEGIN DCMIPP_MspInit 0 */
+
+    RIMC_MasterConfig_t RIMC_master = {0};
 
   /* USER CODE END DCMIPP_MspInit 0 */
 
@@ -137,9 +139,9 @@ void HAL_DCMIPP_MspInit(DCMIPP_HandleTypeDef* dcmippHandle)
     __HAL_RCC_CSI_RELEASE_RESET();
 
     /* DCMIPP interrupt Init */
-    HAL_NVIC_SetPriority(DCMIPP_IRQn, APP_DCMIPP_IRQ_PRIORITY, 0);
+    HAL_NVIC_SetPriority(DCMIPP_IRQn, 10, 0);
     HAL_NVIC_EnableIRQ(DCMIPP_IRQn);
-    HAL_NVIC_SetPriority(CSI_IRQn, APP_DCMIPP_IRQ_PRIORITY, 0);
+    HAL_NVIC_SetPriority(CSI_IRQn, 10, 0);
     HAL_NVIC_EnableIRQ(CSI_IRQn);
   /* USER CODE BEGIN DCMIPP_MspInit 1 */
     __HAL_RCC_DCMIPP_FORCE_RESET();
@@ -464,3 +466,4 @@ HAL_StatusTypeDef App_DCMIPP_DiagnosticInit(uint32_t *failed_stage, uint32_t *ha
 }
 
 /* USER CODE END 1 */
+

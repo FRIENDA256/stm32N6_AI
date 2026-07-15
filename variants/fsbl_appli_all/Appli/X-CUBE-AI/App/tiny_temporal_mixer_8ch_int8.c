@@ -39,14 +39,14 @@
  * --Ocache-opt = true
  * --output-info-file = "c_info"
  * --onnx-input = "C:/Users/lenovo/.stm32cubemx/tiny_temporal_mixer_8ch_int8_output/tiny_temporal_mixer_8ch_int8_qdq_OE_3_3_0.onnx"
- * --out-dir-prefix = "C:/Users/lenovo/AppData/Local/Temp/mxAI_workspace1223810381180016037318820955393902/neural_art__tiny_temporal_mixer_8ch_int8/"
+ * --out-dir-prefix = "C:/Users/lenovo/AppData/Local/Temp/mxAI_workspace4739618742250017681878804512673345/neural_art__tiny_temporal_mixer_8ch_int8/"
  * --network-name = "tiny_temporal_mixer_8ch_int8"
  * --all-buffers-info = true
  * --mvei = true
  * --Oauto-sched = true
  *
  * auto* option expanded into:
- *   alt-scheduler = false
+ *   alt-scheduler = true
  */
 
 #include "ll_aton_NN_interface.h"
@@ -65,7 +65,7 @@
 
 /* global pool 7 is ? */
 /* index=7 file postfix=xSPI1 name=hyperRAM offset=0x90000000  absolute_mode size=33554424 READ_WRITE THROUGHPUT=MID LATENCY=HIGH byte width=2 freq ratio=5 burst max length=MAXINT burst penalty=0 pipelined=ON cacheable=ON read_power=380 write_power=340 use4initializers=YES score=82  */
-/* global pool 8 is 96.52 KB */
+/* global pool 8 is 80.75 KB */
 /* index=8 file postfix=xSPI2 name=octoFlash offset=0x71000000  absolute_mode size=117440504 READ_ONLY THROUGHPUT=MID LATENCY=HIGH byte width=1 freq ratio=6 burst max length=MAXINT burst penalty=0 pipelined=ON cacheable=ON read_power=110 write_power=400 use4initializers=YES score=50  */
 /* global pool 1 is 344.00 KB */
 /* index=1 file postfix=AXISRAM5 name=npuRAM5 offset=0x342e0000  absolute_mode size=458752 READ_WRITE THROUGHPUT=HIGH LATENCY=LOW byte width=8 freq ratio=1.25 burst max length=MAXINT burst penalty=0 pipelined=ON cacheable=OFF read_power=18.531 write_power=16.201 use4initializers=NO score=94  */
@@ -122,7 +122,7 @@ bool LL_ATON_EC_Inference_Init_tiny_temporal_mixer_8ch_int8(void)
   return true;
 }
 
-/* scheduling epoch=0    nodes=56  ------------------------------------------------------------------- */
+/* scheduling epoch=0    nodes=50  ------------------------------------------------------------------- */
 
 /* scheduling epoch=1    nodes=3   ------------------------------------------------------------------- */
 
@@ -147,13 +147,13 @@ static void LL_ATON_Start_EpochBlock_1(const void *epoch_block)
     .zfbias = 0,
     .inbytes_f = 1,
     .shift_f = 0,
-    .shift_a = 4,
+    .shift_a = 5,
     .rounding_o = 1,
     .saturation_o = 1,
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 2,
-    .shift_o = 4,
+    .shift_o = 5,
     .raw_o = 0,
     .fWidth = 1024,
     .fHeight = 8,
@@ -178,576 +178,8 @@ static void LL_ATON_Start_EpochBlock_1(const void *epoch_block)
 
 
   /* Unit= 11 [CONV_ACC_V2 1] */
-  /* kind=Conv node=Conv2D_4_subm_2 */
-  static const LL_Convacc_InitTypeDef Conv2D_4_subm_2_init1 = {
-    .simd = 1,
-    .fsub = 0,
-    .accumulate = 0,
-    .rounding_f = 0,
-    .saturation_f = 0,
-    .round_mode_f = 0,
-    .f_unsigned = 0,
-    .k_unsigned = 0,
-    .deepmode = 0,
-    .dss2mode = 0,
-    .kseten = 0,
-    .zfbias = 0,
-    .inbytes_f = 1,
-    .shift_f = 0,
-    .shift_a = 4,
-    .rounding_o = 1,
-    .saturation_o = 1,
-    .round_mode_o = 1,
-    .relu_mode_o = 0,
-    .outbytes_o = 2,
-    .shift_o = 4,
-    .raw_o = 0,
-    .fWidth = 1024,
-    .fHeight = 8,
-    .kernelWidth = 3,
-    .kernelHeight = 3,
-    .nKernels = 8,
-    .batchDepth = 1,
-    .hstride = 1,
-    .vstride = 1,
-    .left_padding = 0,
-    .right_padding = 4,
-    .top_padding = 0,
-    .bot_padding = 0,
-    .left_crop = 2,
-    .right_crop = 1023,
-    .top_crop = 0,
-    .bot_crop = 2,
-  };
-
-  /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(1, &Conv2D_4_subm_2_init1);
-
-
-  /* Unit= 12 [CONV_ACC_V2 2] */
-  /* kind=Conv node=Conv2D_4_subm_1 */
-  static const LL_Convacc_InitTypeDef Conv2D_4_subm_1_init1 = {
-    .simd = 1,
-    .fsub = 0,
-    .accumulate = 0,
-    .rounding_f = 0,
-    .saturation_f = 0,
-    .round_mode_f = 0,
-    .f_unsigned = 0,
-    .k_unsigned = 0,
-    .deepmode = 0,
-    .dss2mode = 0,
-    .kseten = 0,
-    .zfbias = 0,
-    .inbytes_f = 1,
-    .shift_f = 0,
-    .shift_a = 4,
-    .rounding_o = 1,
-    .saturation_o = 1,
-    .round_mode_o = 1,
-    .relu_mode_o = 0,
-    .outbytes_o = 2,
-    .shift_o = 4,
-    .raw_o = 0,
-    .fWidth = 1024,
-    .fHeight = 8,
-    .kernelWidth = 6,
-    .kernelHeight = 3,
-    .nKernels = 4,
-    .batchDepth = 1,
-    .hstride = 1,
-    .vstride = 1,
-    .left_padding = 4,
-    .right_padding = 1,
-    .top_padding = 0,
-    .bot_padding = 0,
-    .left_crop = 0,
-    .right_crop = 1023,
-    .top_crop = 3,
-    .bot_crop = 5,
-  };
-
-  /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(2, &Conv2D_4_subm_1_init1);
-
-
-  /* Dma inputs units to cycle: */
-  /* Unit= 8 [STREAM_ENG_V2 8] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_5 input ports=0 range=1[0,8192] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_5_dma_init_in_0_1 = {
-    /* 1024x8x1(8 bits) */
-    .dir = 0,
-    .raw = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_235 */
-    .offset_start = 0,
-    .offset_end = 8192,
-    .offset_limit = 8256,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 8192,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 1,
-    .frame_tot_cnt = 3,
-    .nbits_in = 8,
-    .nbits_out = 8,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(8, &Conv2D_4_subm_5_dma_init_in_0_1, 1);
-
-  /* Unit= 3 [STREAM_ENG_V2 3] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_5 input ports=1 range=8[96720,96864] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_5_dma_init_in_1_1 = {
-    /* 24x3x2x1(8 bits) */
-    .dir = 0,
-    .raw = 1,
-    .continuous = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .cacheable = 1,
-    .cache_allocate = 0,
-    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_4_weights_submask_0_0_6_6_24_1_2_3_99 */
-    .offset_start = 96720,
-    .offset_end = 96864,
-    .offset_limit = 96928,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 0,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 0,
-    .frame_tot_cnt = 1,
-    .nbits_in = 8,
-    .nbits_out = 8,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(3, &Conv2D_4_subm_5_dma_init_in_1_1, 1);
-
-  /* Unit= 7 [STREAM_ENG_V2 7] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_2 input ports=0 range=1[0,8192] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_2_dma_init_in_0_1 = {
-    /* 1024x8x1(8 bits) */
-    .dir = 0,
-    .raw = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_226 */
-    .offset_start = 0,
-    .offset_end = 8192,
-    .offset_limit = 8256,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 8192,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 1,
-    .frame_tot_cnt = 3,
-    .nbits_in = 8,
-    .nbits_out = 8,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(7, &Conv2D_4_subm_2_dma_init_in_0_1, 1);
-
-  /* Unit= 5 [STREAM_ENG_V2 5] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_2 input ports=1 range=8[96496,96712] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_2_dma_init_in_1_1 = {
-    /* 24x3x3x1(8 bits) */
-    .dir = 0,
-    .raw = 1,
-    .continuous = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .cacheable = 1,
-    .cache_allocate = 0,
-    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_4_weights_submask_0_0_0_6_24_1_3_3_96 */
-    .offset_start = 96496,
-    .offset_end = 96712,
-    .offset_limit = 96776,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 0,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 0,
-    .frame_tot_cnt = 1,
-    .nbits_in = 8,
-    .nbits_out = 8,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(5, &Conv2D_4_subm_2_dma_init_in_1_1, 1);
-
-  /* Unit= 6 [STREAM_ENG_V2 6] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_1 input ports=0 range=1[0,8192] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_1_dma_init_in_0_1 = {
-    /* 1024x8x1(8 bits) */
-    .dir = 0,
-    .raw = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_223 */
-    .offset_start = 0,
-    .offset_end = 8192,
-    .offset_limit = 8256,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 8192,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 1,
-    .frame_tot_cnt = 6,
-    .nbits_in = 8,
-    .nbits_out = 8,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(6, &Conv2D_4_subm_1_dma_init_in_0_1, 1);
-
-  /* Unit= 9 [STREAM_ENG_V2 9] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_1 input ports=1 range=8[95280,95712] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_1_dma_init_in_1_1 = {
-    /* 24x6x3x1(8 bits) */
-    .dir = 0,
-    .raw = 1,
-    .continuous = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .cacheable = 1,
-    .cache_allocate = 0,
-    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_4_weights_submask_0_0_3_0_24_1_3_6_95 */
-    .offset_start = 95280,
-    .offset_end = 95712,
-    .offset_limit = 95776,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 0,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 0,
-    .frame_tot_cnt = 1,
-    .nbits_in = 8,
-    .nbits_out = 8,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(9, &Conv2D_4_subm_1_dma_init_in_1_1, 1);
-
-
-  /* Dma input bandwidth from memory pools: */
-  /* npuRAM5 -> 65536 */
-  /* octoFlash -> 792 */
-
-  /* Dma output units from cycle: */
-  /* Unit= 4 [STREAM_ENG_V2 4] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_5 output ports=0 range=1[155648,204800] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_5_dma_init_out_0_1 = {
-    /* to memory canonical from batch=8 */
-    .dir = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_234 */
-    .offset_start = 155648,
-    .offset_limit = 204864,
-    .frame_count = 0,
-    .fwidth = 1024,
-    .fheight = 1,
-    .batch_depth = 8,
-    .batch_offset = 48,
-    .frame_offset = 16,
-    .line_offset = 0,
-    .loop_offset = 49152,
-    .frame_loop_cnt = 3,
-    .frame_tot_cnt = 3,
-    .nbits_in = 16,
-    .nbits_out = 16,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(4, &Conv2D_4_subm_5_dma_init_out_0_1, 1);
-
-  /* Unit= 2 [STREAM_ENG_V2 2] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_2 output ports=0 range=1[8192,57344] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_2_dma_init_out_0_1 = {
-    /* to memory with batch=8 */
-    .dir = 1,
-    .raw = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_225 */
-    .offset_start = 8192,
-    .offset_end = 24576,
-    .offset_limit = 57408,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 16384,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 0,
-    .frame_tot_cnt = 3,
-    .nbits_in = 16,
-    .nbits_out = 16,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(2, &Conv2D_4_subm_2_dma_init_out_0_1, 1);
-
-  /* Unit= 0 [STREAM_ENG_V2 0] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_1 output ports=0 range=1[106496,155648] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_1_dma_init_out_0_1 = {
-    /* to memory with batch=4 */
-    .dir = 1,
-    .raw = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_222 */
-    .offset_start = 106496,
-    .offset_end = 114688,
-    .offset_limit = 155712,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 8192,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 0,
-    .frame_tot_cnt = 6,
-    .nbits_in = 16,
-    .nbits_out = 16,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(0, &Conv2D_4_subm_1_dma_init_out_0_1, 1);
-
-
-  /* Dma output bandwidth to memory pools: */
-  /* npuRAM5 <- 73728 */
-
-  static const LL_Switch_InitTypeDef switch_init_in_1[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_5 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_5 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_5 OUT: in unit=STREAM_ENG_V2 4 in port=0 out unit=CONV_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_2 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_2 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_2 OUT: in unit=STREAM_ENG_V2 2 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_1 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_1 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 9 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_1 OUT: in unit=STREAM_ENG_V2 0 in port=0 out unit=CONV_ACC_V2 2 out port=0 */
-  };
-
-
-  /* epoch=1 */
-  LL_Switch_Init(switch_init_in_1, 9);
-
-  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_1_all_units[] = {
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
-    { {STRENG, 2} }, /* STREAM_ENG_V2 */
-    { {STRENG, 4} }, /* STREAM_ENG_V2 */
-    { {CONVACC, 0} }, /* CONV_ACC_V2 */
-    { {CONVACC, 1} }, /* CONV_ACC_V2 */
-    { {CONVACC, 2} }, /* CONV_ACC_V2 */
-    { {STRENG, 3} }, /* STREAM_ENG_V2 */
-    { {STRENG, 5} }, /* STREAM_ENG_V2 */
-    { {STRENG, 6} }, /* STREAM_ENG_V2 */
-    { {STRENG, 7} }, /* STREAM_ENG_V2 */
-    { {STRENG, 8} }, /* STREAM_ENG_V2 */
-    { {STRENG, 9} }, /* STREAM_ENG_V2 */
-  };
-
-
-  LL_ATON_EnableUnits_Init(Enable_epoch_1_all_units, 12);
-
-}
-
-static void LL_ATON_End_EpochBlock_1(const void *epoch_block)
-{
-  LL_ATON_LIB_UNUSED(epoch_block);
-
-  static const LL_Switch_DeinitTypeDef switch_deinit_in_1[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_5 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_5 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_5 OUT: in unit=STREAM_ENG_V2 4 in port=0 out unit=CONV_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_2 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_2 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_2 OUT: in unit=STREAM_ENG_V2 2 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_1 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_1 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 9 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_1 OUT: in unit=STREAM_ENG_V2 0 in port=0 out unit=CONV_ACC_V2 2 out port=0 */
-  };
-
-
-  /* epoch=1 */
-  LL_Switch_Deinit(switch_deinit_in_1, 9);
-
-  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_1_all_units[] = {
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
-    { {STRENG, 2} }, /* STREAM_ENG_V2 */
-    { {STRENG, 4} }, /* STREAM_ENG_V2 */
-    { {CONVACC, 0} }, /* CONV_ACC_V2 */
-    { {CONVACC, 1} }, /* CONV_ACC_V2 */
-    { {CONVACC, 2} }, /* CONV_ACC_V2 */
-    { {STRENG, 3} }, /* STREAM_ENG_V2 */
-    { {STRENG, 5} }, /* STREAM_ENG_V2 */
-    { {STRENG, 6} }, /* STREAM_ENG_V2 */
-    { {STRENG, 7} }, /* STREAM_ENG_V2 */
-    { {STRENG, 8} }, /* STREAM_ENG_V2 */
-    { {STRENG, 9} }, /* STREAM_ENG_V2 */
-  };
-
-
-  LL_ATON_DisableUnits_Init(Disable_epoch_1_all_units, 12);
-
-}
-
-
-/* scheduling epoch=2    nodes=4   ------------------------------------------------------------------- */
-
-static void LL_ATON_Start_EpochBlock_2(const void *epoch_block)
-{
-  LL_ATON_LIB_UNUSED(epoch_block);
-
-  /* Unit= 13 [CONV_ACC_V2 3] */
-  /* kind=Conv node=Conv2D_4_subm_0 */
-  static const LL_Convacc_InitTypeDef Conv2D_4_subm_0_init2 = {
-    .simd = 1,
-    .fsub = 0,
-    .accumulate = 0,
-    .rounding_f = 0,
-    .saturation_f = 0,
-    .round_mode_f = 0,
-    .f_unsigned = 0,
-    .k_unsigned = 0,
-    .deepmode = 0,
-    .dss2mode = 0,
-    .kseten = 0,
-    .zfbias = 0,
-    .inbytes_f = 1,
-    .shift_f = 0,
-    .shift_a = 4,
-    .rounding_o = 1,
-    .saturation_o = 1,
-    .round_mode_o = 1,
-    .relu_mode_o = 0,
-    .outbytes_o = 2,
-    .shift_o = 4,
-    .raw_o = 0,
-    .fWidth = 1024,
-    .fHeight = 8,
-    .kernelWidth = 6,
-    .kernelHeight = 3,
-    .nKernels = 4,
-    .batchDepth = 1,
-    .hstride = 1,
-    .vstride = 1,
-    .left_padding = 4,
-    .right_padding = 1,
-    .top_padding = 0,
-    .bot_padding = 0,
-    .left_crop = 0,
-    .right_crop = 1023,
-    .top_crop = 0,
-    .bot_crop = 2,
-  };
-
-  /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(3, &Conv2D_4_subm_0_init2);
-
-
-  /* Unit= 10 [CONV_ACC_V2 0] */
-  /* kind=Conv node=Conv2D_4_subm_3 */
-  static const LL_Convacc_InitTypeDef Conv2D_4_subm_3_init2 = {
-    .simd = 1,
-    .fsub = 0,
-    .accumulate = 0,
-    .rounding_f = 0,
-    .saturation_f = 0,
-    .round_mode_f = 0,
-    .f_unsigned = 0,
-    .k_unsigned = 0,
-    .deepmode = 0,
-    .dss2mode = 0,
-    .kseten = 0,
-    .zfbias = 0,
-    .inbytes_f = 1,
-    .shift_f = 0,
-    .shift_a = 4,
-    .rounding_o = 1,
-    .saturation_o = 1,
-    .round_mode_o = 1,
-    .relu_mode_o = 0,
-    .outbytes_o = 2,
-    .shift_o = 4,
-    .raw_o = 0,
-    .fWidth = 1024,
-    .fHeight = 8,
-    .kernelWidth = 3,
-    .kernelHeight = 3,
-    .nKernels = 8,
-    .batchDepth = 1,
-    .hstride = 1,
-    .vstride = 1,
-    .left_padding = 0,
-    .right_padding = 4,
-    .top_padding = 0,
-    .bot_padding = 0,
-    .left_crop = 2,
-    .right_crop = 1023,
-    .top_crop = 3,
-    .bot_crop = 5,
-  };
-
-  /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(0, &Conv2D_4_subm_3_init2);
-
-
-  /* Unit= 11 [CONV_ACC_V2 1] */
   /* kind=Conv node=Conv2D_4_subm_4 */
-  static const LL_Convacc_InitTypeDef Conv2D_4_subm_4_init2 = {
+  static const LL_Convacc_InitTypeDef Conv2D_4_subm_4_init1 = {
     .simd = 1,
     .fsub = 0,
     .accumulate = 0,
@@ -762,13 +194,13 @@ static void LL_ATON_Start_EpochBlock_2(const void *epoch_block)
     .zfbias = 0,
     .inbytes_f = 1,
     .shift_f = 0,
-    .shift_a = 4,
+    .shift_a = 5,
     .rounding_o = 1,
     .saturation_o = 1,
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 2,
-    .shift_o = 4,
+    .shift_o = 5,
     .raw_o = 0,
     .fWidth = 1024,
     .fHeight = 8,
@@ -789,8 +221,435 @@ static void LL_ATON_Start_EpochBlock_2(const void *epoch_block)
   };
 
   /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(1, &Conv2D_4_subm_4_init2);
+  LL_Convacc_Init(1, &Conv2D_4_subm_4_init1);
 
+
+  /* Unit= 12 [CONV_ACC_V2 2] */
+  /* kind=Conv node=Conv2D_4_subm_0 */
+  static const LL_Convacc_InitTypeDef Conv2D_4_subm_0_init1 = {
+    .simd = 1,
+    .fsub = 0,
+    .accumulate = 0,
+    .rounding_f = 0,
+    .saturation_f = 0,
+    .round_mode_f = 0,
+    .f_unsigned = 0,
+    .k_unsigned = 0,
+    .deepmode = 0,
+    .dss2mode = 0,
+    .kseten = 0,
+    .zfbias = 0,
+    .inbytes_f = 1,
+    .shift_f = 0,
+    .shift_a = 5,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 2,
+    .shift_o = 5,
+    .raw_o = 0,
+    .fWidth = 1024,
+    .fHeight = 8,
+    .kernelWidth = 6,
+    .kernelHeight = 3,
+    .nKernels = 4,
+    .batchDepth = 1,
+    .hstride = 1,
+    .vstride = 1,
+    .left_padding = 4,
+    .right_padding = 1,
+    .top_padding = 0,
+    .bot_padding = 0,
+    .left_crop = 0,
+    .right_crop = 1023,
+    .top_crop = 0,
+    .bot_crop = 2,
+  };
+
+  /* Unit=CONV_ACC_V2 */
+  LL_Convacc_Init(2, &Conv2D_4_subm_0_init1);
+
+
+  /* Dma inputs units to cycle: */
+  /* Unit= 7 [STREAM_ENG_V2 7] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_5 input ports=0 range=1[0,8192] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_5_dma_init_in_0_1 = {
+    /* 1024x8x1(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_248 */
+    .offset_start = 0,
+    .offset_end = 8192,
+    .offset_limit = 8256,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 8192,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 1,
+    .frame_tot_cnt = 3,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(7, &Conv2D_4_subm_5_dma_init_in_0_1, 1);
+
+  /* Unit= 1 [STREAM_ENG_V2 1] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_5 input ports=1 range=8[81040,81184] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_5_dma_init_in_1_1 = {
+    /* 24x3x2x1(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .continuous = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .cacheable = 1,
+    .cache_allocate = 0,
+    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_4_weights_submask_0_0_6_6_24_1_2_3_108 */
+    .offset_start = 81040,
+    .offset_end = 81184,
+    .offset_limit = 81248,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 0,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 0,
+    .frame_tot_cnt = 1,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(1, &Conv2D_4_subm_5_dma_init_in_1_1, 1);
+
+  /* Unit= 8 [STREAM_ENG_V2 8] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_4 input ports=0 range=1[0,8192] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_4_dma_init_in_0_1 = {
+    /* 1024x8x1(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_245 */
+    .offset_start = 0,
+    .offset_end = 8192,
+    .offset_limit = 8256,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 8192,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 1,
+    .frame_tot_cnt = 6,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(8, &Conv2D_4_subm_4_dma_init_in_0_1, 1);
+
+  /* Unit= 2 [STREAM_ENG_V2 2] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_4 input ports=1 range=8[78688,78976] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_4_dma_init_in_1_1 = {
+    /* 24x6x2x1(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .continuous = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .cacheable = 1,
+    .cache_allocate = 0,
+    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_4_weights_submask_0_0_6_0_24_1_2_6_107 */
+    .offset_start = 78688,
+    .offset_end = 78976,
+    .offset_limit = 79040,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 0,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 0,
+    .frame_tot_cnt = 1,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(2, &Conv2D_4_subm_4_dma_init_in_1_1, 1);
+
+  /* Unit= 3 [STREAM_ENG_V2 3] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_0 input ports=0 range=1[0,8192] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_0_dma_init_in_0_1 = {
+    /* 1024x8x1(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_233 */
+    .offset_start = 0,
+    .offset_end = 8192,
+    .offset_limit = 8256,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 8192,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 1,
+    .frame_tot_cnt = 6,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(3, &Conv2D_4_subm_0_dma_init_in_0_1, 1);
+
+  /* Unit= 9 [STREAM_ENG_V2 9] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_0 input ports=1 range=8[78256,78688] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_0_dma_init_in_1_1 = {
+    /* 24x6x3x1(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .continuous = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .cacheable = 1,
+    .cache_allocate = 0,
+    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_4_weights_submask_0_0_0_0_24_1_3_6_103 */
+    .offset_start = 78256,
+    .offset_end = 78688,
+    .offset_limit = 78752,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 0,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 0,
+    .frame_tot_cnt = 1,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(9, &Conv2D_4_subm_0_dma_init_in_1_1, 1);
+
+
+  /* Dma input bandwidth from memory pools: */
+  /* npuRAM5 -> 65536 */
+  /* octoFlash -> 864 */
+
+  /* Dma output units from cycle: */
+  /* Unit= 6 [STREAM_ENG_V2 6] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_5 output ports=0 range=1[204800,253952] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_5_dma_init_out_0_1 = {
+    /* to memory canonical from batch=8 */
+    .dir = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_247 */
+    .offset_start = 204800,
+    .offset_limit = 254016,
+    .frame_count = 0,
+    .fwidth = 1024,
+    .fheight = 1,
+    .batch_depth = 8,
+    .batch_offset = 48,
+    .frame_offset = 16,
+    .line_offset = 0,
+    .loop_offset = 49152,
+    .frame_loop_cnt = 3,
+    .frame_tot_cnt = 3,
+    .nbits_in = 16,
+    .nbits_out = 16,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(6, &Conv2D_4_subm_5_dma_init_out_0_1, 1);
+
+  /* Unit= 4 [STREAM_ENG_V2 4] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_4 output ports=0 range=1[155648,204800] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_4_dma_init_out_0_1 = {
+    /* to memory with batch=4 */
+    .dir = 1,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_244 */
+    .offset_start = 155648,
+    .offset_end = 163840,
+    .offset_limit = 204864,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 8192,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 0,
+    .frame_tot_cnt = 6,
+    .nbits_in = 16,
+    .nbits_out = 16,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(4, &Conv2D_4_subm_4_dma_init_out_0_1, 1);
+
+  /* Unit= 5 [STREAM_ENG_V2 5] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_0 output ports=0 range=1[106496,155648] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_0_dma_init_out_0_1 = {
+    /* to memory with batch=4 */
+    .dir = 1,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_232 */
+    .offset_start = 106496,
+    .offset_end = 114688,
+    .offset_limit = 155712,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 8192,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 0,
+    .frame_tot_cnt = 6,
+    .nbits_in = 16,
+    .nbits_out = 16,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(5, &Conv2D_4_subm_0_dma_init_out_0_1, 1);
+
+
+  /* Dma output bandwidth to memory pools: */
+  /* npuRAM5 <- 73728 */
+
+  static const LL_Switch_InitTypeDef switch_init_in_1[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_5 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_5 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_5 OUT: in unit=STREAM_ENG_V2 6 in port=0 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_4 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_4 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_4 OUT: in unit=STREAM_ENG_V2 4 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_0 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_0 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 9 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_0 OUT: in unit=STREAM_ENG_V2 5 in port=0 out unit=CONV_ACC_V2 2 out port=0 */
+  };
+
+
+  /* epoch=1 */
+  LL_Switch_Init(switch_init_in_1, 9);
+
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_1_all_units[] = {
+    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+    { {STRENG, 5} }, /* STREAM_ENG_V2 */
+    { {STRENG, 6} }, /* STREAM_ENG_V2 */
+    { {CONVACC, 0} }, /* CONV_ACC_V2 */
+    { {CONVACC, 1} }, /* CONV_ACC_V2 */
+    { {CONVACC, 2} }, /* CONV_ACC_V2 */
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
+    { {STRENG, 2} }, /* STREAM_ENG_V2 */
+    { {STRENG, 3} }, /* STREAM_ENG_V2 */
+    { {STRENG, 7} }, /* STREAM_ENG_V2 */
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
+  };
+
+
+  LL_ATON_EnableUnits_Init(Enable_epoch_1_all_units, 12);
+
+}
+
+static void LL_ATON_End_EpochBlock_1(const void *epoch_block)
+{
+  LL_ATON_LIB_UNUSED(epoch_block);
+
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_1[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_5 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_5 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_5 OUT: in unit=STREAM_ENG_V2 6 in port=0 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_4 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_4 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_4 OUT: in unit=STREAM_ENG_V2 4 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_0 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_0 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 9 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_0 OUT: in unit=STREAM_ENG_V2 5 in port=0 out unit=CONV_ACC_V2 2 out port=0 */
+  };
+
+
+  /* epoch=1 */
+  LL_Switch_Deinit(switch_deinit_in_1, 9);
+
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_1_all_units[] = {
+    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+    { {STRENG, 5} }, /* STREAM_ENG_V2 */
+    { {STRENG, 6} }, /* STREAM_ENG_V2 */
+    { {CONVACC, 0} }, /* CONV_ACC_V2 */
+    { {CONVACC, 1} }, /* CONV_ACC_V2 */
+    { {CONVACC, 2} }, /* CONV_ACC_V2 */
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
+    { {STRENG, 2} }, /* STREAM_ENG_V2 */
+    { {STRENG, 3} }, /* STREAM_ENG_V2 */
+    { {STRENG, 7} }, /* STREAM_ENG_V2 */
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
+  };
+
+
+  LL_ATON_DisableUnits_Init(Disable_epoch_1_all_units, 12);
+
+}
+
+
+/* scheduling epoch=2    nodes=3   ------------------------------------------------------------------- */
+
+static void LL_ATON_Start_EpochBlock_2(const void *epoch_block)
+{
+  LL_ATON_LIB_UNUSED(epoch_block);
 
   /* Unit= 18 [ARITH_ACC_V2 0] */
   /* kind=Add node=Conv2D_4_add_2 */
@@ -841,21 +700,115 @@ static void LL_ATON_Start_EpochBlock_2(const void *epoch_block)
   LL_Arithacc_Init(0, &Conv2D_4_add_2_init2);
 
 
-  /* Dma inputs units to cycle: */
-  /* Unit= 1 [STREAM_ENG_V2 1] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_0 input ports=0 range=1[0,8192] */
+  /* Unit= 13 [CONV_ACC_V2 3] */
+  /* kind=Conv node=Conv2D_4_subm_1 */
+  static const LL_Convacc_InitTypeDef Conv2D_4_subm_1_init2 = {
+    .simd = 1,
+    .fsub = 0,
+    .accumulate = 0,
+    .rounding_f = 0,
+    .saturation_f = 0,
+    .round_mode_f = 0,
+    .f_unsigned = 0,
+    .k_unsigned = 0,
+    .deepmode = 0,
+    .dss2mode = 0,
+    .kseten = 0,
+    .zfbias = 0,
+    .inbytes_f = 1,
+    .shift_f = 0,
+    .shift_a = 5,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 2,
+    .shift_o = 5,
+    .raw_o = 0,
+    .fWidth = 1024,
+    .fHeight = 8,
+    .kernelWidth = 6,
+    .kernelHeight = 3,
+    .nKernels = 4,
+    .batchDepth = 1,
+    .hstride = 1,
+    .vstride = 1,
+    .left_padding = 4,
+    .right_padding = 1,
+    .top_padding = 0,
+    .bot_padding = 0,
+    .left_crop = 0,
+    .right_crop = 1023,
+    .top_crop = 3,
+    .bot_crop = 5,
+  };
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_0_dma_init_in_0_2 = {
-    /* 1024x8x1(8 bits) */
+  /* Unit=CONV_ACC_V2 */
+  LL_Convacc_Init(3, &Conv2D_4_subm_1_init2);
+
+
+  /* Unit= 10 [CONV_ACC_V2 0] */
+  /* kind=Conv node=Conv2D_4_subm_2 */
+  static const LL_Convacc_InitTypeDef Conv2D_4_subm_2_init2 = {
+    .simd = 1,
+    .fsub = 0,
+    .accumulate = 0,
+    .rounding_f = 0,
+    .saturation_f = 0,
+    .round_mode_f = 0,
+    .f_unsigned = 0,
+    .k_unsigned = 0,
+    .deepmode = 0,
+    .dss2mode = 0,
+    .kseten = 0,
+    .zfbias = 0,
+    .inbytes_f = 1,
+    .shift_f = 0,
+    .shift_a = 5,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 2,
+    .shift_o = 5,
+    .raw_o = 0,
+    .fWidth = 1024,
+    .fHeight = 8,
+    .kernelWidth = 3,
+    .kernelHeight = 3,
+    .nKernels = 8,
+    .batchDepth = 1,
+    .hstride = 1,
+    .vstride = 1,
+    .left_padding = 0,
+    .right_padding = 4,
+    .top_padding = 0,
+    .bot_padding = 0,
+    .left_crop = 2,
+    .right_crop = 1023,
+    .top_crop = 0,
+    .bot_crop = 2,
+  };
+
+  /* Unit=CONV_ACC_V2 */
+  LL_Convacc_Init(0, &Conv2D_4_subm_2_init2);
+
+
+  /* Dma inputs units to cycle: */
+  /* Unit= 3 [STREAM_ENG_V2 3] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_2 input ports=0 range=1[155648,204800] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_2_dma_init_in_0_2 = {
+    /* from memory with batch=4 */
     .dir = 0,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_220 */
-    .offset_start = 0,
-    .offset_end = 8192,
-    .offset_limit = 8256,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_244 */
+    .offset_start = 155648,
+    .offset_end = 163840,
+    .offset_limit = 204864,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -864,181 +817,17 @@ static void LL_ATON_Start_EpochBlock_2(const void *epoch_block)
     .frame_offset = 8192,
     .line_offset = 0,
     .loop_offset = 0,
-    .frame_loop_cnt = 1,
-    .frame_tot_cnt = 6,
-    .nbits_in = 8,
-    .nbits_out = 8,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(1, &Conv2D_4_subm_0_dma_init_in_0_2, 1);
-
-  /* Unit= 4 [STREAM_ENG_V2 4] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_0 input ports=1 range=8[94848,95280] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_0_dma_init_in_1_2 = {
-    /* 24x6x3x1(8 bits) */
-    .dir = 0,
-    .raw = 1,
-    .continuous = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .cacheable = 1,
-    .cache_allocate = 0,
-    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_4_weights_submask_0_0_0_0_24_1_3_6_94 */
-    .offset_start = 94848,
-    .offset_end = 95280,
-    .offset_limit = 95344,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 0,
-    .line_offset = 0,
-    .loop_offset = 0,
     .frame_loop_cnt = 0,
-    .frame_tot_cnt = 1,
-    .nbits_in = 8,
-    .nbits_out = 8,
+    .frame_tot_cnt = 6,
+    .nbits_in = 16,
+    .nbits_out = 16,
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(4, &Conv2D_4_subm_0_dma_init_in_1_2, 1);
+  LL_Streng_TensorInit(3, &Conv2D_4_add_2_dma_init_in_0_2, 1);
 
   /* Unit= 2 [STREAM_ENG_V2 2] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_3 input ports=0 range=1[0,8192] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_3_dma_init_in_0_2 = {
-    /* 1024x8x1(8 bits) */
-    .dir = 0,
-    .raw = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_229 */
-    .offset_start = 0,
-    .offset_end = 8192,
-    .offset_limit = 8256,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 8192,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 1,
-    .frame_tot_cnt = 3,
-    .nbits_in = 8,
-    .nbits_out = 8,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(2, &Conv2D_4_subm_3_dma_init_in_0_2, 1);
-
-  /* Unit= 8 [STREAM_ENG_V2 8] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_3 input ports=1 range=8[96272,96488] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_3_dma_init_in_1_2 = {
-    /* 24x3x3x1(8 bits) */
-    .dir = 0,
-    .raw = 1,
-    .continuous = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .cacheable = 1,
-    .cache_allocate = 0,
-    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_4_weights_submask_0_0_3_6_24_1_3_3_97 */
-    .offset_start = 96272,
-    .offset_end = 96488,
-    .offset_limit = 96552,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 0,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 0,
-    .frame_tot_cnt = 1,
-    .nbits_in = 8,
-    .nbits_out = 8,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(8, &Conv2D_4_subm_3_dma_init_in_1_2, 1);
-
-  /* Unit= 7 [STREAM_ENG_V2 7] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_4 input ports=0 range=1[0,8192] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_4_dma_init_in_0_2 = {
-    /* 1024x8x1(8 bits) */
-    .dir = 0,
-    .raw = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_232 */
-    .offset_start = 0,
-    .offset_end = 8192,
-    .offset_limit = 8256,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 8192,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 1,
-    .frame_tot_cnt = 6,
-    .nbits_in = 8,
-    .nbits_out = 8,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(7, &Conv2D_4_subm_4_dma_init_in_0_2, 1);
-
-  /* Unit= 9 [STREAM_ENG_V2 9] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_4 input ports=1 range=8[95712,96000] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_4_dma_init_in_1_2 = {
-    /* 24x6x2x1(8 bits) */
-    .dir = 0,
-    .raw = 1,
-    .continuous = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .cacheable = 1,
-    .cache_allocate = 0,
-    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_4_weights_submask_0_0_6_0_24_1_2_6_98 */
-    .offset_start = 95712,
-    .offset_end = 96000,
-    .offset_limit = 96064,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 0,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 0,
-    .frame_tot_cnt = 1,
-    .nbits_in = 8,
-    .nbits_out = 8,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(9, &Conv2D_4_subm_4_dma_init_in_1_2, 1);
-
-  /* Unit= 6 [STREAM_ENG_V2 6] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_2 input ports=1 range=1[155648,204800] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_2 input ports=1 range=1[204800,253952] */
 
   static const LL_Streng_TensorInitTypeDef Conv2D_4_add_2_dma_init_in_1_2 = {
     /* memory canonical to batch=4 */
@@ -1046,9 +835,9 @@ static void LL_ATON_Start_EpochBlock_2(const void *epoch_block)
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_234 */
-    .offset_start = 155648,
-    .offset_limit = 204864,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_247 */
+    .offset_start = 204800,
+    .offset_limit = 254016,
     .frame_count = 0,
     .fwidth = 1024,
     .fheight = 1,
@@ -1064,28 +853,158 @@ static void LL_ATON_Start_EpochBlock_2(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(6, &Conv2D_4_add_2_dma_init_in_1_2, 1);
+  LL_Streng_TensorInit(2, &Conv2D_4_add_2_dma_init_in_1_2, 1);
+
+  /* Unit= 8 [STREAM_ENG_V2 8] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_1 input ports=0 range=1[0,8192] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_1_dma_init_in_0_2 = {
+    /* 1024x8x1(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_236 */
+    .offset_start = 0,
+    .offset_end = 8192,
+    .offset_limit = 8256,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 8192,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 1,
+    .frame_tot_cnt = 6,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(8, &Conv2D_4_subm_1_dma_init_in_0_2, 1);
+
+  /* Unit= 0 [STREAM_ENG_V2 0] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_1 input ports=1 range=8[77824,78256] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_1_dma_init_in_1_2 = {
+    /* 24x6x3x1(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .continuous = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .cacheable = 1,
+    .cache_allocate = 0,
+    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_4_weights_submask_0_0_3_0_24_1_3_6_104 */
+    .offset_start = 77824,
+    .offset_end = 78256,
+    .offset_limit = 78320,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 0,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 0,
+    .frame_tot_cnt = 1,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(0, &Conv2D_4_subm_1_dma_init_in_1_2, 1);
+
+  /* Unit= 6 [STREAM_ENG_V2 6] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_2 input ports=0 range=1[0,8192] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_2_dma_init_in_0_2 = {
+    /* 1024x8x1(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_239 */
+    .offset_start = 0,
+    .offset_end = 8192,
+    .offset_limit = 8256,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 8192,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 1,
+    .frame_tot_cnt = 3,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(6, &Conv2D_4_subm_2_dma_init_in_0_2, 1);
+
+  /* Unit= 4 [STREAM_ENG_V2 4] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_2 input ports=1 range=8[80240,80456] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_2_dma_init_in_1_2 = {
+    /* 24x3x3x1(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .continuous = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .cacheable = 1,
+    .cache_allocate = 0,
+    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_4_weights_submask_0_0_0_6_24_1_3_3_105 */
+    .offset_start = 80240,
+    .offset_end = 80456,
+    .offset_limit = 80520,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 0,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 0,
+    .frame_tot_cnt = 1,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(4, &Conv2D_4_subm_2_dma_init_in_1_2, 1);
 
 
   /* Dma input bandwidth from memory pools: */
-  /* npuRAM5 -> 114688 */
-  /* octoFlash -> 936 */
+  /* npuRAM5 -> 155648 */
+  /* octoFlash -> 648 */
 
   /* Dma output units from cycle: */
-  /* Unit= 3 [STREAM_ENG_V2 3] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_0 output ports=0 range=1[204800,253952] */
+  /* Unit= 5 [STREAM_ENG_V2 5] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_2 output ports=0 range=1[303104,352256] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_0_dma_init_out_0_2 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_2_dma_init_out_0_2 = {
     /* to memory with batch=4 */
     .dir = 1,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_219 */
-    .offset_start = 204800,
-    .offset_end = 212992,
-    .offset_limit = 254016,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_252 */
+    .offset_start = 303104,
+    .offset_end = 311296,
+    .offset_limit = 352320,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -1101,50 +1020,19 @@ static void LL_ATON_Start_EpochBlock_2(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(3, &Conv2D_4_subm_0_dma_init_out_0_2, 1);
+  LL_Streng_TensorInit(5, &Conv2D_4_add_2_dma_init_out_0_2, 1);
 
-  /* Unit= 0 [STREAM_ENG_V2 0] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_3 output ports=0 range=1[57344,106496] */
+  /* Unit= 7 [STREAM_ENG_V2 7] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_1 output ports=0 range=1[253952,303104] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_3_dma_init_out_0_2 = {
-    /* to memory with batch=8 */
-    .dir = 1,
-    .raw = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_228 */
-    .offset_start = 57344,
-    .offset_end = 73728,
-    .offset_limit = 106560,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 16384,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 0,
-    .frame_tot_cnt = 3,
-    .nbits_in = 16,
-    .nbits_out = 16,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(0, &Conv2D_4_subm_3_dma_init_out_0_2, 1);
-
-  /* Unit= 5 [STREAM_ENG_V2 5] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_2 output ports=0 range=1[253952,303104] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_2_dma_init_out_0_2 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_1_dma_init_out_0_2 = {
     /* to memory with batch=4 */
     .dir = 1,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_239 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_235 */
     .offset_start = 253952,
     .offset_end = 262144,
     .offset_limit = 303168,
@@ -1163,49 +1051,76 @@ static void LL_ATON_Start_EpochBlock_2(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(5, &Conv2D_4_add_2_dma_init_out_0_2, 1);
+  LL_Streng_TensorInit(7, &Conv2D_4_subm_1_dma_init_out_0_2, 1);
+
+  /* Unit= 1 [STREAM_ENG_V2 1] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_2 output ports=0 range=1[8192,57344] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_2_dma_init_out_0_2 = {
+    /* to memory with batch=8 */
+    .dir = 1,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_238 */
+    .offset_start = 8192,
+    .offset_end = 24576,
+    .offset_limit = 57408,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 16384,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 0,
+    .frame_tot_cnt = 3,
+    .nbits_in = 16,
+    .nbits_out = 16,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(1, &Conv2D_4_subm_2_dma_init_out_0_2, 1);
 
 
   /* Dma output bandwidth to memory pools: */
   /* npuRAM5 <- 98304 */
 
   static const LL_Switch_InitTypeDef switch_init_in_2[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_0 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_0 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_0 OUT: in unit=STREAM_ENG_V2 3 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_3 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_3 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 8 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_3 OUT: in unit=STREAM_ENG_V2 0 in port=0 out unit=CONV_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_4 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_4 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 9 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_2 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_2 IN: in unit=ARITH_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 6 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_2 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_2 IN: in unit=ARITH_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 2 out port=0 */
     { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_2 OUT: in unit=STREAM_ENG_V2 5 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_1 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_1 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_1 OUT: in unit=STREAM_ENG_V2 7 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_2 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_2 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_2 OUT: in unit=STREAM_ENG_V2 1 in port=0 out unit=CONV_ACC_V2 0 out port=0 */
   };
 
 
   /* epoch=2 */
-  LL_Switch_Init(switch_init_in_2, 11);
+  LL_Switch_Init(switch_init_in_2, 9);
 
   static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_2_all_units[] = {
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
-    { {STRENG, 3} }, /* STREAM_ENG_V2 */
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
     { {STRENG, 5} }, /* STREAM_ENG_V2 */
+    { {STRENG, 7} }, /* STREAM_ENG_V2 */
     { {CONVACC, 0} }, /* CONV_ACC_V2 */
-    { {CONVACC, 1} }, /* CONV_ACC_V2 */
     { {CONVACC, 3} }, /* CONV_ACC_V2 */
     { {ARITH, 0} }, /* ARITH_ACC_V2 */
-    { {STRENG, 1} }, /* STREAM_ENG_V2 */
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
     { {STRENG, 2} }, /* STREAM_ENG_V2 */
+    { {STRENG, 3} }, /* STREAM_ENG_V2 */
     { {STRENG, 4} }, /* STREAM_ENG_V2 */
     { {STRENG, 6} }, /* STREAM_ENG_V2 */
-    { {STRENG, 7} }, /* STREAM_ENG_V2 */
     { {STRENG, 8} }, /* STREAM_ENG_V2 */
-    { {STRENG, 9} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_EnableUnits_Init(Enable_epoch_2_all_units, 14);
+  LL_ATON_EnableUnits_Init(Enable_epoch_2_all_units, 12);
 
 }
 
@@ -1214,42 +1129,38 @@ static void LL_ATON_End_EpochBlock_2(const void *epoch_block)
   LL_ATON_LIB_UNUSED(epoch_block);
 
   static const LL_Switch_DeinitTypeDef switch_deinit_in_2[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_0 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_0 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_0 OUT: in unit=STREAM_ENG_V2 3 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_3 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_3 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 8 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_3 OUT: in unit=STREAM_ENG_V2 0 in port=0 out unit=CONV_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_4 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_4 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 9 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_2 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_2 IN: in unit=ARITH_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 6 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_2 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_2 IN: in unit=ARITH_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 2 out port=0 */
     { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_2 OUT: in unit=STREAM_ENG_V2 5 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_1 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_1 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_1 OUT: in unit=STREAM_ENG_V2 7 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_2 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_2 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_2 OUT: in unit=STREAM_ENG_V2 1 in port=0 out unit=CONV_ACC_V2 0 out port=0 */
   };
 
 
   /* epoch=2 */
-  LL_Switch_Deinit(switch_deinit_in_2, 11);
+  LL_Switch_Deinit(switch_deinit_in_2, 9);
 
   static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_2_all_units[] = {
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
-    { {STRENG, 3} }, /* STREAM_ENG_V2 */
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
     { {STRENG, 5} }, /* STREAM_ENG_V2 */
+    { {STRENG, 7} }, /* STREAM_ENG_V2 */
     { {CONVACC, 0} }, /* CONV_ACC_V2 */
-    { {CONVACC, 1} }, /* CONV_ACC_V2 */
     { {CONVACC, 3} }, /* CONV_ACC_V2 */
     { {ARITH, 0} }, /* ARITH_ACC_V2 */
-    { {STRENG, 1} }, /* STREAM_ENG_V2 */
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
     { {STRENG, 2} }, /* STREAM_ENG_V2 */
+    { {STRENG, 3} }, /* STREAM_ENG_V2 */
     { {STRENG, 4} }, /* STREAM_ENG_V2 */
     { {STRENG, 6} }, /* STREAM_ENG_V2 */
-    { {STRENG, 7} }, /* STREAM_ENG_V2 */
     { {STRENG, 8} }, /* STREAM_ENG_V2 */
-    { {STRENG, 9} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_DisableUnits_Init(Disable_epoch_2_all_units, 14);
+  LL_ATON_DisableUnits_Init(Disable_epoch_2_all_units, 12);
 
 }
 
@@ -1309,9 +1220,325 @@ static void LL_ATON_Start_EpochBlock_3(const void *epoch_block)
   LL_Arithacc_Init(1, &Conv2D_4_add_0_init3);
 
 
+  /* Unit= 11 [CONV_ACC_V2 1] */
+  /* kind=Conv node=Conv2D_4_subm_3 */
+  static const LL_Convacc_InitTypeDef Conv2D_4_subm_3_init3 = {
+    .simd = 1,
+    .fsub = 0,
+    .accumulate = 0,
+    .rounding_f = 0,
+    .saturation_f = 0,
+    .round_mode_f = 0,
+    .f_unsigned = 0,
+    .k_unsigned = 0,
+    .deepmode = 0,
+    .dss2mode = 0,
+    .kseten = 0,
+    .zfbias = 0,
+    .inbytes_f = 1,
+    .shift_f = 0,
+    .shift_a = 5,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 2,
+    .shift_o = 5,
+    .raw_o = 0,
+    .fWidth = 1024,
+    .fHeight = 8,
+    .kernelWidth = 3,
+    .kernelHeight = 3,
+    .nKernels = 8,
+    .batchDepth = 1,
+    .hstride = 1,
+    .vstride = 1,
+    .left_padding = 0,
+    .right_padding = 4,
+    .top_padding = 0,
+    .bot_padding = 0,
+    .left_crop = 2,
+    .right_crop = 1023,
+    .top_crop = 3,
+    .bot_crop = 5,
+  };
+
+  /* Unit=CONV_ACC_V2 */
+  LL_Convacc_Init(1, &Conv2D_4_subm_3_init3);
+
+
+  /* Dma inputs units to cycle: */
+  /* Unit= 2 [STREAM_ENG_V2 2] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_0 input ports=0 range=1[106496,155648] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_0_dma_init_in_0_3 = {
+    /* from memory with batch=4 */
+    .dir = 0,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_232 */
+    .offset_start = 106496,
+    .offset_end = 114688,
+    .offset_limit = 155712,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 8192,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 0,
+    .frame_tot_cnt = 6,
+    .nbits_in = 16,
+    .nbits_out = 16,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(2, &Conv2D_4_add_0_dma_init_in_0_3, 1);
+
+  /* Unit= 9 [STREAM_ENG_V2 9] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_0 input ports=1 range=1[253952,303104] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_0_dma_init_in_1_3 = {
+    /* from memory with batch=4 */
+    .dir = 0,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_235 */
+    .offset_start = 253952,
+    .offset_end = 262144,
+    .offset_limit = 303168,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 8192,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 0,
+    .frame_tot_cnt = 6,
+    .nbits_in = 16,
+    .nbits_out = 16,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(9, &Conv2D_4_add_0_dma_init_in_1_3, 1);
+
+  /* Unit= 4 [STREAM_ENG_V2 4] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_3 input ports=0 range=1[0,8192] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_3_dma_init_in_0_3 = {
+    /* 1024x8x1(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_242 */
+    .offset_start = 0,
+    .offset_end = 8192,
+    .offset_limit = 8256,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 8192,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 1,
+    .frame_tot_cnt = 3,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(4, &Conv2D_4_subm_3_dma_init_in_0_3, 1);
+
+  /* Unit= 1 [STREAM_ENG_V2 1] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_3 input ports=1 range=8[80016,80232] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_3_dma_init_in_1_3 = {
+    /* 24x3x3x1(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .continuous = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .cacheable = 1,
+    .cache_allocate = 0,
+    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_4_weights_submask_0_0_3_6_24_1_3_3_106 */
+    .offset_start = 80016,
+    .offset_end = 80232,
+    .offset_limit = 80296,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 0,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 0,
+    .frame_tot_cnt = 1,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(1, &Conv2D_4_subm_3_dma_init_in_1_3, 1);
+
+
+  /* Dma input bandwidth from memory pools: */
+  /* npuRAM5 -> 106496 */
+  /* octoFlash -> 216 */
+
+  /* Dma output units from cycle: */
+  /* Unit= 7 [STREAM_ENG_V2 7] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_0 output ports=0 range=1[155648,204800] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_0_dma_init_out_0_3 = {
+    /* to memory with batch=4 */
+    .dir = 1,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_250 */
+    .offset_start = 155648,
+    .offset_end = 163840,
+    .offset_limit = 204864,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 8192,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 0,
+    .frame_tot_cnt = 6,
+    .nbits_in = 16,
+    .nbits_out = 16,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(7, &Conv2D_4_add_0_dma_init_out_0_3, 1);
+
+  /* Unit= 3 [STREAM_ENG_V2 3] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_subm_3 output ports=0 range=1[57344,106496] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_subm_3_dma_init_out_0_3 = {
+    /* to memory with batch=8 */
+    .dir = 1,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_241 */
+    .offset_start = 57344,
+    .offset_end = 73728,
+    .offset_limit = 106560,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 16384,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 0,
+    .frame_tot_cnt = 3,
+    .nbits_in = 16,
+    .nbits_out = 16,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(3, &Conv2D_4_subm_3_dma_init_out_0_3, 1);
+
+
+  /* Dma output bandwidth to memory pools: */
+  /* npuRAM5 <- 73728 */
+
+  static const LL_Switch_InitTypeDef switch_init_in_3[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_0 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_0 IN: in unit=ARITH_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 9 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_0 OUT: in unit=STREAM_ENG_V2 7 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_3 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_3 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_3 OUT: in unit=STREAM_ENG_V2 3 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
+  };
+
+
+  /* epoch=3 */
+  LL_Switch_Init(switch_init_in_3, 6);
+
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_3_all_units[] = {
+    { {STRENG, 3} }, /* STREAM_ENG_V2 */
+    { {STRENG, 7} }, /* STREAM_ENG_V2 */
+    { {CONVACC, 1} }, /* CONV_ACC_V2 */
+    { {ARITH, 1} }, /* ARITH_ACC_V2 */
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
+    { {STRENG, 2} }, /* STREAM_ENG_V2 */
+    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
+  };
+
+
+  LL_ATON_EnableUnits_Init(Enable_epoch_3_all_units, 8);
+
+}
+
+static void LL_ATON_End_EpochBlock_3(const void *epoch_block)
+{
+  LL_ATON_LIB_UNUSED(epoch_block);
+
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_3[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_0 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_0 IN: in unit=ARITH_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 9 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_0 OUT: in unit=STREAM_ENG_V2 7 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_3 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_3 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_subm_3 OUT: in unit=STREAM_ENG_V2 3 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
+  };
+
+
+  /* epoch=3 */
+  LL_Switch_Deinit(switch_deinit_in_3, 6);
+
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_3_all_units[] = {
+    { {STRENG, 3} }, /* STREAM_ENG_V2 */
+    { {STRENG, 7} }, /* STREAM_ENG_V2 */
+    { {CONVACC, 1} }, /* CONV_ACC_V2 */
+    { {ARITH, 1} }, /* ARITH_ACC_V2 */
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
+    { {STRENG, 2} }, /* STREAM_ENG_V2 */
+    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
+  };
+
+
+  LL_ATON_DisableUnits_Init(Disable_epoch_3_all_units, 8);
+
+}
+
+
+/* scheduling epoch=4    nodes=1   ------------------------------------------------------------------- */
+
+static void LL_ATON_Start_EpochBlock_4(const void *epoch_block)
+{
+  LL_ATON_LIB_UNUSED(epoch_block);
+
   /* Unit= 20 [ARITH_ACC_V2 2] */
   /* kind=Add node=Conv2D_4_add_1 */
-  static const LL_Arithacc_InitTypeDef Conv2D_4_add_1_init3 = {
+  static const LL_Arithacc_InitTypeDef Conv2D_4_add_1_init4 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -1355,83 +1582,21 @@ static void LL_ATON_Start_EpochBlock_3(const void *epoch_block)
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(2, &Conv2D_4_add_1_init3);
+  LL_Arithacc_Init(2, &Conv2D_4_add_1_init4);
 
 
   /* Dma inputs units to cycle: */
-  /* Unit= 8 [STREAM_ENG_V2 8] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_0 input ports=0 range=1[204800,253952] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_0_dma_init_in_0_3 = {
-    /* from memory with batch=4 */
-    .dir = 0,
-    .raw = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_219 */
-    .offset_start = 204800,
-    .offset_end = 212992,
-    .offset_limit = 254016,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 8192,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 0,
-    .frame_tot_cnt = 6,
-    .nbits_in = 16,
-    .nbits_out = 16,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(8, &Conv2D_4_add_0_dma_init_in_0_3, 1);
-
-  /* Unit= 4 [STREAM_ENG_V2 4] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_0 input ports=1 range=1[106496,155648] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_0_dma_init_in_1_3 = {
-    /* from memory with batch=4 */
-    .dir = 0,
-    .raw = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_222 */
-    .offset_start = 106496,
-    .offset_end = 114688,
-    .offset_limit = 155712,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 8192,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 0,
-    .frame_tot_cnt = 6,
-    .nbits_in = 16,
-    .nbits_out = 16,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(4, &Conv2D_4_add_0_dma_init_in_1_3, 1);
-
-  /* Unit= 3 [STREAM_ENG_V2 3] */
+  /* Unit= 6 [STREAM_ENG_V2 6] */
   /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_1 input ports=0 range=1[8192,57344] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_1_dma_init_in_0_3 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_1_dma_init_in_0_4 = {
     /* from memory with batch=8 */
     .dir = 0,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_225 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_238 */
     .offset_start = 8192,
     .offset_end = 24576,
     .offset_limit = 57408,
@@ -1450,19 +1615,19 @@ static void LL_ATON_Start_EpochBlock_3(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(3, &Conv2D_4_add_1_dma_init_in_0_3, 1);
+  LL_Streng_TensorInit(6, &Conv2D_4_add_1_dma_init_in_0_4, 1);
 
-  /* Unit= 7 [STREAM_ENG_V2 7] */
+  /* Unit= 0 [STREAM_ENG_V2 0] */
   /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_1 input ports=1 range=1[57344,106496] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_1_dma_init_in_1_3 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_1_dma_init_in_1_4 = {
     /* from memory with batch=8 */
     .dir = 0,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_228 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_241 */
     .offset_start = 57344,
     .offset_end = 73728,
     .offset_limit = 106560,
@@ -1481,56 +1646,25 @@ static void LL_ATON_Start_EpochBlock_3(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(7, &Conv2D_4_add_1_dma_init_in_1_3, 1);
+  LL_Streng_TensorInit(0, &Conv2D_4_add_1_dma_init_in_1_4, 1);
 
 
   /* Dma input bandwidth from memory pools: */
-  /* npuRAM5 -> 196608 */
+  /* npuRAM5 -> 98304 */
 
   /* Dma output units from cycle: */
-  /* Unit= 9 [STREAM_ENG_V2 9] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_0 output ports=0 range=1[155648,204800] */
+  /* Unit= 8 [STREAM_ENG_V2 8] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_1 output ports=0 range=1[106496,155648] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_0_dma_init_out_0_3 = {
-    /* to memory with batch=4 */
-    .dir = 1,
-    .raw = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_237 */
-    .offset_start = 155648,
-    .offset_end = 163840,
-    .offset_limit = 204864,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 8192,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 0,
-    .frame_tot_cnt = 6,
-    .nbits_in = 16,
-    .nbits_out = 16,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(9, &Conv2D_4_add_0_dma_init_out_0_3, 1);
-
-  /* Unit= 2 [STREAM_ENG_V2 2] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_1 output ports=0 range=1[303104,352256] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_1_dma_init_out_0_3 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_1_dma_init_out_0_4 = {
     /* to memory canonical from batch=8 */
     .dir = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_238 */
-    .offset_start = 303104,
-    .offset_limit = 352320,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_251 */
+    .offset_start = 106496,
+    .offset_limit = 155712,
     .frame_count = 0,
     .fwidth = 1024,
     .fheight = 1,
@@ -1546,84 +1680,70 @@ static void LL_ATON_Start_EpochBlock_3(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(2, &Conv2D_4_add_1_dma_init_out_0_3, 1);
+  LL_Streng_TensorInit(8, &Conv2D_4_add_1_dma_init_out_0_4, 1);
 
 
   /* Dma output bandwidth to memory pools: */
-  /* npuRAM5 <- 98304 */
+  /* npuRAM5 <- 49152 */
 
-  static const LL_Switch_InitTypeDef switch_init_in_3[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_0 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_0 IN: in unit=ARITH_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_0 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_1 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_1 IN: in unit=ARITH_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_1 OUT: in unit=STREAM_ENG_V2 2 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+  static const LL_Switch_InitTypeDef switch_init_in_4[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_1 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_1 IN: in unit=ARITH_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_1 OUT: in unit=STREAM_ENG_V2 8 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
   };
 
 
-  /* epoch=3 */
-  LL_Switch_Init(switch_init_in_3, 6);
+  /* epoch=4 */
+  LL_Switch_Init(switch_init_in_4, 3);
 
-  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_3_all_units[] = {
-    { {STRENG, 2} }, /* STREAM_ENG_V2 */
-    { {STRENG, 9} }, /* STREAM_ENG_V2 */
-    { {ARITH, 1} }, /* ARITH_ACC_V2 */
-    { {ARITH, 2} }, /* ARITH_ACC_V2 */
-    { {STRENG, 3} }, /* STREAM_ENG_V2 */
-    { {STRENG, 4} }, /* STREAM_ENG_V2 */
-    { {STRENG, 7} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_4_all_units[] = {
     { {STRENG, 8} }, /* STREAM_ENG_V2 */
+    { {ARITH, 2} }, /* ARITH_ACC_V2 */
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {STRENG, 6} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_EnableUnits_Init(Enable_epoch_3_all_units, 8);
+  LL_ATON_EnableUnits_Init(Enable_epoch_4_all_units, 4);
 
 }
 
-static void LL_ATON_End_EpochBlock_3(const void *epoch_block)
+static void LL_ATON_End_EpochBlock_4(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-  static const LL_Switch_DeinitTypeDef switch_deinit_in_3[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_0 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_0 IN: in unit=ARITH_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_0 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_1 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_1 IN: in unit=ARITH_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_1 OUT: in unit=STREAM_ENG_V2 2 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_4[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_1 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_1 IN: in unit=ARITH_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_1 OUT: in unit=STREAM_ENG_V2 8 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
   };
 
 
-  /* epoch=3 */
-  LL_Switch_Deinit(switch_deinit_in_3, 6);
+  /* epoch=4 */
+  LL_Switch_Deinit(switch_deinit_in_4, 3);
 
-  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_3_all_units[] = {
-    { {STRENG, 2} }, /* STREAM_ENG_V2 */
-    { {STRENG, 9} }, /* STREAM_ENG_V2 */
-    { {ARITH, 1} }, /* ARITH_ACC_V2 */
-    { {ARITH, 2} }, /* ARITH_ACC_V2 */
-    { {STRENG, 3} }, /* STREAM_ENG_V2 */
-    { {STRENG, 4} }, /* STREAM_ENG_V2 */
-    { {STRENG, 7} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_4_all_units[] = {
     { {STRENG, 8} }, /* STREAM_ENG_V2 */
+    { {ARITH, 2} }, /* ARITH_ACC_V2 */
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {STRENG, 6} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_DisableUnits_Init(Disable_epoch_3_all_units, 8);
+  LL_ATON_DisableUnits_Init(Disable_epoch_4_all_units, 4);
 
 }
 
 
-/* scheduling epoch=4    nodes=1   ------------------------------------------------------------------- */
+/* scheduling epoch=5    nodes=1   ------------------------------------------------------------------- */
 
-static void LL_ATON_Start_EpochBlock_4(const void *epoch_block)
+static void LL_ATON_Start_EpochBlock_5(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
   /* Unit= 21 [ARITH_ACC_V2 3] */
   /* kind=Add node=Conv2D_4_add_3 */
-  static const LL_Arithacc_InitTypeDef Conv2D_4_add_3_init4 = {
+  static const LL_Arithacc_InitTypeDef Conv2D_4_add_3_init5 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -1667,21 +1787,21 @@ static void LL_ATON_Start_EpochBlock_4(const void *epoch_block)
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(3, &Conv2D_4_add_3_init4);
+  LL_Arithacc_Init(3, &Conv2D_4_add_3_init5);
 
 
   /* Dma inputs units to cycle: */
-  /* Unit= 7 [STREAM_ENG_V2 7] */
+  /* Unit= 2 [STREAM_ENG_V2 2] */
   /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_3 input ports=0 range=1[155648,204800] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_3_dma_init_in_0_4 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_3_dma_init_in_0_5 = {
     /* from memory with batch=4 */
     .dir = 0,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_237 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_250 */
     .offset_start = 155648,
     .offset_end = 163840,
     .offset_limit = 204864,
@@ -1700,20 +1820,20 @@ static void LL_ATON_Start_EpochBlock_4(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(7, &Conv2D_4_add_3_dma_init_in_0_4, 1);
+  LL_Streng_TensorInit(2, &Conv2D_4_add_3_dma_init_in_0_5, 1);
 
-  /* Unit= 2 [STREAM_ENG_V2 2] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_3 input ports=1 range=1[303104,352256] */
+  /* Unit= 7 [STREAM_ENG_V2 7] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_3 input ports=1 range=1[106496,155648] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_3_dma_init_in_1_4 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_3_dma_init_in_1_5 = {
     /* memory canonical to batch=4 */
     .dir = 0,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_238 */
-    .offset_start = 303104,
-    .offset_limit = 352320,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_251 */
+    .offset_start = 106496,
+    .offset_limit = 155712,
     .frame_count = 0,
     .fwidth = 1024,
     .fheight = 1,
@@ -1729,24 +1849,24 @@ static void LL_ATON_Start_EpochBlock_4(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(2, &Conv2D_4_add_3_dma_init_in_1_4, 1);
+  LL_Streng_TensorInit(7, &Conv2D_4_add_3_dma_init_in_1_5, 1);
 
 
   /* Dma input bandwidth from memory pools: */
   /* npuRAM5 -> 98304 */
 
   /* Dma output units from cycle: */
-  /* Unit= 3 [STREAM_ENG_V2 3] */
+  /* Unit= 1 [STREAM_ENG_V2 1] */
   /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_3 output ports=0 range=1[204800,253952] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_3_dma_init_out_0_4 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_3_dma_init_out_0_5 = {
     /* to memory with batch=4 */
     .dir = 1,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_240 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_253 */
     .offset_start = 204800,
     .offset_end = 212992,
     .offset_limit = 254016,
@@ -1765,70 +1885,70 @@ static void LL_ATON_Start_EpochBlock_4(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(3, &Conv2D_4_add_3_dma_init_out_0_4, 1);
+  LL_Streng_TensorInit(1, &Conv2D_4_add_3_dma_init_out_0_5, 1);
 
 
   /* Dma output bandwidth to memory pools: */
   /* npuRAM5 <- 49152 */
 
-  static const LL_Switch_InitTypeDef switch_init_in_4[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_3 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_3 IN: in unit=ARITH_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_3 OUT: in unit=STREAM_ENG_V2 3 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
+  static const LL_Switch_InitTypeDef switch_init_in_5[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_3 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_3 IN: in unit=ARITH_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_3 OUT: in unit=STREAM_ENG_V2 1 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
   };
 
 
-  /* epoch=4 */
-  LL_Switch_Init(switch_init_in_4, 3);
+  /* epoch=5 */
+  LL_Switch_Init(switch_init_in_5, 3);
 
-  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_4_all_units[] = {
-    { {STRENG, 3} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_5_all_units[] = {
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
     { {ARITH, 3} }, /* ARITH_ACC_V2 */
     { {STRENG, 2} }, /* STREAM_ENG_V2 */
     { {STRENG, 7} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_EnableUnits_Init(Enable_epoch_4_all_units, 4);
+  LL_ATON_EnableUnits_Init(Enable_epoch_5_all_units, 4);
 
 }
 
-static void LL_ATON_End_EpochBlock_4(const void *epoch_block)
+static void LL_ATON_End_EpochBlock_5(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-  static const LL_Switch_DeinitTypeDef switch_deinit_in_4[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_3 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_3 IN: in unit=ARITH_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_3 OUT: in unit=STREAM_ENG_V2 3 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_5[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_3 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_3 IN: in unit=ARITH_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_3 OUT: in unit=STREAM_ENG_V2 1 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
   };
 
 
-  /* epoch=4 */
-  LL_Switch_Deinit(switch_deinit_in_4, 3);
+  /* epoch=5 */
+  LL_Switch_Deinit(switch_deinit_in_5, 3);
 
-  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_4_all_units[] = {
-    { {STRENG, 3} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_5_all_units[] = {
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
     { {ARITH, 3} }, /* ARITH_ACC_V2 */
     { {STRENG, 2} }, /* STREAM_ENG_V2 */
     { {STRENG, 7} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_DisableUnits_Init(Disable_epoch_4_all_units, 4);
+  LL_ATON_DisableUnits_Init(Disable_epoch_5_all_units, 4);
 
 }
 
 
-/* scheduling epoch=5    nodes=3   ------------------------------------------------------------------- */
+/* scheduling epoch=6    nodes=4   ------------------------------------------------------------------- */
 
-static void LL_ATON_Start_EpochBlock_5(const void *epoch_block)
+static void LL_ATON_Start_EpochBlock_6(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
   /* Unit= 18 [ARITH_ACC_V2 0] */
   /* kind=Add node=Conv2D_4_add_4 */
-  static const LL_Arithacc_InitTypeDef Conv2D_4_add_4_init5 = {
+  static const LL_Arithacc_InitTypeDef Conv2D_4_add_4_init6 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -1872,12 +1992,12 @@ static void LL_ATON_Start_EpochBlock_5(const void *epoch_block)
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(0, &Conv2D_4_add_4_init5);
+  LL_Arithacc_Init(0, &Conv2D_4_add_4_init6);
 
 
   /* Unit= 19 [ARITH_ACC_V2 1] */
   /* kind=Mul node=Conv2D_4_mul_scale_7 */
-  static const LL_Arithacc_InitTypeDef Conv2D_4_mul_scale_7_init5 = {
+  static const LL_Arithacc_InitTypeDef Conv2D_4_mul_scale_7_init6 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -1897,7 +2017,7 @@ static void LL_ATON_Start_EpochBlock_5(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 2,
-    .shift_o = 16,
+    .shift_o = 14,
     .scalar = 0,
     .dualinput = 0,
     .operation = ARITH_AFFINE,
@@ -1914,19 +2034,19 @@ static void LL_ATON_Start_EpochBlock_5(const void *epoch_block)
     .A_scalar = 1,
     .B_scalar = 0,
     .C_scalar = 0,
-    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 98304))) /* Equivalent hex address = 0x71018000UL */},
+    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 82432))) /* Equivalent hex address = 0x71014200UL */},
     .B_vector = {0},
     .C_vector = {0},
     .vec_precision = {16, 16, 16},
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(1, &Conv2D_4_mul_scale_7_init5);
+  LL_Arithacc_Init(1, &Conv2D_4_mul_scale_7_init6);
 
 
   /* Unit= 20 [ARITH_ACC_V2 2] */
   /* kind=Add node=Conv2D_4_off_bias_9 */
-  static const LL_Arithacc_InitTypeDef Conv2D_4_off_bias_9_init5 = {
+  static const LL_Arithacc_InitTypeDef Conv2D_4_off_bias_9_init6 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -1946,11 +2066,11 @@ static void LL_ATON_Start_EpochBlock_5(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 1,
-    .shift_o = 18,
+    .shift_o = 20,
     .scalar = 1,
     .dualinput = 0,
     .operation = ARITH_AFFINE,
-    .bcast = ARITH_BCAST_CHAN,
+    .bcast = ARITH_BCAST_HEIGHT,
     .Ax_shift = 0,
     .By_shift = 0,
     .C_shift = 0,
@@ -1960,8 +2080,8 @@ static void LL_ATON_Start_EpochBlock_5(const void *epoch_block)
     .batchDepth = 4,
     .clipmin = 0,
     .clipmax = 0,
-    .A_scalar = 18762,
-    .B_scalar = -512,
+    .A_scalar = 30345,
+    .B_scalar = -2048,
     .C_scalar = (short)0,
     .A_vector = {0},
     .B_vector = {0},
@@ -1970,24 +2090,73 @@ static void LL_ATON_Start_EpochBlock_5(const void *epoch_block)
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(2, &Conv2D_4_off_bias_9_init5);
+  LL_Arithacc_Init(2, &Conv2D_4_off_bias_9_init6);
+
+
+  /* Unit= 21 [ARITH_ACC_V2 3] */
+  /* kind=Sub node=Conv2D_7_suboff_12 */
+  static const LL_Arithacc_InitTypeDef Conv2D_7_suboff_12_init6 = {
+    .rounding_x = 0,
+    .saturation_x = 0,
+    .round_mode_x = 0,
+    .inbytes_x = 1,
+    .outbytes_x = 1,
+    .shift_x = 0,
+    .rounding_y = 0,
+    .saturation_y = 0,
+    .round_mode_y = 0,
+    .inbytes_y = 1,
+    .outbytes_y = 1,
+    .combinebc = 1,
+    .clipout = 0,
+    .shift_y = 0,
+    .rounding_o = 0,
+    .saturation_o = 0,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 1,
+    .shift_o = 14,
+    .scalar = 1,
+    .dualinput = 0,
+    .operation = ARITH_AFFINE,
+    .bcast = ARITH_BCAST_HEIGHT,
+    .Ax_shift = 0,
+    .By_shift = 0,
+    .C_shift = 0,
+    .fWidth = 1024,
+    .fHeight = 1,
+    .fChannels = 24,
+    .batchDepth = 4,
+    .clipmin = 0,
+    .clipmax = 0,
+    .A_scalar = 16384,
+    .B_scalar = 32,
+    .C_scalar = (short)0,
+    .A_vector = {0},
+    .B_vector = {0},
+    .C_vector = {0},
+    .vec_precision = {8, 8, 8},
+  };
+
+  /* Unit=ARITH_ACC_V2 */
+  LL_Arithacc_Init(3, &Conv2D_7_suboff_12_init6);
 
 
   /* Dma inputs units to cycle: */
-  /* Unit= 0 [STREAM_ENG_V2 0] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_4 input ports=0 range=1[253952,303104] */
+  /* Unit= 4 [STREAM_ENG_V2 4] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_4 input ports=0 range=1[303104,352256] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_4_dma_init_in_0_5 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_4_dma_init_in_0_6 = {
     /* from memory with batch=4 */
     .dir = 0,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_239 */
-    .offset_start = 253952,
-    .offset_end = 262144,
-    .offset_limit = 303168,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_252 */
+    .offset_start = 303104,
+    .offset_end = 311296,
+    .offset_limit = 352320,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -2003,19 +2172,19 @@ static void LL_ATON_Start_EpochBlock_5(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(0, &Conv2D_4_add_4_dma_init_in_0_5, 1);
+  LL_Streng_TensorInit(4, &Conv2D_4_add_4_dma_init_in_0_6, 1);
 
-  /* Unit= 5 [STREAM_ENG_V2 5] */
+  /* Unit= 8 [STREAM_ENG_V2 8] */
   /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_add_4 input ports=1 range=1[204800,253952] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_4_dma_init_in_1_5 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_4_add_4_dma_init_in_1_6 = {
     /* from memory with batch=4 */
     .dir = 0,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_240 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ???_253 */
     .offset_start = 204800,
     .offset_end = 212992,
     .offset_limit = 254016,
@@ -2034,25 +2203,25 @@ static void LL_ATON_Start_EpochBlock_5(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(5, &Conv2D_4_add_4_dma_init_in_1_5, 1);
+  LL_Streng_TensorInit(8, &Conv2D_4_add_4_dma_init_in_1_6, 1);
 
 
   /* Dma input bandwidth from memory pools: */
   /* npuRAM5 -> 98304 */
 
   /* Dma output units from cycle: */
-  /* Unit= 4 [STREAM_ENG_V2 4] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_4_off_bias_9 output ports=0 range=1[303104,327680] */
+  /* Unit= 9 [STREAM_ENG_V2 9] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_7_suboff_12 output ports=0 range=1[253952,278528] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_4_off_bias_9_dma_init_out_0_5 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_7_suboff_12_dma_init_out_0_6 = {
     /* to memory canonical from batch=4 */
     .dir = 1,
     .noblk = 0,
     .align_right = 0,
-    .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_4_off_bias_out_10 */
-    .offset_start = 303104,
-    .offset_limit = 327744,
+    .nbits_unsigned = 1,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_7_zero_off_out_13 */
+    .offset_start = 253952,
+    .offset_limit = 278592,
     .frame_count = 0,
     .fwidth = 1024,
     .fheight = 1,
@@ -2068,1414 +2237,1888 @@ static void LL_ATON_Start_EpochBlock_5(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(4, &Conv2D_4_off_bias_9_dma_init_out_0_5, 1);
+  LL_Streng_TensorInit(9, &Conv2D_7_suboff_12_dma_init_out_0_6, 1);
 
 
   /* Dma output bandwidth to memory pools: */
   /* npuRAM5 <- 24576 */
 
-  static const LL_Switch_InitTypeDef switch_init_in_5[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_4 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_4 IN: in unit=ARITH_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
+  static const LL_Switch_InitTypeDef switch_init_in_6[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_4 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_4 IN: in unit=ARITH_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 8 out port=0 */
     { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_mul_scale_7 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
     { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_off_bias_9 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_off_bias_9 OUT: in unit=STREAM_ENG_V2 4 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_suboff_12 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_suboff_12 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
   };
 
 
-  /* epoch=5 */
-  LL_Switch_Init(switch_init_in_5, 5);
+  /* epoch=6 */
+  LL_Switch_Init(switch_init_in_6, 6);
 
-  /* *** MCU cache invalidate (only) operation (HW, whole range) *** */
-  /*     memory pool: 1 */
-  /*     start: ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 303104))) */
-  /*     end:   ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 327680))) */
-  LL_ATON_Cache_MCU_Invalidate_Range(((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 303104))) /* Equivalent hex address = 0x3432a000UL */, 24576);
-
-  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_5_all_units[] = {
-    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_6_all_units[] = {
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
     { {ARITH, 0} }, /* ARITH_ACC_V2 */
     { {ARITH, 1} }, /* ARITH_ACC_V2 */
     { {ARITH, 2} }, /* ARITH_ACC_V2 */
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
-    { {STRENG, 5} }, /* STREAM_ENG_V2 */
-  };
-
-
-  LL_ATON_EnableUnits_Init(Enable_epoch_5_all_units, 6);
-
-}
-
-static void LL_ATON_End_EpochBlock_5(const void *epoch_block)
-{
-  LL_ATON_LIB_UNUSED(epoch_block);
-
-  static const LL_Switch_DeinitTypeDef switch_deinit_in_5[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_4 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_4 IN: in unit=ARITH_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_mul_scale_7 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_off_bias_9 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_off_bias_9 OUT: in unit=STREAM_ENG_V2 4 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
-  };
-
-
-  /* epoch=5 */
-  LL_Switch_Deinit(switch_deinit_in_5, 5);
-
-  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_5_all_units[] = {
+    { {ARITH, 3} }, /* ARITH_ACC_V2 */
     { {STRENG, 4} }, /* STREAM_ENG_V2 */
-    { {ARITH, 0} }, /* ARITH_ACC_V2 */
-    { {ARITH, 1} }, /* ARITH_ACC_V2 */
-    { {ARITH, 2} }, /* ARITH_ACC_V2 */
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
-    { {STRENG, 5} }, /* STREAM_ENG_V2 */
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_DisableUnits_Init(Disable_epoch_5_all_units, 6);
+  LL_ATON_EnableUnits_Init(Enable_epoch_6_all_units, 7);
 
 }
-
-
-/* scheduling epoch=6    nodes=1   ------------------------------------------------------------------- */
 
 static void LL_ATON_End_EpochBlock_6(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-
-/* Unit= 27 [PROCESSOR 0] */
-/* kind=DequantizeLinear node=DequantizeLinear_inserted_id203 */
-  Dequantizelinear_sw_info dequantizelinear1_sw_info = {
-    /* "general.input" tensor-related info: */
-    .general.input.dim.tensor_b = 1,
-    .general.input.dim.tensor_h = 1,
-    .general.input.dim.tensor_w = 1024,
-    .general.input.dim.tensor_c = 24,
-    .general.input.dim.num_elem = 24576,
-    .general.input.stride.b = 24576,
-    .general.input.stride.h = 24576,
-    .general.input.stride.w = 24,
-    .general.input.stride.c = 1,
-    .general.input.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 303104))) /* Equivalent hex address = 0x3432a000UL */,
-    .general.input.format.is_signed = 1,
-    /* "is" tensor-related info: */
-    .is.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 98528))) /* Equivalent hex address = 0x710180e0UL */,
-    .is.format.is_signed = 0,
-    .is.dim.num_elem = 1,
-    /* "izp" tensor-related info: */
-    .izp.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 98768))) /* Equivalent hex address = 0x710181d0UL */,
-    .izp.format.is_signed = 1,
-    .izp.dim.num_elem = 1,
-    /* "general.output" tensor-related info: */
-    .general.output.dim.tensor_b = 1,
-    .general.output.dim.tensor_h = 1,
-    .general.output.dim.tensor_w = 1024,
-    .general.output.dim.tensor_c = 24,
-    .general.output.dim.num_elem = 24576,
-    .general.output.stride.b = 98304,
-    .general.output.stride.h = 98304,
-    .general.output.stride.w = 96,
-    .general.output.stride.c = 4,
-    .general.output.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 0))) /* Equivalent hex address = 0x342e0000UL */,
-    .general.output.format.is_signed = 0,
-    .general.type = LL_SW_DEQUANTIZELINEAR,
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_6[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_4 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_add_4 IN: in unit=ARITH_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_mul_scale_7 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_4_off_bias_9 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_suboff_12 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_suboff_12 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
   };
 
-  /* Low Level SW Layer function invocation. This will exploit EmbedNets libs) */
-  /* Node DequantizeLinear_inserted_id203 mapped on EmbedNets (INTEGER) as DequantizeLinear | Category: Format-Converter */
-  ll_sw_forward_dequantizelinear(&dequantizelinear1_sw_info);
-  /* *** MCU cache clean (only) operation (SW, whole range) *** */
-  /*     memory pool: 1 */
-  /*     start: ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 0))) */
-  /*     end:   ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 98304))) */
-  LL_ATON_Cache_MCU_Clean_Range(((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 0))) /* Equivalent hex address = 0x342e0000UL */, 98304);
+
+  /* epoch=6 */
+  LL_Switch_Deinit(switch_deinit_in_6, 6);
+
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_6_all_units[] = {
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
+    { {ARITH, 0} }, /* ARITH_ACC_V2 */
+    { {ARITH, 1} }, /* ARITH_ACC_V2 */
+    { {ARITH, 2} }, /* ARITH_ACC_V2 */
+    { {ARITH, 3} }, /* ARITH_ACC_V2 */
+    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
+  };
+
+
+  LL_ATON_DisableUnits_Init(Disable_epoch_6_all_units, 7);
 
 }
 
 
-/* scheduling epoch=7    nodes=1   ------------------------------------------------------------------- */
+/* scheduling epoch=7    nodes=6   ------------------------------------------------------------------- */
+
+static void LL_ATON_Start_EpochBlock_7(const void *epoch_block)
+{
+  LL_ATON_LIB_UNUSED(epoch_block);
+
+  /* Unit= 12 [CONV_ACC_V2 2] */
+  /* kind=Conv node=Conv2D_7 */
+  static const LL_Convacc_InitTypeDef Conv2D_7_init7 = {
+    .simd = 1,
+    .fsub = 0,
+    .accumulate = 0,
+    .kfilt_tot = 24,
+    .kfilt_first = 0,
+    .kfilt_last = 7,
+    .rounding_f = 0,
+    .saturation_f = 0,
+    .round_mode_f = 0,
+    .f_unsigned = 1,
+    .k_unsigned = 0,
+    .deepmode = 0,
+    .dss2mode = 0,
+    .kseten = 0,
+    .zfbias = 0,
+    .inbytes_f = 1,
+    .shift_f = 0,
+    .shift_a = 5,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 3,
+    .shift_o = 0,
+    .raw_o = 1,
+    .fWidth = 1024,
+    .fHeight = 1,
+    .kernelWidth = 4,
+    .kernelHeight = 1,
+    .nKernels = 8,
+    .batchDepth = 8,
+    .hstride = 4,
+    .vstride = 1,
+    .left_padding = 0,
+    .right_padding = 0,
+    .top_padding = 0,
+    .bot_padding = 0,
+    .left_crop = 0,
+    .right_crop = 1023,
+    .top_crop = 0,
+    .bot_crop = 0,
+  };
+
+  /* Unit=CONV_ACC_V2 */
+  LL_Convacc_Init(2, &Conv2D_7_init7);
+
+
+  /* Unit= 10 [CONV_ACC_V2 0] */
+  /* kind=Conv node=Conv2D_7_ca_pipe_1 */
+  static const LL_Convacc_InitTypeDef Conv2D_7_ca_pipe_1_init7 = {
+    .simd = 1,
+    .fsub = 0,
+    .accumulate = 1,
+    .accumulate_first = 1,
+    .kfilt_tot = 24,
+    .kfilt_first = 8,
+    .kfilt_last = 15,
+    .rounding_f = 0,
+    .saturation_f = 0,
+    .round_mode_f = 0,
+    .f_unsigned = 1,
+    .k_unsigned = 0,
+    .deepmode = 0,
+    .dss2mode = 0,
+    .kseten = 0,
+    .zfbias = 0,
+    .inbytes_f = 1,
+    .shift_f = 0,
+    .shift_a = 0,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 3,
+    .shift_o = 0,
+    .raw_o = 1,
+    .fWidth = 1024,
+    .fHeight = 1,
+    .kernelWidth = 4,
+    .kernelHeight = 1,
+    .nKernels = 8,
+    .batchDepth = 8,
+    .hstride = 4,
+    .vstride = 1,
+    .left_padding = 0,
+    .right_padding = 0,
+    .top_padding = 0,
+    .bot_padding = 0,
+    .left_crop = 0,
+    .right_crop = 1023,
+    .top_crop = 0,
+    .bot_crop = 0,
+  };
+
+  /* Unit=CONV_ACC_V2 */
+  LL_Convacc_Init(0, &Conv2D_7_ca_pipe_1_init7);
+
+
+  /* Unit= 13 [CONV_ACC_V2 3] */
+  /* kind=Conv node=Conv2D_7_ca_pipe_2 */
+  static const LL_Convacc_InitTypeDef Conv2D_7_ca_pipe_2_init7 = {
+    .simd = 1,
+    .fsub = 0,
+    .accumulate = 1,
+    .accumulate_first = 1,
+    .kfilt_tot = 24,
+    .kfilt_first = 16,
+    .kfilt_last = 23,
+    .rounding_f = 0,
+    .saturation_f = 0,
+    .round_mode_f = 0,
+    .f_unsigned = 1,
+    .k_unsigned = 0,
+    .deepmode = 0,
+    .dss2mode = 0,
+    .kseten = 0,
+    .zfbias = 0,
+    .inbytes_f = 1,
+    .shift_f = 0,
+    .shift_a = 0,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 2,
+    .shift_o = 5,
+    .raw_o = 0,
+    .fWidth = 1024,
+    .fHeight = 1,
+    .kernelWidth = 4,
+    .kernelHeight = 1,
+    .nKernels = 8,
+    .batchDepth = 8,
+    .hstride = 4,
+    .vstride = 1,
+    .left_padding = 0,
+    .right_padding = 0,
+    .top_padding = 0,
+    .bot_padding = 0,
+    .left_crop = 0,
+    .right_crop = 1023,
+    .top_crop = 0,
+    .bot_crop = 0,
+  };
+
+  /* Unit=CONV_ACC_V2 */
+  LL_Convacc_Init(3, &Conv2D_7_ca_pipe_2_init7);
+
+
+  /* Unit= 18 [ARITH_ACC_V2 0] */
+  /* kind=Mul node=Conv2D_7_mul_scale_16 */
+  static const LL_Arithacc_InitTypeDef Conv2D_7_mul_scale_16_init7 = {
+    .rounding_x = 0,
+    .saturation_x = 0,
+    .round_mode_x = 0,
+    .inbytes_x = 2,
+    .outbytes_x = 2,
+    .shift_x = 0,
+    .rounding_y = 0,
+    .saturation_y = 0,
+    .round_mode_y = 0,
+    .inbytes_y = 2,
+    .outbytes_y = 2,
+    .combinebc = 0,
+    .clipout = 0,
+    .shift_y = 0,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 2,
+    .shift_o = 15,
+    .scalar = 0,
+    .dualinput = 0,
+    .operation = ARITH_AFFINE,
+    .bcast = ARITH_BCAST_CHAN,
+    .Ax_shift = 0,
+    .By_shift = 0,
+    .C_shift = 0,
+    .fWidth = 256,
+    .fHeight = 1,
+    .fChannels = 32,
+    .batchDepth = 8,
+    .clipmin = 0,
+    .clipmax = 0,
+    .A_scalar = 1,
+    .B_scalar = 0,
+    .C_scalar = 0,
+    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 82240))) /* Equivalent hex address = 0x71014140UL */},
+    .B_vector = {0},
+    .C_vector = {0},
+    .vec_precision = {16, 16, 16},
+  };
+
+  /* Unit=ARITH_ACC_V2 */
+  LL_Arithacc_Init(0, &Conv2D_7_mul_scale_16_init7);
+
+
+  /* Unit= 19 [ARITH_ACC_V2 1] */
+  /* kind=Add node=Conv2D_7_off_bias_18 */
+  static const LL_Arithacc_InitTypeDef Conv2D_7_off_bias_18_init7 = {
+    .rounding_x = 0,
+    .saturation_x = 0,
+    .round_mode_x = 0,
+    .inbytes_x = 2,
+    .outbytes_x = 2,
+    .shift_x = 0,
+    .rounding_y = 0,
+    .saturation_y = 0,
+    .round_mode_y = 0,
+    .inbytes_y = 2,
+    .outbytes_y = 2,
+    .combinebc = 1,
+    .clipout = 0,
+    .shift_y = 0,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 1,
+    .shift_o = 20,
+    .scalar = 0,
+    .dualinput = 0,
+    .operation = ARITH_AFFINE,
+    .bcast = ARITH_BCAST_CHAN,
+    .Ax_shift = 0,
+    .By_shift = 0,
+    .C_shift = 0,
+    .fWidth = 256,
+    .fHeight = 1,
+    .fChannels = 32,
+    .batchDepth = 8,
+    .clipmin = 0,
+    .clipmax = 0,
+    .A_scalar = 31508,
+    .B_scalar = 0,
+    .C_scalar = (short)0,
+    .A_vector = {0},
+    .B_vector = {0},
+    .C_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 81312))) /* Equivalent hex address = 0x71013da0UL */},
+    .vec_precision = {16, 16, 32},
+  };
+
+  /* Unit=ARITH_ACC_V2 */
+  LL_Arithacc_Init(1, &Conv2D_7_off_bias_18_init7);
+
+
+  /* Unit= 20 [ARITH_ACC_V2 2] */
+  /* kind=Sub node=Conv2D_11_suboff_21 */
+  static const LL_Arithacc_InitTypeDef Conv2D_11_suboff_21_init7 = {
+    .rounding_x = 0,
+    .saturation_x = 0,
+    .round_mode_x = 0,
+    .inbytes_x = 1,
+    .outbytes_x = 1,
+    .shift_x = 0,
+    .rounding_y = 0,
+    .saturation_y = 0,
+    .round_mode_y = 0,
+    .inbytes_y = 1,
+    .outbytes_y = 1,
+    .combinebc = 1,
+    .clipout = 0,
+    .shift_y = 0,
+    .rounding_o = 0,
+    .saturation_o = 0,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 1,
+    .shift_o = 14,
+    .scalar = 1,
+    .dualinput = 0,
+    .operation = ARITH_AFFINE,
+    .bcast = ARITH_BCAST_HEIGHT,
+    .Ax_shift = 0,
+    .By_shift = 0,
+    .C_shift = 0,
+    .fWidth = 256,
+    .fHeight = 1,
+    .fChannels = 32,
+    .batchDepth = 8,
+    .clipmin = 0,
+    .clipmax = 0,
+    .A_scalar = 16384,
+    .B_scalar = 32,
+    .C_scalar = (short)0,
+    .A_vector = {0},
+    .B_vector = {0},
+    .C_vector = {0},
+    .vec_precision = {8, 8, 8},
+  };
+
+  /* Unit=ARITH_ACC_V2 */
+  LL_Arithacc_Init(2, &Conv2D_11_suboff_21_init7);
+
+
+  /* Dma inputs units to cycle: */
+  /* Unit= 0 [STREAM_ENG_V2 0] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_7 input ports=0 range=1[253952,278528] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_7_dma_init_in_0_7 = {
+    .dir = 0,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 1,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_7_zero_off_out_13 */
+    .offset_start = 253952,
+    .offset_limit = 278592,
+    .frame_count = 0,
+    .fwidth = 1024,
+    .fheight = 1,
+    .batch_depth = 8,
+    .batch_offset = 24,
+    .frame_offset = 24,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 1,
+    .frame_tot_cnt = 4,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(0, &Conv2D_7_dma_init_in_0_7, 1);
+
+  /* Unit= 3 [STREAM_ENG_V2 3] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_7 input ports=1 range=8[74752,77824] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_7_dma_init_in_1_7 = {
+    /* 32x4x1x24(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .continuous = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .cacheable = 1,
+    .cache_allocate = 0,
+    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_7_weights */
+    .offset_start = 74752,
+    .offset_end = 77824,
+    .offset_limit = 77888,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 0,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 0,
+    .frame_tot_cnt = 1,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(3, &Conv2D_7_dma_init_in_1_7, 1);
+
+  /* Unit= 6 [STREAM_ENG_V2 6] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_7_ca_pipe_1 input ports=0 range=1[253952,278528] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_7_ca_pipe_1_dma_init_in_0_7 = {
+    .dir = 0,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 1,
+    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_7_zero_off_out_13_copy_in_43 ca pipe offset=1 */
+    .offset_start = 253960,
+    .offset_limit = 278592,
+    .frame_count = 0,
+    .fwidth = 1024,
+    .fheight = 1,
+    .batch_depth = 8,
+    .batch_offset = 24,
+    .frame_offset = 24,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 1,
+    .frame_tot_cnt = 4,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(6, &Conv2D_7_ca_pipe_1_dma_init_in_0_7, 1);
+
+  /* Unit= 8 [STREAM_ENG_V2 8] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_7_ca_pipe_2 input ports=0 range=1[253952,278528] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_7_ca_pipe_2_dma_init_in_0_7 = {
+    .dir = 0,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 1,
+    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_7_zero_off_out_13_copy_in_44 ca pipe offset=2 */
+    .offset_start = 253968,
+    .offset_limit = 278592,
+    .frame_count = 0,
+    .fwidth = 1024,
+    .fheight = 1,
+    .batch_depth = 8,
+    .batch_offset = 24,
+    .frame_offset = 24,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 1,
+    .frame_tot_cnt = 4,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(8, &Conv2D_7_ca_pipe_2_dma_init_in_0_7, 1);
+
+
+  /* Dma input bandwidth from memory pools: */
+  /* npuRAM5 -> 98304 */
+  /* octoFlash -> 3072 */
+
+  /* Dma output units from cycle: */
+  /* Unit= 2 [STREAM_ENG_V2 2] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_7_off_bias_18 output ports=0 range=1[278528,286720] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_7_off_bias_18_dma_init_out_0_7 = {
+    /* to memory with batch=8 */
+    .dir = 1,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_7_off_bias_out_19 */
+    .offset_start = 278528,
+    .offset_end = 280576,
+    .offset_limit = 286784,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 2048,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 0,
+    .frame_tot_cnt = 4,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(2, &Conv2D_7_off_bias_18_dma_init_out_0_7, 1);
+
+  /* Unit= 4 [STREAM_ENG_V2 4] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_11_suboff_21 output ports=0 range=1[286720,294912] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_11_suboff_21_dma_init_out_0_7 = {
+    /* to memory with batch=8 */
+    .dir = 1,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 1,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_11_zero_off_out_22 */
+    .offset_start = 286720,
+    .offset_end = 288768,
+    .offset_limit = 294976,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 2048,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 0,
+    .frame_tot_cnt = 4,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(4, &Conv2D_11_suboff_21_dma_init_out_0_7, 1);
+
+
+  /* Dma output bandwidth to memory pools: */
+  /* npuRAM5 <- 16384 */
+
+  static const LL_Switch_InitTypeDef switch_init_in_7[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=CONV_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_ca_pipe_2 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_ca_pipe_2 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_ca_pipe_2 IN: in unit=CONV_ACC_V2 3 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_mul_scale_16 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_off_bias_18 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_off_bias_18 OUT: in unit=STREAM_ENG_V2 2 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_suboff_21 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_suboff_21 OUT: in unit=STREAM_ENG_V2 4 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+  };
+
+
+  /* epoch=7 */
+  LL_Switch_Init(switch_init_in_7, 13);
+
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_7_all_units[] = {
+    { {STRENG, 2} }, /* STREAM_ENG_V2 */
+    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+    { {CONVACC, 0} }, /* CONV_ACC_V2 */
+    { {CONVACC, 2} }, /* CONV_ACC_V2 */
+    { {CONVACC, 3} }, /* CONV_ACC_V2 */
+    { {ARITH, 0} }, /* ARITH_ACC_V2 */
+    { {ARITH, 1} }, /* ARITH_ACC_V2 */
+    { {ARITH, 2} }, /* ARITH_ACC_V2 */
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {STRENG, 3} }, /* STREAM_ENG_V2 */
+    { {STRENG, 6} }, /* STREAM_ENG_V2 */
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
+  };
+
+
+  LL_ATON_EnableUnits_Init(Enable_epoch_7_all_units, 12);
+
+}
 
 static void LL_ATON_End_EpochBlock_7(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-
-/* Unit= 27 [PROCESSOR 0] */
-/* kind=AveragePool node=AveragePool_7 */
-  Pool_sw_info pool2_sw_info = {
-    /* "general.input" tensor-related info: */
-    .general.input.dim.tensor_b = 1,
-    .general.input.dim.tensor_h = 1,
-    .general.input.dim.tensor_w = 1024,
-    .general.input.dim.tensor_c = 24,
-    .general.input.dim.num_elem = 24576,
-    .general.input.stride.b = 98304,
-    .general.input.stride.h = 98304,
-    .general.input.stride.w = 96,
-    .general.input.stride.c = 4,
-    .general.input.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 0))) /* Equivalent hex address = 0x342e0000UL */,
-    .general.input.format.is_signed = 0,
-    /* "general.output" tensor-related info: */
-    .general.output.dim.tensor_b = 1,
-    .general.output.dim.tensor_h = 1,
-    .general.output.dim.tensor_w = 256,
-    .general.output.dim.tensor_c = 24,
-    .general.output.dim.num_elem = 6144,
-    .general.output.stride.b = 24576,
-    .general.output.stride.h = 24576,
-    .general.output.stride.w = 96,
-    .general.output.stride.c = 4,
-    .general.output.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 98304))) /* Equivalent hex address = 0x342f8000UL */,
-    .general.output.format.is_signed = 0,
-    /* Node-specific Hyper-parameters: */
-    .pads = {0, 0, 0, 0},
-    .strides = {1, 4},
-    .k_shape = {1, 4},
-    .count_include_pad = 1,
-    .general.type = LL_SW_AVGPOOL,
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_7[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=CONV_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_ca_pipe_2 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_ca_pipe_2 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_ca_pipe_2 IN: in unit=CONV_ACC_V2 3 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_mul_scale_16 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_off_bias_18 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_7_off_bias_18 OUT: in unit=STREAM_ENG_V2 2 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_suboff_21 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_suboff_21 OUT: in unit=STREAM_ENG_V2 4 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
   };
 
-  /* Low Level SW Layer function invocation. This will exploit EmbedNets libs) */
-  /* Node AveragePool_7 mapped on EmbedNets (FLOAT) as AveragePool | Category: Computational */
-  ll_sw_forward_pool(&pool2_sw_info);
-  /* *** MCU cache clean (only) operation (SW, whole range) *** */
-  /*     memory pool: 1 */
-  /*     start: ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 98304))) */
-  /*     end:   ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 122880))) */
-  LL_ATON_Cache_MCU_Clean_Range(((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 98304))) /* Equivalent hex address = 0x342f8000UL */, 24576);
+
+  /* epoch=7 */
+  LL_Switch_Deinit(switch_deinit_in_7, 13);
+
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_7_all_units[] = {
+    { {STRENG, 2} }, /* STREAM_ENG_V2 */
+    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+    { {CONVACC, 0} }, /* CONV_ACC_V2 */
+    { {CONVACC, 2} }, /* CONV_ACC_V2 */
+    { {CONVACC, 3} }, /* CONV_ACC_V2 */
+    { {ARITH, 0} }, /* ARITH_ACC_V2 */
+    { {ARITH, 1} }, /* ARITH_ACC_V2 */
+    { {ARITH, 2} }, /* ARITH_ACC_V2 */
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {STRENG, 3} }, /* STREAM_ENG_V2 */
+    { {STRENG, 6} }, /* STREAM_ENG_V2 */
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
+  };
+
+
+  LL_ATON_DisableUnits_Init(Disable_epoch_7_all_units, 12);
 
 }
 
 
-/* scheduling epoch=8    nodes=1   ------------------------------------------------------------------- */
+/* scheduling epoch=8    nodes=7   ------------------------------------------------------------------- */
+
+static void LL_ATON_Start_EpochBlock_8(const void *epoch_block)
+{
+  LL_ATON_LIB_UNUSED(epoch_block);
+
+  /* Unit= 11 [CONV_ACC_V2 1] */
+  /* kind=Conv node=Conv2D_11 */
+  static const LL_Convacc_InitTypeDef Conv2D_11_init8 = {
+    .simd = 1,
+    .fsub = 0,
+    .accumulate = 0,
+    .kfilt_tot = 16,
+    .kfilt_first = 0,
+    .kfilt_last = 3,
+    .rounding_f = 0,
+    .saturation_f = 0,
+    .round_mode_f = 0,
+    .f_unsigned = 1,
+    .k_unsigned = 0,
+    .deepmode = 0,
+    .dss2mode = 0,
+    .kseten = 0,
+    .zfbias = 0,
+    .inbytes_f = 1,
+    .shift_f = 0,
+    .shift_a = 5,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 3,
+    .shift_o = 0,
+    .raw_o = 1,
+    .fWidth = 256,
+    .fHeight = 1,
+    .kernelWidth = 5,
+    .kernelHeight = 1,
+    .nKernels = 4,
+    .batchDepth = 8,
+    .hstride = 1,
+    .vstride = 1,
+    .left_padding = 2,
+    .right_padding = 2,
+    .top_padding = 0,
+    .bot_padding = 0,
+    .left_crop = 0,
+    .right_crop = 255,
+    .top_crop = 0,
+    .bot_crop = 0,
+  };
+
+  /* Unit=CONV_ACC_V2 */
+  LL_Convacc_Init(1, &Conv2D_11_init8);
+
+
+  /* Unit= 10 [CONV_ACC_V2 0] */
+  /* kind=Conv node=Conv2D_11_ca_pipe_1 */
+  static const LL_Convacc_InitTypeDef Conv2D_11_ca_pipe_1_init8 = {
+    .simd = 1,
+    .fsub = 0,
+    .accumulate = 1,
+    .accumulate_first = 1,
+    .kfilt_tot = 16,
+    .kfilt_first = 4,
+    .kfilt_last = 7,
+    .rounding_f = 0,
+    .saturation_f = 0,
+    .round_mode_f = 0,
+    .f_unsigned = 1,
+    .k_unsigned = 0,
+    .deepmode = 0,
+    .dss2mode = 0,
+    .kseten = 0,
+    .zfbias = 0,
+    .inbytes_f = 1,
+    .shift_f = 0,
+    .shift_a = 0,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 3,
+    .shift_o = 0,
+    .raw_o = 1,
+    .fWidth = 256,
+    .fHeight = 1,
+    .kernelWidth = 5,
+    .kernelHeight = 1,
+    .nKernels = 4,
+    .batchDepth = 8,
+    .hstride = 1,
+    .vstride = 1,
+    .left_padding = 2,
+    .right_padding = 2,
+    .top_padding = 0,
+    .bot_padding = 0,
+    .left_crop = 0,
+    .right_crop = 255,
+    .top_crop = 0,
+    .bot_crop = 0,
+  };
+
+  /* Unit=CONV_ACC_V2 */
+  LL_Convacc_Init(0, &Conv2D_11_ca_pipe_1_init8);
+
+
+  /* Unit= 12 [CONV_ACC_V2 2] */
+  /* kind=Conv node=Conv2D_11_ca_pipe_2 */
+  static const LL_Convacc_InitTypeDef Conv2D_11_ca_pipe_2_init8 = {
+    .simd = 1,
+    .fsub = 0,
+    .accumulate = 1,
+    .accumulate_first = 1,
+    .kfilt_tot = 16,
+    .kfilt_first = 8,
+    .kfilt_last = 11,
+    .rounding_f = 0,
+    .saturation_f = 0,
+    .round_mode_f = 0,
+    .f_unsigned = 1,
+    .k_unsigned = 0,
+    .deepmode = 0,
+    .dss2mode = 0,
+    .kseten = 0,
+    .zfbias = 0,
+    .inbytes_f = 1,
+    .shift_f = 0,
+    .shift_a = 0,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 3,
+    .shift_o = 0,
+    .raw_o = 1,
+    .fWidth = 256,
+    .fHeight = 1,
+    .kernelWidth = 5,
+    .kernelHeight = 1,
+    .nKernels = 4,
+    .batchDepth = 8,
+    .hstride = 1,
+    .vstride = 1,
+    .left_padding = 2,
+    .right_padding = 2,
+    .top_padding = 0,
+    .bot_padding = 0,
+    .left_crop = 0,
+    .right_crop = 255,
+    .top_crop = 0,
+    .bot_crop = 0,
+  };
+
+  /* Unit=CONV_ACC_V2 */
+  LL_Convacc_Init(2, &Conv2D_11_ca_pipe_2_init8);
+
+
+  /* Unit= 13 [CONV_ACC_V2 3] */
+  /* kind=Conv node=Conv2D_11_ca_pipe_3 */
+  static const LL_Convacc_InitTypeDef Conv2D_11_ca_pipe_3_init8 = {
+    .simd = 1,
+    .fsub = 0,
+    .accumulate = 1,
+    .accumulate_first = 1,
+    .kfilt_tot = 16,
+    .kfilt_first = 12,
+    .kfilt_last = 15,
+    .rounding_f = 0,
+    .saturation_f = 0,
+    .round_mode_f = 0,
+    .f_unsigned = 1,
+    .k_unsigned = 0,
+    .deepmode = 0,
+    .dss2mode = 0,
+    .kseten = 0,
+    .zfbias = 0,
+    .inbytes_f = 1,
+    .shift_f = 0,
+    .shift_a = 0,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 2,
+    .shift_o = 5,
+    .raw_o = 0,
+    .fWidth = 256,
+    .fHeight = 1,
+    .kernelWidth = 5,
+    .kernelHeight = 1,
+    .nKernels = 4,
+    .batchDepth = 8,
+    .hstride = 1,
+    .vstride = 1,
+    .left_padding = 2,
+    .right_padding = 2,
+    .top_padding = 0,
+    .bot_padding = 0,
+    .left_crop = 0,
+    .right_crop = 255,
+    .top_crop = 0,
+    .bot_crop = 0,
+  };
+
+  /* Unit=CONV_ACC_V2 */
+  LL_Convacc_Init(3, &Conv2D_11_ca_pipe_3_init8);
+
+
+  /* Unit= 21 [ARITH_ACC_V2 3] */
+  /* kind=Mul node=Conv2D_11_mul_scale_25 */
+  static const LL_Arithacc_InitTypeDef Conv2D_11_mul_scale_25_init8 = {
+    .rounding_x = 0,
+    .saturation_x = 0,
+    .round_mode_x = 0,
+    .inbytes_x = 2,
+    .outbytes_x = 2,
+    .shift_x = 0,
+    .rounding_y = 0,
+    .saturation_y = 0,
+    .round_mode_y = 0,
+    .inbytes_y = 2,
+    .outbytes_y = 2,
+    .combinebc = 0,
+    .clipout = 0,
+    .shift_y = 0,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 2,
+    .shift_o = 13,
+    .scalar = 0,
+    .dualinput = 0,
+    .operation = ARITH_AFFINE,
+    .bcast = ARITH_BCAST_CHAN,
+    .Ax_shift = 0,
+    .By_shift = 0,
+    .C_shift = 0,
+    .fWidth = 256,
+    .fHeight = 1,
+    .fChannels = 32,
+    .batchDepth = 4,
+    .clipmin = 0,
+    .clipmax = 0,
+    .A_scalar = 1,
+    .B_scalar = 0,
+    .C_scalar = 0,
+    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 82304))) /* Equivalent hex address = 0x71014180UL */},
+    .B_vector = {0},
+    .C_vector = {0},
+    .vec_precision = {16, 16, 16},
+  };
+
+  /* Unit=ARITH_ACC_V2 */
+  LL_Arithacc_Init(3, &Conv2D_11_mul_scale_25_init8);
+
+
+  /* Unit= 18 [ARITH_ACC_V2 0] */
+  /* kind=Add node=Conv2D_11_off_bias_27 */
+  static const LL_Arithacc_InitTypeDef Conv2D_11_off_bias_27_init8 = {
+    .rounding_x = 0,
+    .saturation_x = 0,
+    .round_mode_x = 0,
+    .inbytes_x = 2,
+    .outbytes_x = 2,
+    .shift_x = 0,
+    .rounding_y = 0,
+    .saturation_y = 0,
+    .round_mode_y = 0,
+    .inbytes_y = 2,
+    .outbytes_y = 2,
+    .combinebc = 1,
+    .clipout = 0,
+    .shift_y = 0,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 1,
+    .shift_o = 20,
+    .scalar = 0,
+    .dualinput = 0,
+    .operation = ARITH_AFFINE,
+    .bcast = ARITH_BCAST_CHAN,
+    .Ax_shift = 0,
+    .By_shift = 0,
+    .C_shift = 0,
+    .fWidth = 256,
+    .fHeight = 1,
+    .fChannels = 32,
+    .batchDepth = 4,
+    .clipmin = 0,
+    .clipmax = 0,
+    .A_scalar = 20008,
+    .B_scalar = 0,
+    .C_scalar = (short)0,
+    .A_vector = {0},
+    .B_vector = {0},
+    .C_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 81440))) /* Equivalent hex address = 0x71013e20UL */},
+    .vec_precision = {16, 16, 32},
+  };
+
+  /* Unit=ARITH_ACC_V2 */
+  LL_Arithacc_Init(0, &Conv2D_11_off_bias_27_init8);
+
+
+  /* Unit= 19 [ARITH_ACC_V2 1] */
+  /* kind=Sub node=Conv2D_15_suboff_30 */
+  static const LL_Arithacc_InitTypeDef Conv2D_15_suboff_30_init8 = {
+    .rounding_x = 0,
+    .saturation_x = 0,
+    .round_mode_x = 0,
+    .inbytes_x = 1,
+    .outbytes_x = 1,
+    .shift_x = 0,
+    .rounding_y = 0,
+    .saturation_y = 0,
+    .round_mode_y = 0,
+    .inbytes_y = 1,
+    .outbytes_y = 1,
+    .combinebc = 1,
+    .clipout = 0,
+    .shift_y = 0,
+    .rounding_o = 0,
+    .saturation_o = 0,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 1,
+    .shift_o = 14,
+    .scalar = 1,
+    .dualinput = 0,
+    .operation = ARITH_AFFINE,
+    .bcast = ARITH_BCAST_HEIGHT,
+    .Ax_shift = 0,
+    .By_shift = 0,
+    .C_shift = 0,
+    .fWidth = 256,
+    .fHeight = 1,
+    .fChannels = 32,
+    .batchDepth = 4,
+    .clipmin = 0,
+    .clipmax = 0,
+    .A_scalar = 16384,
+    .B_scalar = 32,
+    .C_scalar = (short)0,
+    .A_vector = {0},
+    .B_vector = {0},
+    .C_vector = {0},
+    .vec_precision = {8, 8, 8},
+  };
+
+  /* Unit=ARITH_ACC_V2 */
+  LL_Arithacc_Init(1, &Conv2D_15_suboff_30_init8);
+
+
+  /* Dma inputs units to cycle: */
+  /* Unit= 3 [STREAM_ENG_V2 3] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_11 input ports=0 range=1[286720,294912] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_11_dma_init_in_0_8 = {
+    /* 256x1x8(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 1,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_11_zero_off_out_22 */
+    .offset_start = 286720,
+    .offset_end = 288768,
+    .offset_limit = 294976,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 8192,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 1,
+    .frame_tot_cnt = 8,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(3, &Conv2D_11_dma_init_in_0_8, 1);
+
+  /* Unit= 7 [STREAM_ENG_V2 7] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_11 input ports=1 range=8[64512,69632] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_11_dma_init_in_1_8 = {
+    /* 32x5x1x32(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .continuous = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .cacheable = 1,
+    .cache_allocate = 0,
+    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_11_weights */
+    .offset_start = 64512,
+    .offset_end = 69632,
+    .offset_limit = 69696,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 0,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 0,
+    .frame_tot_cnt = 1,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(7, &Conv2D_11_dma_init_in_1_8, 1);
+
+  /* Unit= 8 [STREAM_ENG_V2 8] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_11_ca_pipe_1 input ports=0 range=1[286720,294912] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_11_ca_pipe_1_dma_init_in_0_8 = {
+    /* 256x1x8(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 1,
+    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_11_zero_off_out_22_copy_in_45 ca pipe offset=1 */
+    .offset_start = 288768,
+    .offset_end = 290816,
+    .offset_limit = 294976,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 8192,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 1,
+    .frame_tot_cnt = 8,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(8, &Conv2D_11_ca_pipe_1_dma_init_in_0_8, 1);
+
+  /* Unit= 0 [STREAM_ENG_V2 0] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_11_ca_pipe_2 input ports=0 range=1[286720,294912] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_11_ca_pipe_2_dma_init_in_0_8 = {
+    /* 256x1x8(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 1,
+    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_11_zero_off_out_22_copy_in_46 ca pipe offset=2 */
+    .offset_start = 290816,
+    .offset_end = 292864,
+    .offset_limit = 294976,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 8192,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 1,
+    .frame_tot_cnt = 8,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(0, &Conv2D_11_ca_pipe_2_dma_init_in_0_8, 1);
+
+  /* Unit= 5 [STREAM_ENG_V2 5] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_11_ca_pipe_3 input ports=0 range=1[286720,294912] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_11_ca_pipe_3_dma_init_in_0_8 = {
+    /* 256x1x8(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 1,
+    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_11_zero_off_out_22_copy_in_47 ca pipe offset=3 */
+    .offset_start = 292864,
+    .offset_end = 294912,
+    .offset_limit = 294976,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 8192,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 1,
+    .frame_tot_cnt = 8,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(5, &Conv2D_11_ca_pipe_3_dma_init_in_0_8, 1);
+
+
+  /* Dma input bandwidth from memory pools: */
+  /* npuRAM5 -> 65536 */
+  /* octoFlash -> 5120 */
+
+  /* Dma output units from cycle: */
+  /* Unit= 2 [STREAM_ENG_V2 2] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_15_suboff_30 output ports=0 range=1[294912,303104] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_15_suboff_30_dma_init_out_0_8 = {
+    /* to memory canonical from batch=4 */
+    .dir = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 1,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_15_zero_off_out_31 */
+    .offset_start = 294912,
+    .offset_limit = 303168,
+    .frame_count = 0,
+    .fwidth = 256,
+    .fheight = 1,
+    .batch_depth = 4,
+    .batch_offset = 32,
+    .frame_offset = 4,
+    .line_offset = 0,
+    .loop_offset = 8192,
+    .frame_loop_cnt = 8,
+    .frame_tot_cnt = 8,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(2, &Conv2D_15_suboff_30_dma_init_out_0_8, 1);
+
+
+  /* Dma output bandwidth to memory pools: */
+  /* npuRAM5 <- 8192 */
+
+  static const LL_Switch_InitTypeDef switch_init_in_8[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=CONV_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_ca_pipe_3 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 5 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_ca_pipe_3 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_ca_pipe_3 IN: in unit=CONV_ACC_V2 3 in port=2 out unit=CONV_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_mul_scale_25 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_off_bias_27 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_suboff_30 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_suboff_30 OUT: in unit=STREAM_ENG_V2 2 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+  };
+
+
+  /* epoch=8 */
+  LL_Switch_Init(switch_init_in_8, 15);
+
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_8_all_units[] = {
+    { {STRENG, 2} }, /* STREAM_ENG_V2 */
+    { {CONVACC, 0} }, /* CONV_ACC_V2 */
+    { {CONVACC, 1} }, /* CONV_ACC_V2 */
+    { {CONVACC, 2} }, /* CONV_ACC_V2 */
+    { {CONVACC, 3} }, /* CONV_ACC_V2 */
+    { {ARITH, 0} }, /* ARITH_ACC_V2 */
+    { {ARITH, 1} }, /* ARITH_ACC_V2 */
+    { {ARITH, 3} }, /* ARITH_ACC_V2 */
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {STRENG, 3} }, /* STREAM_ENG_V2 */
+    { {STRENG, 5} }, /* STREAM_ENG_V2 */
+    { {STRENG, 7} }, /* STREAM_ENG_V2 */
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
+  };
+
+
+  LL_ATON_EnableUnits_Init(Enable_epoch_8_all_units, 13);
+
+}
 
 static void LL_ATON_End_EpochBlock_8(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-
-/* Unit= 27 [PROCESSOR 0] */
-/* kind=QuantizeLinear node=QuantizeLinear_inserted_id209 */
-  Quantizelinear_sw_info quantizelinear3_sw_info = {
-    /* "general.input" tensor-related info: */
-    .general.input.dim.tensor_b = 1,
-    .general.input.dim.tensor_h = 1,
-    .general.input.dim.tensor_w = 256,
-    .general.input.dim.tensor_c = 24,
-    .general.input.dim.num_elem = 6144,
-    .general.input.stride.b = 24576,
-    .general.input.stride.h = 24576,
-    .general.input.stride.w = 96,
-    .general.input.stride.c = 4,
-    .general.input.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 98304))) /* Equivalent hex address = 0x342f8000UL */,
-    .general.input.format.is_signed = 0,
-    /* "os" tensor-related info: */
-    .os.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 98592))) /* Equivalent hex address = 0x71018120UL */,
-    .os.format.is_signed = 0,
-    .os.dim.num_elem = 1,
-    /* "ozp" tensor-related info: */
-    .ozp.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 98832))) /* Equivalent hex address = 0x71018210UL */,
-    .ozp.format.is_signed = 1,
-    .ozp.dim.num_elem = 1,
-    /* "general.output" tensor-related info: */
-    .general.output.dim.tensor_b = 1,
-    .general.output.dim.tensor_h = 1,
-    .general.output.dim.tensor_w = 256,
-    .general.output.dim.tensor_c = 24,
-    .general.output.dim.num_elem = 6144,
-    .general.output.stride.b = 6144,
-    .general.output.stride.h = 6144,
-    .general.output.stride.w = 24,
-    .general.output.stride.c = 1,
-    .general.output.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 49152))) /* Equivalent hex address = 0x342ec000UL */,
-    .general.output.format.is_signed = 1,
-    .general.type = LL_SW_QUANTIZELINEAR,
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_8[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=CONV_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_ca_pipe_3 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 5 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_ca_pipe_3 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_ca_pipe_3 IN: in unit=CONV_ACC_V2 3 in port=2 out unit=CONV_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_mul_scale_25 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_11_off_bias_27 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_suboff_30 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_suboff_30 OUT: in unit=STREAM_ENG_V2 2 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
   };
 
-  /* Low Level SW Layer function invocation. This will exploit EmbedNets libs) */
-  /* Node QuantizeLinear_inserted_id209 mapped on EmbedNets (INTEGER) as QuantizeLinear | Category: Format-Converter */
-  ll_sw_forward_quantizelinear(&quantizelinear3_sw_info);
-  /* *** MCU cache clean (only) operation (SW, whole range) *** */
-  /*     memory pool: 1 */
-  /*     start: ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 49152))) */
-  /*     end:   ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 55296))) */
-  LL_ATON_Cache_MCU_Clean_Range(((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 49152))) /* Equivalent hex address = 0x342ec000UL */, 6144);
+
+  /* epoch=8 */
+  LL_Switch_Deinit(switch_deinit_in_8, 15);
+
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_8_all_units[] = {
+    { {STRENG, 2} }, /* STREAM_ENG_V2 */
+    { {CONVACC, 0} }, /* CONV_ACC_V2 */
+    { {CONVACC, 1} }, /* CONV_ACC_V2 */
+    { {CONVACC, 2} }, /* CONV_ACC_V2 */
+    { {CONVACC, 3} }, /* CONV_ACC_V2 */
+    { {ARITH, 0} }, /* ARITH_ACC_V2 */
+    { {ARITH, 1} }, /* ARITH_ACC_V2 */
+    { {ARITH, 3} }, /* ARITH_ACC_V2 */
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {STRENG, 3} }, /* STREAM_ENG_V2 */
+    { {STRENG, 5} }, /* STREAM_ENG_V2 */
+    { {STRENG, 7} }, /* STREAM_ENG_V2 */
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
+  };
+
+
+  LL_ATON_DisableUnits_Init(Disable_epoch_8_all_units, 13);
 
 }
 
 
-/* scheduling epoch=9    nodes=1   ------------------------------------------------------------------- */
+/* scheduling epoch=9    nodes=6   ------------------------------------------------------------------- */
+
+static void LL_ATON_Start_EpochBlock_9(const void *epoch_block)
+{
+  LL_ATON_LIB_UNUSED(epoch_block);
+
+  /* Unit= 10 [CONV_ACC_V2 0] */
+  /* kind=Conv node=Conv2D_15 */
+  static const LL_Convacc_InitTypeDef Conv2D_15_init9 = {
+    .simd = 1,
+    .fsub = 0,
+    .accumulate = 0,
+    .kfilt_tot = 16,
+    .kfilt_first = 0,
+    .kfilt_last = 3,
+    .rounding_f = 0,
+    .saturation_f = 0,
+    .round_mode_f = 0,
+    .f_unsigned = 1,
+    .k_unsigned = 0,
+    .deepmode = 0,
+    .dss2mode = 0,
+    .kseten = 0,
+    .zfbias = 0,
+    .inbytes_f = 1,
+    .shift_f = 0,
+    .shift_a = 5,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 3,
+    .shift_o = 0,
+    .raw_o = 1,
+    .fWidth = 256,
+    .fHeight = 1,
+    .kernelWidth = 5,
+    .kernelHeight = 1,
+    .nKernels = 4,
+    .batchDepth = 8,
+    .hstride = 1,
+    .vstride = 1,
+    .left_padding = 2,
+    .right_padding = 2,
+    .top_padding = 0,
+    .bot_padding = 0,
+    .left_crop = 0,
+    .right_crop = 255,
+    .top_crop = 0,
+    .bot_crop = 0,
+  };
+
+  /* Unit=CONV_ACC_V2 */
+  LL_Convacc_Init(0, &Conv2D_15_init9);
+
+
+  /* Unit= 11 [CONV_ACC_V2 1] */
+  /* kind=Conv node=Conv2D_15_ca_pipe_1 */
+  static const LL_Convacc_InitTypeDef Conv2D_15_ca_pipe_1_init9 = {
+    .simd = 1,
+    .fsub = 0,
+    .accumulate = 1,
+    .accumulate_first = 1,
+    .kfilt_tot = 16,
+    .kfilt_first = 4,
+    .kfilt_last = 7,
+    .rounding_f = 0,
+    .saturation_f = 0,
+    .round_mode_f = 0,
+    .f_unsigned = 1,
+    .k_unsigned = 0,
+    .deepmode = 0,
+    .dss2mode = 0,
+    .kseten = 0,
+    .zfbias = 0,
+    .inbytes_f = 1,
+    .shift_f = 0,
+    .shift_a = 0,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 3,
+    .shift_o = 0,
+    .raw_o = 1,
+    .fWidth = 256,
+    .fHeight = 1,
+    .kernelWidth = 5,
+    .kernelHeight = 1,
+    .nKernels = 4,
+    .batchDepth = 8,
+    .hstride = 1,
+    .vstride = 1,
+    .left_padding = 2,
+    .right_padding = 2,
+    .top_padding = 0,
+    .bot_padding = 0,
+    .left_crop = 0,
+    .right_crop = 255,
+    .top_crop = 0,
+    .bot_crop = 0,
+  };
+
+  /* Unit=CONV_ACC_V2 */
+  LL_Convacc_Init(1, &Conv2D_15_ca_pipe_1_init9);
+
+
+  /* Unit= 12 [CONV_ACC_V2 2] */
+  /* kind=Conv node=Conv2D_15_ca_pipe_2 */
+  static const LL_Convacc_InitTypeDef Conv2D_15_ca_pipe_2_init9 = {
+    .simd = 1,
+    .fsub = 0,
+    .accumulate = 1,
+    .accumulate_first = 1,
+    .kfilt_tot = 16,
+    .kfilt_first = 8,
+    .kfilt_last = 11,
+    .rounding_f = 0,
+    .saturation_f = 0,
+    .round_mode_f = 0,
+    .f_unsigned = 1,
+    .k_unsigned = 0,
+    .deepmode = 0,
+    .dss2mode = 0,
+    .kseten = 0,
+    .zfbias = 0,
+    .inbytes_f = 1,
+    .shift_f = 0,
+    .shift_a = 0,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 3,
+    .shift_o = 0,
+    .raw_o = 1,
+    .fWidth = 256,
+    .fHeight = 1,
+    .kernelWidth = 5,
+    .kernelHeight = 1,
+    .nKernels = 4,
+    .batchDepth = 8,
+    .hstride = 1,
+    .vstride = 1,
+    .left_padding = 2,
+    .right_padding = 2,
+    .top_padding = 0,
+    .bot_padding = 0,
+    .left_crop = 0,
+    .right_crop = 255,
+    .top_crop = 0,
+    .bot_crop = 0,
+  };
+
+  /* Unit=CONV_ACC_V2 */
+  LL_Convacc_Init(2, &Conv2D_15_ca_pipe_2_init9);
+
+
+  /* Unit= 13 [CONV_ACC_V2 3] */
+  /* kind=Conv node=Conv2D_15_ca_pipe_3 */
+  static const LL_Convacc_InitTypeDef Conv2D_15_ca_pipe_3_init9 = {
+    .simd = 1,
+    .fsub = 0,
+    .accumulate = 1,
+    .accumulate_first = 1,
+    .kfilt_tot = 16,
+    .kfilt_first = 12,
+    .kfilt_last = 15,
+    .rounding_f = 0,
+    .saturation_f = 0,
+    .round_mode_f = 0,
+    .f_unsigned = 1,
+    .k_unsigned = 0,
+    .deepmode = 0,
+    .dss2mode = 0,
+    .kseten = 0,
+    .zfbias = 0,
+    .inbytes_f = 1,
+    .shift_f = 0,
+    .shift_a = 0,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 2,
+    .shift_o = 5,
+    .raw_o = 0,
+    .fWidth = 256,
+    .fHeight = 1,
+    .kernelWidth = 5,
+    .kernelHeight = 1,
+    .nKernels = 4,
+    .batchDepth = 8,
+    .hstride = 1,
+    .vstride = 1,
+    .left_padding = 2,
+    .right_padding = 2,
+    .top_padding = 0,
+    .bot_padding = 0,
+    .left_crop = 0,
+    .right_crop = 255,
+    .top_crop = 0,
+    .bot_crop = 0,
+  };
+
+  /* Unit=CONV_ACC_V2 */
+  LL_Convacc_Init(3, &Conv2D_15_ca_pipe_3_init9);
+
+
+  /* Unit= 20 [ARITH_ACC_V2 2] */
+  /* kind=Mul node=Conv2D_15_mul_scale_34 */
+  static const LL_Arithacc_InitTypeDef Conv2D_15_mul_scale_34_init9 = {
+    .rounding_x = 0,
+    .saturation_x = 0,
+    .round_mode_x = 0,
+    .inbytes_x = 2,
+    .outbytes_x = 2,
+    .shift_x = 0,
+    .rounding_y = 0,
+    .saturation_y = 0,
+    .round_mode_y = 0,
+    .inbytes_y = 2,
+    .outbytes_y = 2,
+    .combinebc = 0,
+    .clipout = 0,
+    .shift_y = 0,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 2,
+    .shift_o = 14,
+    .scalar = 0,
+    .dualinput = 0,
+    .operation = ARITH_AFFINE,
+    .bcast = ARITH_BCAST_CHAN,
+    .Ax_shift = 0,
+    .By_shift = 0,
+    .C_shift = 0,
+    .fWidth = 256,
+    .fHeight = 1,
+    .fChannels = 32,
+    .batchDepth = 4,
+    .clipmin = 0,
+    .clipmax = 0,
+    .A_scalar = 1,
+    .B_scalar = 0,
+    .C_scalar = 0,
+    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 82368))) /* Equivalent hex address = 0x710141c0UL */},
+    .B_vector = {0},
+    .C_vector = {0},
+    .vec_precision = {16, 16, 16},
+  };
+
+  /* Unit=ARITH_ACC_V2 */
+  LL_Arithacc_Init(2, &Conv2D_15_mul_scale_34_init9);
+
+
+  /* Unit= 18 [ARITH_ACC_V2 0] */
+  /* kind=Add node=Conv2D_15_off_bias_36 */
+  static const LL_Arithacc_InitTypeDef Conv2D_15_off_bias_36_init9 = {
+    .rounding_x = 0,
+    .saturation_x = 0,
+    .round_mode_x = 0,
+    .inbytes_x = 2,
+    .outbytes_x = 2,
+    .shift_x = 0,
+    .rounding_y = 0,
+    .saturation_y = 0,
+    .round_mode_y = 0,
+    .inbytes_y = 2,
+    .outbytes_y = 2,
+    .combinebc = 1,
+    .clipout = 0,
+    .shift_y = 0,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
+    .outbytes_o = 1,
+    .shift_o = 20,
+    .scalar = 0,
+    .dualinput = 0,
+    .operation = ARITH_AFFINE,
+    .bcast = ARITH_BCAST_CHAN,
+    .Ax_shift = 0,
+    .By_shift = 0,
+    .C_shift = 0,
+    .fWidth = 256,
+    .fHeight = 1,
+    .fChannels = 32,
+    .batchDepth = 4,
+    .clipmin = 0,
+    .clipmax = 0,
+    .A_scalar = 16756,
+    .B_scalar = 0,
+    .C_scalar = (short)0,
+    .A_vector = {0},
+    .B_vector = {0},
+    .C_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 81184))) /* Equivalent hex address = 0x71013d20UL */},
+    .vec_precision = {16, 16, 32},
+  };
+
+  /* Unit=ARITH_ACC_V2 */
+  LL_Arithacc_Init(0, &Conv2D_15_off_bias_36_init9);
+
+
+  /* Dma inputs units to cycle: */
+  /* Unit= 6 [STREAM_ENG_V2 6] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_15 input ports=0 range=1[294912,303104] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_15_dma_init_in_0_9 = {
+    .dir = 0,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 1,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_15_zero_off_out_31 */
+    .offset_start = 294912,
+    .offset_limit = 303168,
+    .frame_count = 0,
+    .fwidth = 256,
+    .fheight = 1,
+    .batch_depth = 8,
+    .batch_offset = 32,
+    .frame_offset = 32,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 1,
+    .frame_tot_cnt = 8,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(6, &Conv2D_15_dma_init_in_0_9, 1);
+
+  /* Unit= 1 [STREAM_ENG_V2 1] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_15 input ports=1 range=8[69632,74752] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_15_dma_init_in_1_9 = {
+    /* 32x5x1x32(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .continuous = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .cacheable = 1,
+    .cache_allocate = 0,
+    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_15_weights */
+    .offset_start = 69632,
+    .offset_end = 74752,
+    .offset_limit = 74816,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 0,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 0,
+    .frame_tot_cnt = 1,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(1, &Conv2D_15_dma_init_in_1_9, 1);
+
+  /* Unit= 4 [STREAM_ENG_V2 4] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_15_ca_pipe_1 input ports=0 range=1[294912,303104] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_15_ca_pipe_1_dma_init_in_0_9 = {
+    .dir = 0,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 1,
+    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_15_zero_off_out_31_copy_in_48 ca pipe offset=1 */
+    .offset_start = 294920,
+    .offset_limit = 303168,
+    .frame_count = 0,
+    .fwidth = 256,
+    .fheight = 1,
+    .batch_depth = 8,
+    .batch_offset = 32,
+    .frame_offset = 32,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 1,
+    .frame_tot_cnt = 8,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(4, &Conv2D_15_ca_pipe_1_dma_init_in_0_9, 1);
+
+  /* Unit= 3 [STREAM_ENG_V2 3] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_15_ca_pipe_2 input ports=0 range=1[294912,303104] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_15_ca_pipe_2_dma_init_in_0_9 = {
+    .dir = 0,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 1,
+    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_15_zero_off_out_31_copy_in_49 ca pipe offset=2 */
+    .offset_start = 294928,
+    .offset_limit = 303168,
+    .frame_count = 0,
+    .fwidth = 256,
+    .fheight = 1,
+    .batch_depth = 8,
+    .batch_offset = 32,
+    .frame_offset = 32,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 1,
+    .frame_tot_cnt = 8,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(3, &Conv2D_15_ca_pipe_2_dma_init_in_0_9, 1);
+
+  /* Unit= 7 [STREAM_ENG_V2 7] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_15_ca_pipe_3 input ports=0 range=1[294912,303104] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_15_ca_pipe_3_dma_init_in_0_9 = {
+    .dir = 0,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 1,
+    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_15_zero_off_out_31_copy_in_50 ca pipe offset=3 */
+    .offset_start = 294936,
+    .offset_limit = 303168,
+    .frame_count = 0,
+    .fwidth = 256,
+    .fheight = 1,
+    .batch_depth = 8,
+    .batch_offset = 32,
+    .frame_offset = 32,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 1,
+    .frame_tot_cnt = 8,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(7, &Conv2D_15_ca_pipe_3_dma_init_in_0_9, 1);
+
+
+  /* Dma input bandwidth from memory pools: */
+  /* npuRAM5 -> 65536 */
+  /* octoFlash -> 5120 */
+
+  /* Dma output units from cycle: */
+  /* Unit= 9 [STREAM_ENG_V2 9] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_15_off_bias_36 output ports=0 range=1[286720,294912] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_15_off_bias_36_dma_init_out_0_9 = {
+    /* to memory canonical from batch=4 */
+    .dir = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 0,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_15_off_bias_out_37 */
+    .offset_start = 286720,
+    .offset_limit = 294976,
+    .frame_count = 0,
+    .fwidth = 256,
+    .fheight = 1,
+    .batch_depth = 4,
+    .batch_offset = 32,
+    .frame_offset = 4,
+    .line_offset = 0,
+    .loop_offset = 8192,
+    .frame_loop_cnt = 8,
+    .frame_tot_cnt = 8,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(9, &Conv2D_15_off_bias_36_dma_init_out_0_9, 1);
+
+
+  /* Dma output bandwidth to memory pools: */
+  /* npuRAM5 <- 8192 */
+
+  static const LL_Switch_InitTypeDef switch_init_in_9[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_ca_pipe_1 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_ca_pipe_1 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_ca_pipe_1 IN: in unit=CONV_ACC_V2 1 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=2 out unit=CONV_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_ca_pipe_3 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_ca_pipe_3 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_ca_pipe_3 IN: in unit=CONV_ACC_V2 3 in port=2 out unit=CONV_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_mul_scale_34 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_off_bias_36 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_off_bias_36 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+  };
+
+
+  /* epoch=9 */
+  LL_Switch_Init(switch_init_in_9, 14);
+
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_9_all_units[] = {
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
+    { {CONVACC, 0} }, /* CONV_ACC_V2 */
+    { {CONVACC, 1} }, /* CONV_ACC_V2 */
+    { {CONVACC, 2} }, /* CONV_ACC_V2 */
+    { {CONVACC, 3} }, /* CONV_ACC_V2 */
+    { {ARITH, 0} }, /* ARITH_ACC_V2 */
+    { {ARITH, 2} }, /* ARITH_ACC_V2 */
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
+    { {STRENG, 3} }, /* STREAM_ENG_V2 */
+    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+    { {STRENG, 6} }, /* STREAM_ENG_V2 */
+    { {STRENG, 7} }, /* STREAM_ENG_V2 */
+  };
+
+
+  LL_ATON_EnableUnits_Init(Enable_epoch_9_all_units, 12);
+
+}
 
 static void LL_ATON_End_EpochBlock_9(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-
-/* Unit= 27 [PROCESSOR 0] */
-/* kind=QuantizeLinear node=QuantizeLinear_inserted_id204 */
-  Quantizelinear_sw_info quantizelinear4_sw_info = {
-    /* "general.input" tensor-related info: */
-    .general.input.dim.tensor_b = 1,
-    .general.input.dim.tensor_h = 1,
-    .general.input.dim.tensor_w = 256,
-    .general.input.dim.tensor_c = 24,
-    .general.input.dim.num_elem = 6144,
-    .general.input.stride.b = 24576,
-    .general.input.stride.h = 24576,
-    .general.input.stride.w = 96,
-    .general.input.stride.c = 4,
-    .general.input.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 98304))) /* Equivalent hex address = 0x342f8000UL */,
-    .general.input.format.is_signed = 0,
-    /* "os" tensor-related info: */
-    .os.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 98576))) /* Equivalent hex address = 0x71018110UL */,
-    .os.format.is_signed = 0,
-    .os.dim.num_elem = 1,
-    /* "ozp" tensor-related info: */
-    .ozp.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 98816))) /* Equivalent hex address = 0x71018200UL */,
-    .ozp.format.is_signed = 1,
-    .ozp.dim.num_elem = 1,
-    /* "general.output" tensor-related info: */
-    .general.output.dim.tensor_b = 1,
-    .general.output.dim.tensor_h = 1,
-    .general.output.dim.tensor_w = 256,
-    .general.output.dim.tensor_c = 24,
-    .general.output.dim.num_elem = 6144,
-    .general.output.stride.b = 6144,
-    .general.output.stride.h = 6144,
-    .general.output.stride.w = 24,
-    .general.output.stride.c = 1,
-    .general.output.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 61440))) /* Equivalent hex address = 0x342ef000UL */,
-    .general.output.format.is_signed = 1,
-    .general.type = LL_SW_QUANTIZELINEAR,
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_9[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_ca_pipe_1 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_ca_pipe_1 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_ca_pipe_1 IN: in unit=CONV_ACC_V2 1 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=2 out unit=CONV_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_ca_pipe_3 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_ca_pipe_3 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_ca_pipe_3 IN: in unit=CONV_ACC_V2 3 in port=2 out unit=CONV_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_mul_scale_34 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_off_bias_36 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_15_off_bias_36 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
   };
 
-  /* Low Level SW Layer function invocation. This will exploit EmbedNets libs) */
-  /* Node QuantizeLinear_inserted_id204 mapped on EmbedNets (INTEGER) as QuantizeLinear | Category: Format-Converter */
-  ll_sw_forward_quantizelinear(&quantizelinear4_sw_info);
-  /* *** MCU cache clean (only) operation (SW, whole range) *** */
-  /*     memory pool: 1 */
-  /*     start: ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 61440))) */
-  /*     end:   ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 67584))) */
-  LL_ATON_Cache_MCU_Clean_Range(((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 61440))) /* Equivalent hex address = 0x342ef000UL */, 6144);
+
+  /* epoch=9 */
+  LL_Switch_Deinit(switch_deinit_in_9, 14);
+
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_9_all_units[] = {
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
+    { {CONVACC, 0} }, /* CONV_ACC_V2 */
+    { {CONVACC, 1} }, /* CONV_ACC_V2 */
+    { {CONVACC, 2} }, /* CONV_ACC_V2 */
+    { {CONVACC, 3} }, /* CONV_ACC_V2 */
+    { {ARITH, 0} }, /* ARITH_ACC_V2 */
+    { {ARITH, 2} }, /* ARITH_ACC_V2 */
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
+    { {STRENG, 3} }, /* STREAM_ENG_V2 */
+    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+    { {STRENG, 6} }, /* STREAM_ENG_V2 */
+    { {STRENG, 7} }, /* STREAM_ENG_V2 */
+  };
+
+
+  LL_ATON_DisableUnits_Init(Disable_epoch_9_all_units, 12);
 
 }
 
 
-/* scheduling epoch=10   nodes=1   ------------------------------------------------------------------- */
+/* scheduling epoch=10   nodes=2   ------------------------------------------------------------------- */
 
 static void LL_ATON_Start_EpochBlock_10(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-  /* Unit= 21 [ARITH_ACC_V2 3] */
-  /* kind=Sub node=Conv2D_9_suboff_12 */
-  static const LL_Arithacc_InitTypeDef Conv2D_9_suboff_12_init10 = {
-    .rounding_x = 0,
-    .saturation_x = 0,
-    .round_mode_x = 0,
-    .inbytes_x = 1,
-    .outbytes_x = 1,
-    .shift_x = 0,
-    .rounding_y = 0,
-    .saturation_y = 0,
-    .round_mode_y = 0,
-    .inbytes_y = 1,
-    .outbytes_y = 1,
-    .combinebc = 1,
-    .clipout = 0,
-    .shift_y = 0,
-    .rounding_o = 0,
-    .saturation_o = 0,
-    .round_mode_o = 1,
-    .relu_mode_o = 0,
-    .outbytes_o = 1,
-    .shift_o = 14,
-    .scalar = 1,
-    .dualinput = 0,
-    .operation = ARITH_AFFINE,
-    .bcast = ARITH_BCAST_HEIGHT,
-    .Ax_shift = 0,
-    .By_shift = 0,
-    .C_shift = 0,
-    .fWidth = 256,
-    .fHeight = 1,
-    .fChannels = 24,
-    .batchDepth = 24,
-    .clipmin = 0,
-    .clipmax = 0,
-    .A_scalar = 16384,
-    .B_scalar = 32,
-    .C_scalar = (short)0,
-    .A_vector = {0},
-    .B_vector = {0},
-    .C_vector = {0},
-    .vec_precision = {8, 8, 8},
-  };
-
-  /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(3, &Conv2D_9_suboff_12_init10);
-
-
-  /* Dma inputs units to cycle: */
-  /* Unit= 2 [STREAM_ENG_V2 2] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_9_suboff_12 input ports=0 range=1[61440,67584] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_9_suboff_12_dma_init_in_0_10 = {
-    /* from memory with batch=24 */
-    .dir = 0,
-    .raw = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* AveragePool_7_out_0 */
-    .offset_start = 61440,
-    .offset_end = 67584,
-    .offset_limit = 67648,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 6144,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 0,
-    .frame_tot_cnt = 1,
-    .nbits_in = 8,
-    .nbits_out = 8,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(2, &Conv2D_9_suboff_12_dma_init_in_0_10, 1);
-
-
-  /* Dma input bandwidth from memory pools: */
-  /* npuRAM5 -> 6144 */
-
-  /* Dma output units from cycle: */
-  /* Unit= 8 [STREAM_ENG_V2 8] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_9_suboff_12 output ports=0 range=1[24576,30720] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_9_suboff_12_dma_init_out_0_10 = {
-    /* to memory with batch=24 */
-    .dir = 1,
-    .raw = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_9_zero_off_out_13 */
-    .offset_start = 24576,
-    .offset_end = 30720,
-    .offset_limit = 30784,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 6144,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 0,
-    .frame_tot_cnt = 1,
-    .nbits_in = 8,
-    .nbits_out = 8,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(8, &Conv2D_9_suboff_12_dma_init_out_0_10, 1);
-
-
-  /* Dma output bandwidth to memory pools: */
-  /* npuRAM5 <- 6144 */
-
-  static const LL_Switch_InitTypeDef switch_init_in_10[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_9_suboff_12 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_9_suboff_12 OUT: in unit=STREAM_ENG_V2 8 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
-  };
-
-
-  /* epoch=10 */
-  LL_Switch_Init(switch_init_in_10, 2);
-
-  /* *** MCU cache invalidate (only) operation (HW, whole range) *** */
-  /*     memory pool: 1 */
-  /*     start: ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 24576))) */
-  /*     end:   ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 30720))) */
-  LL_ATON_Cache_MCU_Invalidate_Range(((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 24576))) /* Equivalent hex address = 0x342e6000UL */, 6144);
-
-  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_10_all_units[] = {
-    { {STRENG, 8} }, /* STREAM_ENG_V2 */
-    { {ARITH, 3} }, /* ARITH_ACC_V2 */
-    { {STRENG, 2} }, /* STREAM_ENG_V2 */
-  };
-
-
-  LL_ATON_EnableUnits_Init(Enable_epoch_10_all_units, 3);
-
-}
-
-static void LL_ATON_End_EpochBlock_10(const void *epoch_block)
-{
-  LL_ATON_LIB_UNUSED(epoch_block);
-
-  static const LL_Switch_DeinitTypeDef switch_deinit_in_10[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_9_suboff_12 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_9_suboff_12 OUT: in unit=STREAM_ENG_V2 8 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
-  };
-
-
-  /* epoch=10 */
-  LL_Switch_Deinit(switch_deinit_in_10, 2);
-
-  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_10_all_units[] = {
-    { {STRENG, 8} }, /* STREAM_ENG_V2 */
-    { {ARITH, 3} }, /* ARITH_ACC_V2 */
-    { {STRENG, 2} }, /* STREAM_ENG_V2 */
-  };
-
-
-  LL_ATON_DisableUnits_Init(Disable_epoch_10_all_units, 3);
-
-}
-
-
-/* scheduling epoch=11   nodes=1   ------------------------------------------------------------------- */
-
-static void LL_ATON_End_EpochBlock_11(const void *epoch_block)
-{
-  LL_ATON_LIB_UNUSED(epoch_block);
-
-
-/* Unit= 27 [PROCESSOR 0] */
-/* kind=DequantizeLinear node=DequantizeLinear_inserted_id205 */
-  Dequantizelinear_sw_info dequantizelinear5_sw_info = {
-    /* "general.input" tensor-related info: */
-    .general.input.dim.tensor_b = 1,
-    .general.input.dim.tensor_h = 1,
-    .general.input.dim.tensor_w = 256,
-    .general.input.dim.tensor_c = 24,
-    .general.input.dim.num_elem = 6144,
-    .general.input.stride.b = 6144,
-    .general.input.stride.h = 6144,
-    .general.input.stride.w = 24,
-    .general.input.stride.c = 1,
-    .general.input.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 24576))) /* Equivalent hex address = 0x342e6000UL */,
-    .general.input.format.is_signed = 0,
-    /* "is" tensor-related info: */
-    .is.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 98544))) /* Equivalent hex address = 0x710180f0UL */,
-    .is.format.is_signed = 0,
-    .is.dim.num_elem = 1,
-    /* "izp" tensor-related info: */
-    .izp.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 98784))) /* Equivalent hex address = 0x710181e0UL */,
-    .izp.format.is_signed = 0,
-    .izp.dim.num_elem = 1,
-    /* "general.output" tensor-related info: */
-    .general.output.dim.tensor_b = 1,
-    .general.output.dim.tensor_h = 1,
-    .general.output.dim.tensor_w = 256,
-    .general.output.dim.tensor_c = 24,
-    .general.output.dim.num_elem = 6144,
-    .general.output.stride.b = 24576,
-    .general.output.stride.h = 24576,
-    .general.output.stride.w = 96,
-    .general.output.stride.c = 4,
-    .general.output.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 0))) /* Equivalent hex address = 0x342e0000UL */,
-    .general.output.format.is_signed = 0,
-    .general.type = LL_SW_DEQUANTIZELINEAR,
-  };
-
-  /* Low Level SW Layer function invocation. This will exploit EmbedNets libs) */
-  /* Node DequantizeLinear_inserted_id205 mapped on EmbedNets (INTEGER) as DequantizeLinear | Category: Format-Converter */
-  ll_sw_forward_dequantizelinear(&dequantizelinear5_sw_info);
-  /* *** MCU cache clean (only) operation (SW, whole range) *** */
-  /*     memory pool: 1 */
-  /*     start: ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 0))) */
-  /*     end:   ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 24576))) */
-  LL_ATON_Cache_MCU_Clean_Range(((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 0))) /* Equivalent hex address = 0x342e0000UL */, 24576);
-
-}
-
-
-/* scheduling epoch=12   nodes=1   ------------------------------------------------------------------- */
-
-static void LL_ATON_End_EpochBlock_12(const void *epoch_block)
-{
-  LL_ATON_LIB_UNUSED(epoch_block);
-
-
-/* Unit= 27 [PROCESSOR 0] */
-/* kind=Conv node=Conv2D_9 */
-  Conv_sw_info conv6_sw_info = {
-    /* "general.input" tensor-related info: */
-    .general.input.dim.tensor_b = 1,
-    .general.input.dim.tensor_h = 1,
-    .general.input.dim.tensor_w = 256,
-    .general.input.dim.tensor_c = 24,
-    .general.input.dim.num_elem = 6144,
-    .general.input.stride.b = 24576,
-    .general.input.stride.h = 24576,
-    .general.input.stride.w = 96,
-    .general.input.stride.c = 4,
-    .general.input.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 0))) /* Equivalent hex address = 0x342e0000UL */,
-    .general.input.format.is_signed = 0,
-    /* "weights" tensor-related info: */
-    .weights.dim.tensor_b = 24,
-    .weights.dim.tensor_h = 1,
-    .weights.dim.tensor_w = 7,
-    .weights.dim.tensor_c = 24,
-    .weights.dim.num_elem = 4032,
-    .weights.stride.b = 672,
-    .weights.stride.h = 672,
-    .weights.stride.w = 96,
-    .weights.stride.c = 4,
-    .weights.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 0))) /* Equivalent hex address = 0x71000000UL */,
-    .weights.format.is_signed = 0,
-    /* "general.output" tensor-related info: */
-    .general.output.dim.tensor_b = 1,
-    .general.output.dim.tensor_h = 1,
-    .general.output.dim.tensor_w = 256,
-    .general.output.dim.tensor_c = 24,
-    .general.output.dim.num_elem = 6144,
-    .general.output.stride.b = 24576,
-    .general.output.stride.h = 24576,
-    .general.output.stride.w = 96,
-    .general.output.stride.c = 4,
-    .general.output.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 24576))) /* Equivalent hex address = 0x342e6000UL */,
-    .general.output.format.is_signed = 0,
-    /* Node-specific Hyper-parameters: */
-    .ngroup = 1,
-    .pads = {0, 3, 0, 3},
-    .strides = {1, 1},
-    .dilations = {1, 1},
-    .general.type = LL_SW_CONV,
-  };
-
-  /* Low Level SW Layer function invocation. This will exploit EmbedNets libs) */
-  /* Node Conv2D_9 mapped on EmbedNets (FLOAT) as Conv | Category: Computational */
-  ll_sw_forward_conv(&conv6_sw_info);
-  /* *** MCU cache clean (only) operation (SW, whole range) *** */
-  /*     memory pool: 1 */
-  /*     start: ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 24576))) */
-  /*     end:   ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 49152))) */
-  LL_ATON_Cache_MCU_Clean_Range(((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 24576))) /* Equivalent hex address = 0x342e6000UL */, 24576);
-
-}
-
-
-/* scheduling epoch=13   nodes=1   ------------------------------------------------------------------- */
-
-static void LL_ATON_End_EpochBlock_13(const void *epoch_block)
-{
-  LL_ATON_LIB_UNUSED(epoch_block);
-
-  /* *** MCU cache invalidate (only) operation (SW, whole range) *** */
-  /*     memory pool: 1 */
-  /*     start: ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 24576))) */
-  /*     end:   ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 49152))) */
-  LL_ATON_Cache_MCU_Invalidate_Range(((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 24576))) /* Equivalent hex address = 0x342e6000UL */, 24576);
-
-  /* Reset the stream switch */
-  LL_Switch_Init(NULL, 0);
-
-/* Unit= 27 [PROCESSOR 0] */
-/* kind=Cast node=Cast_inserted_id206 */
-  static const uint32_t Cast_inserted_id206_tensor_info_in_13__shape_1_24_1_256[] = { 1, 1, 256, 24 };
-  static const uint32_t Cast_inserted_id206_tensor_info_in_13__mem_shape_L_1_24_1_256[] = { 1, 1, 256, 24 };
-  static const LL_Buffer_InfoTypeDef Cast_inserted_id206_tensor_info_in_13[] = {
-    {
-      .name = "Conv2D_9_out_0_inserted_in206",
-      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 24576,
-      .offset_end = 49152,
-      .offset_limit = 49216,
-      .is_user_allocated = 0,
-      .is_param = 0,
-      .epoch = 13,
-      .batch = 24,
-      .mem_shape = Cast_inserted_id206_tensor_info_in_13__mem_shape_L_1_24_1_256,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
-      .Qm = 0,
-      .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_FLOAT,
-      .nbits = 32,
-      .ndims = 4,
-      .shape = Cast_inserted_id206_tensor_info_in_13__shape_1_24_1_256,
-    },
-    {
-      .name = NULL,
-    }
-  };
-
-  static const uint32_t Cast_inserted_id206_tensor_info_out_13__shape_1_24_1_256[] = { 1, 1, 256, 24 };
-  static const uint32_t Cast_inserted_id206_tensor_info_out_13__mem_shape_L_1_24_1_256[] = { 1, 1, 256, 24 };
-  static const LL_Buffer_InfoTypeDef Cast_inserted_id206_tensor_info_out_13[] = {
-    {
-      .name = "Conv2D_9_out_0_inserted_out206",
-      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 24576,
-      .offset_end = 36864,
-      .offset_limit = 36928,
-      .is_user_allocated = 0,
-      .is_param = 0,
-      .epoch = 13,
-      .batch = 24,
-      .mem_shape = Cast_inserted_id206_tensor_info_out_13__mem_shape_L_1_24_1_256,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
-      .Qm = 19,
-      .Qn = -4,
-      .Qunsigned = 0,
-      .type = DataType_FXP,
-      .nbits = 16,
-      .ndims = 4,
-      .shape = Cast_inserted_id206_tensor_info_out_13__shape_1_24_1_256,
-    },
-    {
-      .name = NULL,
-    }
-  };
-
-  LL_ATON_LIB_Cast(Cast_inserted_id206_tensor_info_in_13, Cast_inserted_id206_tensor_info_out_13, 4, 5);
-
-  /* *** MCU cache clean (only) operation (SW, whole range) *** */
-  /*     memory pool: 1 */
-  /*     start: ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 24576))) */
-  /*     end:   ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 49152))) */
-  LL_ATON_Cache_MCU_Clean_Range(((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 24576))) /* Equivalent hex address = 0x342e6000UL */, 24576);
-
-}
-
-
-/* scheduling epoch=14   nodes=3   ------------------------------------------------------------------- */
-
-static void LL_ATON_Start_EpochBlock_14(const void *epoch_block)
-{
-  LL_ATON_LIB_UNUSED(epoch_block);
-
-  /* Unit= 18 [ARITH_ACC_V2 0] */
-  /* kind=Mul node=Conv2D_9_mul_scale_16 */
-  static const LL_Arithacc_InitTypeDef Conv2D_9_mul_scale_16_init14 = {
-    .rounding_x = 0,
-    .saturation_x = 0,
-    .round_mode_x = 0,
-    .inbytes_x = 2,
-    .outbytes_x = 2,
-    .shift_x = 0,
-    .rounding_y = 0,
-    .saturation_y = 0,
-    .round_mode_y = 0,
-    .inbytes_y = 2,
-    .outbytes_y = 2,
-    .combinebc = 0,
-    .clipout = 0,
-    .shift_y = 0,
-    .rounding_o = 1,
-    .saturation_o = 1,
-    .round_mode_o = 1,
-    .relu_mode_o = 0,
-    .outbytes_o = 2,
-    .shift_o = 17,
-    .scalar = 0,
-    .dualinput = 0,
-    .operation = ARITH_AFFINE,
-    .bcast = ARITH_BCAST_CHAN,
-    .Ax_shift = 0,
-    .By_shift = 0,
-    .C_shift = 0,
-    .fWidth = 256,
-    .fHeight = 1,
-    .fChannels = 24,
-    .batchDepth = 24,
-    .clipmin = 0,
-    .clipmax = 0,
-    .A_scalar = 1,
-    .B_scalar = 0,
-    .C_scalar = 0,
-    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 98352))) /* Equivalent hex address = 0x71018030UL */},
-    .B_vector = {0},
-    .C_vector = {0},
-    .vec_precision = {16, 16, 16},
-  };
-
-  /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(0, &Conv2D_9_mul_scale_16_init14);
-
-
   /* Unit= 19 [ARITH_ACC_V2 1] */
-  /* kind=Add node=Conv2D_9_off_bias_18 */
-  static const LL_Arithacc_InitTypeDef Conv2D_9_off_bias_18_init14 = {
-    .rounding_x = 0,
-    .saturation_x = 0,
-    .round_mode_x = 0,
-    .inbytes_x = 2,
-    .outbytes_x = 2,
-    .shift_x = 0,
-    .rounding_y = 0,
-    .saturation_y = 0,
-    .round_mode_y = 0,
-    .inbytes_y = 2,
-    .outbytes_y = 2,
-    .combinebc = 1,
-    .clipout = 0,
-    .shift_y = 0,
-    .rounding_o = 1,
-    .saturation_o = 1,
-    .round_mode_o = 1,
-    .relu_mode_o = 0,
-    .outbytes_o = 1,
-    .shift_o = 18,
-    .scalar = 1,
-    .dualinput = 0,
-    .operation = ARITH_AFFINE,
-    .bcast = ARITH_BCAST_CHAN,
-    .Ax_shift = 0,
-    .By_shift = 0,
-    .C_shift = 0,
-    .fWidth = 256,
-    .fHeight = 1,
-    .fChannels = 24,
-    .batchDepth = 24,
-    .clipmin = 0,
-    .clipmax = 0,
-    .A_scalar = 20653,
-    .B_scalar = -512,
-    .C_scalar = (short)0,
-    .A_vector = {0},
-    .B_vector = {0},
-    .C_vector = {0},
-    .vec_precision = {16, 16, 16},
-  };
-
-  /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(1, &Conv2D_9_off_bias_18_init14);
-
-
-  /* Unit= 20 [ARITH_ACC_V2 2] */
-  /* kind=Sub node=Conv2D_13_suboff_21 */
-  static const LL_Arithacc_InitTypeDef Conv2D_13_suboff_21_init14 = {
-    .rounding_x = 0,
-    .saturation_x = 0,
-    .round_mode_x = 0,
-    .inbytes_x = 1,
-    .outbytes_x = 1,
-    .shift_x = 0,
-    .rounding_y = 0,
-    .saturation_y = 0,
-    .round_mode_y = 0,
-    .inbytes_y = 1,
-    .outbytes_y = 1,
-    .combinebc = 1,
-    .clipout = 0,
-    .shift_y = 0,
-    .rounding_o = 0,
-    .saturation_o = 0,
-    .round_mode_o = 1,
-    .relu_mode_o = 0,
-    .outbytes_o = 1,
-    .shift_o = 14,
-    .scalar = 1,
-    .dualinput = 0,
-    .operation = ARITH_AFFINE,
-    .bcast = ARITH_BCAST_HEIGHT,
-    .Ax_shift = 0,
-    .By_shift = 0,
-    .C_shift = 0,
-    .fWidth = 256,
-    .fHeight = 1,
-    .fChannels = 24,
-    .batchDepth = 24,
-    .clipmin = 0,
-    .clipmax = 0,
-    .A_scalar = 16384,
-    .B_scalar = 32,
-    .C_scalar = (short)0,
-    .A_vector = {0},
-    .B_vector = {0},
-    .C_vector = {0},
-    .vec_precision = {8, 8, 8},
-  };
-
-  /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(2, &Conv2D_13_suboff_21_init14);
-
-
-  /* Dma inputs units to cycle: */
-  /* Unit= 7 [STREAM_ENG_V2 7] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_9_mul_scale_16 input ports=0 range=1[24576,49152] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_9_mul_scale_16_dma_init_in_0_14 = {
-    /* from memory with batch=24 */
-    .dir = 0,
-    .raw = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_9_out_0 */
-    .offset_start = 24576,
-    .offset_end = 36864,
-    .offset_limit = 49216,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 12288,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 0,
-    .frame_tot_cnt = 1,
-    .nbits_in = 16,
-    .nbits_out = 16,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(7, &Conv2D_9_mul_scale_16_dma_init_in_0_14, 1);
-
-
-  /* Dma input bandwidth from memory pools: */
-  /* npuRAM5 -> 12288 */
-
-  /* Dma output units from cycle: */
-  /* Unit= 2 [STREAM_ENG_V2 2] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_13_suboff_21 output ports=0 range=1[61440,67584] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_13_suboff_21_dma_init_out_0_14 = {
-    /* to memory with batch=24 */
-    .dir = 1,
-    .raw = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_13_zero_off_out_22 */
-    .offset_start = 61440,
-    .offset_end = 67584,
-    .offset_limit = 67648,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 6144,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 0,
-    .frame_tot_cnt = 1,
-    .nbits_in = 8,
-    .nbits_out = 8,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(2, &Conv2D_13_suboff_21_dma_init_out_0_14, 1);
-
-
-  /* Dma output bandwidth to memory pools: */
-  /* npuRAM5 <- 6144 */
-
-  static const LL_Switch_InitTypeDef switch_init_in_14[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_9_mul_scale_16 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_9_off_bias_18 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_13_suboff_21 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_13_suboff_21 OUT: in unit=STREAM_ENG_V2 2 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
-  };
-
-
-  /* epoch=14 */
-  LL_Switch_Init(switch_init_in_14, 4);
-
-  /* *** MCU cache invalidate (only) operation (HW, whole range) *** */
-  /*     memory pool: 1 */
-  /*     start: ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 61440))) */
-  /*     end:   ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 67584))) */
-  LL_ATON_Cache_MCU_Invalidate_Range(((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 61440))) /* Equivalent hex address = 0x342ef000UL */, 6144);
-
-  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_14_all_units[] = {
-    { {STRENG, 2} }, /* STREAM_ENG_V2 */
-    { {ARITH, 0} }, /* ARITH_ACC_V2 */
-    { {ARITH, 1} }, /* ARITH_ACC_V2 */
-    { {ARITH, 2} }, /* ARITH_ACC_V2 */
-    { {STRENG, 7} }, /* STREAM_ENG_V2 */
-  };
-
-
-  LL_ATON_EnableUnits_Init(Enable_epoch_14_all_units, 5);
-
-}
-
-static void LL_ATON_End_EpochBlock_14(const void *epoch_block)
-{
-  LL_ATON_LIB_UNUSED(epoch_block);
-
-  static const LL_Switch_DeinitTypeDef switch_deinit_in_14[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_9_mul_scale_16 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_9_off_bias_18 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_13_suboff_21 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_13_suboff_21 OUT: in unit=STREAM_ENG_V2 2 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
-  };
-
-
-  /* epoch=14 */
-  LL_Switch_Deinit(switch_deinit_in_14, 4);
-
-  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_14_all_units[] = {
-    { {STRENG, 2} }, /* STREAM_ENG_V2 */
-    { {ARITH, 0} }, /* ARITH_ACC_V2 */
-    { {ARITH, 1} }, /* ARITH_ACC_V2 */
-    { {ARITH, 2} }, /* ARITH_ACC_V2 */
-    { {STRENG, 7} }, /* STREAM_ENG_V2 */
-  };
-
-
-  LL_ATON_DisableUnits_Init(Disable_epoch_14_all_units, 5);
-
-}
-
-
-/* scheduling epoch=15   nodes=1   ------------------------------------------------------------------- */
-
-static void LL_ATON_End_EpochBlock_15(const void *epoch_block)
-{
-  LL_ATON_LIB_UNUSED(epoch_block);
-
-
-/* Unit= 27 [PROCESSOR 0] */
-/* kind=DequantizeLinear node=DequantizeLinear_inserted_id207 */
-  Dequantizelinear_sw_info dequantizelinear7_sw_info = {
-    /* "general.input" tensor-related info: */
-    .general.input.dim.tensor_b = 1,
-    .general.input.dim.tensor_h = 1,
-    .general.input.dim.tensor_w = 256,
-    .general.input.dim.tensor_c = 24,
-    .general.input.dim.num_elem = 6144,
-    .general.input.stride.b = 6144,
-    .general.input.stride.h = 6144,
-    .general.input.stride.w = 24,
-    .general.input.stride.c = 1,
-    .general.input.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 61440))) /* Equivalent hex address = 0x342ef000UL */,
-    .general.input.format.is_signed = 0,
-    /* "is" tensor-related info: */
-    .is.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 98560))) /* Equivalent hex address = 0x71018100UL */,
-    .is.format.is_signed = 0,
-    .is.dim.num_elem = 1,
-    /* "izp" tensor-related info: */
-    .izp.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 98800))) /* Equivalent hex address = 0x710181f0UL */,
-    .izp.format.is_signed = 0,
-    .izp.dim.num_elem = 1,
-    /* "general.output" tensor-related info: */
-    .general.output.dim.tensor_b = 1,
-    .general.output.dim.tensor_h = 1,
-    .general.output.dim.tensor_w = 256,
-    .general.output.dim.tensor_c = 24,
-    .general.output.dim.num_elem = 6144,
-    .general.output.stride.b = 24576,
-    .general.output.stride.h = 24576,
-    .general.output.stride.w = 96,
-    .general.output.stride.c = 4,
-    .general.output.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 0))) /* Equivalent hex address = 0x342e0000UL */,
-    .general.output.format.is_signed = 0,
-    .general.type = LL_SW_DEQUANTIZELINEAR,
-  };
-
-  /* Low Level SW Layer function invocation. This will exploit EmbedNets libs) */
-  /* Node DequantizeLinear_inserted_id207 mapped on EmbedNets (INTEGER) as DequantizeLinear | Category: Format-Converter */
-  ll_sw_forward_dequantizelinear(&dequantizelinear7_sw_info);
-  /* *** MCU cache clean (only) operation (SW, whole range) *** */
-  /*     memory pool: 1 */
-  /*     start: ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 0))) */
-  /*     end:   ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 24576))) */
-  LL_ATON_Cache_MCU_Clean_Range(((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 0))) /* Equivalent hex address = 0x342e0000UL */, 24576);
-
-}
-
-
-/* scheduling epoch=16   nodes=1   ------------------------------------------------------------------- */
-
-static void LL_ATON_End_EpochBlock_16(const void *epoch_block)
-{
-  LL_ATON_LIB_UNUSED(epoch_block);
-
-
-/* Unit= 27 [PROCESSOR 0] */
-/* kind=Conv node=Conv2D_13 */
-  Conv_sw_info conv8_sw_info = {
-    /* "general.input" tensor-related info: */
-    .general.input.dim.tensor_b = 1,
-    .general.input.dim.tensor_h = 1,
-    .general.input.dim.tensor_w = 256,
-    .general.input.dim.tensor_c = 24,
-    .general.input.dim.num_elem = 6144,
-    .general.input.stride.b = 24576,
-    .general.input.stride.h = 24576,
-    .general.input.stride.w = 96,
-    .general.input.stride.c = 4,
-    .general.input.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 0))) /* Equivalent hex address = 0x342e0000UL */,
-    .general.input.format.is_signed = 0,
-    /* "weights" tensor-related info: */
-    .weights.dim.tensor_b = 24,
-    .weights.dim.tensor_h = 1,
-    .weights.dim.tensor_w = 7,
-    .weights.dim.tensor_c = 24,
-    .weights.dim.num_elem = 4032,
-    .weights.stride.b = 672,
-    .weights.stride.h = 672,
-    .weights.stride.w = 96,
-    .weights.stride.c = 4,
-    .weights.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 16128))) /* Equivalent hex address = 0x71003f00UL */,
-    .weights.format.is_signed = 0,
-    /* "general.output" tensor-related info: */
-    .general.output.dim.tensor_b = 1,
-    .general.output.dim.tensor_h = 1,
-    .general.output.dim.tensor_w = 256,
-    .general.output.dim.tensor_c = 24,
-    .general.output.dim.num_elem = 6144,
-    .general.output.stride.b = 24576,
-    .general.output.stride.h = 24576,
-    .general.output.stride.w = 96,
-    .general.output.stride.c = 4,
-    .general.output.mem.start_offset = ((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 24576))) /* Equivalent hex address = 0x342e6000UL */,
-    .general.output.format.is_signed = 0,
-    /* Node-specific Hyper-parameters: */
-    .ngroup = 1,
-    .pads = {0, 3, 0, 3},
-    .strides = {1, 1},
-    .dilations = {1, 1},
-    .general.type = LL_SW_CONV,
-  };
-
-  /* Low Level SW Layer function invocation. This will exploit EmbedNets libs) */
-  /* Node Conv2D_13 mapped on EmbedNets (FLOAT) as Conv | Category: Computational */
-  ll_sw_forward_conv(&conv8_sw_info);
-  /* *** MCU cache clean (only) operation (SW, whole range) *** */
-  /*     memory pool: 1 */
-  /*     start: ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 24576))) */
-  /*     end:   ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 49152))) */
-  LL_ATON_Cache_MCU_Clean_Range(((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 24576))) /* Equivalent hex address = 0x342e6000UL */, 24576);
-
-}
-
-
-/* scheduling epoch=17   nodes=1   ------------------------------------------------------------------- */
-
-static void LL_ATON_End_EpochBlock_17(const void *epoch_block)
-{
-  LL_ATON_LIB_UNUSED(epoch_block);
-
-  /* *** MCU cache invalidate (only) operation (SW, whole range) *** */
-  /*     memory pool: 1 */
-  /*     start: ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 24576))) */
-  /*     end:   ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 49152))) */
-  LL_ATON_Cache_MCU_Invalidate_Range(((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 24576))) /* Equivalent hex address = 0x342e6000UL */, 24576);
-
-  /* Reset the stream switch */
-  LL_Switch_Init(NULL, 0);
-
-/* Unit= 27 [PROCESSOR 0] */
-/* kind=Cast node=Cast_inserted_id208 */
-  static const uint32_t Cast_inserted_id208_tensor_info_in_17__shape_1_24_1_256[] = { 1, 1, 256, 24 };
-  static const uint32_t Cast_inserted_id208_tensor_info_in_17__mem_shape_L_1_24_1_256[] = { 1, 1, 256, 24 };
-  static const LL_Buffer_InfoTypeDef Cast_inserted_id208_tensor_info_in_17[] = {
-    {
-      .name = "Conv2D_13_out_0_inserted_in208",
-      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 24576,
-      .offset_end = 49152,
-      .offset_limit = 49216,
-      .is_user_allocated = 0,
-      .is_param = 0,
-      .epoch = 17,
-      .batch = 24,
-      .mem_shape = Cast_inserted_id208_tensor_info_in_17__mem_shape_L_1_24_1_256,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
-      .Qm = 0,
-      .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_FLOAT,
-      .nbits = 32,
-      .ndims = 4,
-      .shape = Cast_inserted_id208_tensor_info_in_17__shape_1_24_1_256,
-    },
-    {
-      .name = NULL,
-    }
-  };
-
-  static const uint32_t Cast_inserted_id208_tensor_info_out_17__shape_1_24_1_256[] = { 1, 1, 256, 24 };
-  static const uint32_t Cast_inserted_id208_tensor_info_out_17__mem_shape_L_1_24_1_256[] = { 1, 1, 256, 24 };
-  static const LL_Buffer_InfoTypeDef Cast_inserted_id208_tensor_info_out_17[] = {
-    {
-      .name = "Conv2D_13_out_0_inserted_out208",
-      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 24576,
-      .offset_end = 36864,
-      .offset_limit = 36928,
-      .is_user_allocated = 0,
-      .is_param = 0,
-      .epoch = 17,
-      .batch = 24,
-      .mem_shape = Cast_inserted_id208_tensor_info_out_17__mem_shape_L_1_24_1_256,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
-      .Qm = 20,
-      .Qn = -5,
-      .Qunsigned = 0,
-      .type = DataType_FXP,
-      .nbits = 16,
-      .ndims = 4,
-      .shape = Cast_inserted_id208_tensor_info_out_17__shape_1_24_1_256,
-    },
-    {
-      .name = NULL,
-    }
-  };
-
-  LL_ATON_LIB_Cast(Cast_inserted_id208_tensor_info_in_17, Cast_inserted_id208_tensor_info_out_17, 8, 0);
-
-  /* *** MCU cache clean (only) operation (SW, whole range) *** */
-  /*     memory pool: 1 */
-  /*     start: ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 24576))) */
-  /*     end:   ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 49152))) */
-  LL_ATON_Cache_MCU_Clean_Range(((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 24576))) /* Equivalent hex address = 0x342e6000UL */, 24576);
-
-}
-
-
-/* scheduling epoch=18   nodes=2   ------------------------------------------------------------------- */
-
-static void LL_ATON_Start_EpochBlock_18(const void *epoch_block)
-{
-  LL_ATON_LIB_UNUSED(epoch_block);
-
-  /* Unit= 21 [ARITH_ACC_V2 3] */
-  /* kind=Mul node=Conv2D_13_mul_scale_25 */
-  static const LL_Arithacc_InitTypeDef Conv2D_13_mul_scale_25_init18 = {
-    .rounding_x = 0,
-    .saturation_x = 0,
-    .round_mode_x = 0,
-    .inbytes_x = 2,
-    .outbytes_x = 2,
-    .shift_x = 0,
-    .rounding_y = 0,
-    .saturation_y = 0,
-    .round_mode_y = 0,
-    .inbytes_y = 2,
-    .outbytes_y = 2,
-    .combinebc = 0,
-    .clipout = 0,
-    .shift_y = 0,
-    .rounding_o = 1,
-    .saturation_o = 1,
-    .round_mode_o = 1,
-    .relu_mode_o = 0,
-    .outbytes_o = 2,
-    .shift_o = 16,
-    .scalar = 0,
-    .dualinput = 0,
-    .operation = ARITH_AFFINE,
-    .bcast = ARITH_BCAST_CHAN,
-    .Ax_shift = 0,
-    .By_shift = 0,
-    .C_shift = 0,
-    .fWidth = 256,
-    .fHeight = 1,
-    .fChannels = 24,
-    .batchDepth = 24,
-    .clipmin = 0,
-    .clipmax = 0,
-    .A_scalar = 1,
-    .B_scalar = 0,
-    .C_scalar = 0,
-    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 98448))) /* Equivalent hex address = 0x71018090UL */},
-    .B_vector = {0},
-    .C_vector = {0},
-    .vec_precision = {16, 16, 16},
-  };
-
-  /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(3, &Conv2D_13_mul_scale_25_init18);
-
-
-  /* Unit= 18 [ARITH_ACC_V2 0] */
-  /* kind=Add node=Conv2D_13_off_bias_27 */
-  static const LL_Arithacc_InitTypeDef Conv2D_13_off_bias_27_init18 = {
-    .rounding_x = 0,
-    .saturation_x = 0,
-    .round_mode_x = 0,
-    .inbytes_x = 2,
-    .outbytes_x = 2,
-    .shift_x = 0,
-    .rounding_y = 0,
-    .saturation_y = 0,
-    .round_mode_y = 0,
-    .inbytes_y = 2,
-    .outbytes_y = 2,
-    .combinebc = 1,
-    .clipout = 0,
-    .shift_y = 0,
-    .rounding_o = 1,
-    .saturation_o = 1,
-    .round_mode_o = 1,
-    .relu_mode_o = 0,
-    .outbytes_o = 1,
-    .shift_o = 19,
-    .scalar = 1,
-    .dualinput = 0,
-    .operation = ARITH_AFFINE,
-    .bcast = ARITH_BCAST_CHAN,
-    .Ax_shift = 0,
-    .By_shift = 0,
-    .C_shift = 0,
-    .fWidth = 256,
-    .fHeight = 1,
-    .fChannels = 24,
-    .batchDepth = 24,
-    .clipmin = 0,
-    .clipmax = 0,
-    .A_scalar = 26030,
-    .B_scalar = -56,
-    .C_scalar = (short)0,
-    .A_vector = {0},
-    .B_vector = {0},
-    .C_vector = {0},
-    .vec_precision = {16, 16, 16},
-  };
-
-  /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(0, &Conv2D_13_off_bias_27_init18);
-
-
-  /* Dma inputs units to cycle: */
-  /* Unit= 1 [STREAM_ENG_V2 1] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_13_mul_scale_25 input ports=0 range=1[24576,49152] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_13_mul_scale_25_dma_init_in_0_18 = {
-    /* from memory with batch=24 */
-    .dir = 0,
-    .raw = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_13_out_0 */
-    .offset_start = 24576,
-    .offset_end = 36864,
-    .offset_limit = 49216,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 12288,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 0,
-    .frame_tot_cnt = 1,
-    .nbits_in = 16,
-    .nbits_out = 16,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(1, &Conv2D_13_mul_scale_25_dma_init_in_0_18, 1);
-
-
-  /* Dma input bandwidth from memory pools: */
-  /* npuRAM5 -> 12288 */
-
-  /* Dma output units from cycle: */
-  /* Unit= 9 [STREAM_ENG_V2 9] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_13_off_bias_27 output ports=0 range=1[55296,61440] */
-
-  static const LL_Streng_TensorInitTypeDef Conv2D_13_off_bias_27_dma_init_out_0_18 = {
-    /* to memory with batch=24 */
-    .dir = 1,
-    .raw = 1,
-    .noblk = 0,
-    .align_right = 0,
-    .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_13_off_bias_out_28 */
-    .offset_start = 55296,
-    .offset_end = 61440,
-    .offset_limit = 61504,
-    .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 6144,
-    .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 0,
-    .frame_tot_cnt = 1,
-    .nbits_in = 8,
-    .nbits_out = 8,
-  };
-
-  /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(9, &Conv2D_13_off_bias_27_dma_init_out_0_18, 1);
-
-
-  /* Dma output bandwidth to memory pools: */
-  /* npuRAM5 <- 6144 */
-
-  static const LL_Switch_InitTypeDef switch_init_in_18[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_13_mul_scale_25 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_13_off_bias_27 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_13_off_bias_27 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
-  };
-
-
-  /* epoch=18 */
-  LL_Switch_Init(switch_init_in_18, 3);
-
-  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_18_all_units[] = {
-    { {STRENG, 9} }, /* STREAM_ENG_V2 */
-    { {ARITH, 0} }, /* ARITH_ACC_V2 */
-    { {ARITH, 3} }, /* ARITH_ACC_V2 */
-    { {STRENG, 1} }, /* STREAM_ENG_V2 */
-  };
-
-
-  LL_ATON_EnableUnits_Init(Enable_epoch_18_all_units, 4);
-
-}
-
-static void LL_ATON_End_EpochBlock_18(const void *epoch_block)
-{
-  LL_ATON_LIB_UNUSED(epoch_block);
-
-  static const LL_Switch_DeinitTypeDef switch_deinit_in_18[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_13_mul_scale_25 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_13_off_bias_27 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_13_off_bias_27 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
-  };
-
-
-  /* epoch=18 */
-  LL_Switch_Deinit(switch_deinit_in_18, 3);
-
-  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_18_all_units[] = {
-    { {STRENG, 9} }, /* STREAM_ENG_V2 */
-    { {ARITH, 0} }, /* ARITH_ACC_V2 */
-    { {ARITH, 3} }, /* ARITH_ACC_V2 */
-    { {STRENG, 1} }, /* STREAM_ENG_V2 */
-  };
-
-
-  LL_ATON_DisableUnits_Init(Disable_epoch_18_all_units, 4);
-
-}
-
-
-/* scheduling epoch=19   nodes=2   ------------------------------------------------------------------- */
-
-static void LL_ATON_Start_EpochBlock_19(const void *epoch_block)
-{
-  LL_ATON_LIB_UNUSED(epoch_block);
-
-  /* Unit= 19 [ARITH_ACC_V2 1] */
-  /* kind=Add node=Add_16 */
-  static const LL_Arithacc_InitTypeDef Add_16_init19 = {
+  /* kind=Add node=Add_18 */
+  static const LL_Arithacc_InitTypeDef Add_18_init10 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -3502,16 +4145,16 @@ static void LL_ATON_Start_EpochBlock_19(const void *epoch_block)
     .bcast = ARITH_BCAST_NONE,
     .Ax_shift = 1,
     .By_shift = 0,
-    .C_shift = 4,
+    .C_shift = 2,
     .fWidth = 256,
     .fHeight = 1,
-    .fChannels = 24,
-    .batchDepth = 24,
+    .fChannels = 32,
+    .batchDepth = 8,
     .clipmin = 0,
     .clipmax = 0,
-    .A_scalar = 25924,
-    .B_scalar = 18686,
-    .C_scalar = -19202,
+    .A_scalar = 19763,
+    .B_scalar = 18582,
+    .C_scalar = -26908,
     .A_vector = {0},
     .B_vector = {0},
     .C_vector = {0},
@@ -3519,12 +4162,12 @@ static void LL_ATON_Start_EpochBlock_19(const void *epoch_block)
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(1, &Add_16_init19);
+  LL_Arithacc_Init(1, &Add_18_init10);
 
 
-  /* Unit= 20 [ARITH_ACC_V2 2] */
-  /* kind=Sub node=Conv2D_20_suboff_30 */
-  static const LL_Arithacc_InitTypeDef Conv2D_20_suboff_30_init19 = {
+  /* Unit= 21 [ARITH_ACC_V2 3] */
+  /* kind=Sub node=Conv2D_22_suboff_39 */
+  static const LL_Arithacc_InitTypeDef Conv2D_22_suboff_39_init10 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -3554,8 +4197,8 @@ static void LL_ATON_Start_EpochBlock_19(const void *epoch_block)
     .C_shift = 0,
     .fWidth = 256,
     .fHeight = 1,
-    .fChannels = 24,
-    .batchDepth = 24,
+    .fChannels = 32,
+    .batchDepth = 8,
     .clipmin = 0,
     .clipmax = 0,
     .A_scalar = 16384,
@@ -3568,176 +4211,176 @@ static void LL_ATON_Start_EpochBlock_19(const void *epoch_block)
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(2, &Conv2D_20_suboff_30_init19);
+  LL_Arithacc_Init(3, &Conv2D_22_suboff_39_init10);
 
 
   /* Dma inputs units to cycle: */
-  /* Unit= 3 [STREAM_ENG_V2 3] */
-  /* Emit conf for STREAM_ENG_V2 node=Add_16 input ports=0 range=1[49152,55296] */
+  /* Unit= 1 [STREAM_ENG_V2 1] */
+  /* Emit conf for STREAM_ENG_V2 node=Add_18 input ports=0 range=1[278528,286720] */
 
-  static const LL_Streng_TensorInitTypeDef Add_16_dma_init_in_0_19 = {
-    /* from memory with batch=24 */
+  static const LL_Streng_TensorInitTypeDef Add_18_dma_init_in_0_10 = {
+    /* from memory with batch=8 */
     .dir = 0,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* AveragePool_7_out_0 */
-    .offset_start = 49152,
-    .offset_end = 55296,
-    .offset_limit = 55360,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Dequantize_9_out_0 */
+    .offset_start = 278528,
+    .offset_end = 280576,
+    .offset_limit = 286784,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
     .batch_depth = 0,
     .batch_offset = 0,
-    .frame_offset = 6144,
+    .frame_offset = 2048,
     .line_offset = 0,
     .loop_offset = 0,
     .frame_loop_cnt = 0,
-    .frame_tot_cnt = 1,
+    .frame_tot_cnt = 4,
     .nbits_in = 8,
     .nbits_out = 8,
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(3, &Add_16_dma_init_in_0_19, 1);
+  LL_Streng_TensorInit(1, &Add_18_dma_init_in_0_10, 1);
 
-  /* Unit= 7 [STREAM_ENG_V2 7] */
-  /* Emit conf for STREAM_ENG_V2 node=Add_16 input ports=1 range=1[55296,61440] */
+  /* Unit= 9 [STREAM_ENG_V2 9] */
+  /* Emit conf for STREAM_ENG_V2 node=Add_18 input ports=1 range=1[286720,294912] */
 
-  static const LL_Streng_TensorInitTypeDef Add_16_dma_init_in_1_19 = {
-    /* from memory with batch=24 */
+  static const LL_Streng_TensorInitTypeDef Add_18_dma_init_in_1_10 = {
+    /* memory canonical to batch=8 */
     .dir = 0,
-    .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Dequantize_15_out_0 */
-    .offset_start = 55296,
-    .offset_end = 61440,
-    .offset_limit = 61504,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Dequantize_17_out_0 */
+    .offset_start = 286720,
+    .offset_limit = 294976,
     .frame_count = 0,
-    .fwidth = 0,
-    .fheight = 0,
-    .batch_depth = 0,
-    .batch_offset = 0,
-    .frame_offset = 6144,
+    .fwidth = 256,
+    .fheight = 1,
+    .batch_depth = 8,
+    .batch_offset = 32,
+    .frame_offset = 8,
     .line_offset = 0,
-    .loop_offset = 0,
-    .frame_loop_cnt = 0,
-    .frame_tot_cnt = 1,
+    .loop_offset = 8192,
+    .frame_loop_cnt = 4,
+    .frame_tot_cnt = 4,
     .nbits_in = 8,
     .nbits_out = 8,
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(7, &Add_16_dma_init_in_1_19, 1);
+  LL_Streng_TensorInit(9, &Add_18_dma_init_in_1_10, 1);
 
 
   /* Dma input bandwidth from memory pools: */
-  /* npuRAM5 -> 12288 */
+  /* npuRAM5 -> 16384 */
 
   /* Dma output units from cycle: */
-  /* Unit= 1 [STREAM_ENG_V2 1] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_20_suboff_30 output ports=0 range=1[12288,18432] */
+  /* Unit= 8 [STREAM_ENG_V2 8] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_22_suboff_39 output ports=0 range=1[294912,303104] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_20_suboff_30_dma_init_out_0_19 = {
-    /* to memory from canonical with batch=8 */
+  static const LL_Streng_TensorInitTypeDef Conv2D_22_suboff_39_dma_init_out_0_10 = {
+    /* to memory with batch=8 */
     .dir = 1,
+    .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_20_zero_off_out_31 */
-    .offset_start = 12288,
-    .offset_limit = 18496,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_22_zero_off_out_40 */
+    .offset_start = 294912,
+    .offset_end = 296960,
+    .offset_limit = 303168,
     .frame_count = 0,
-    .fwidth = 3,
-    .fheight = 256,
-    .batch_depth = 8,
-    .batch_offset = 2048,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
     .frame_offset = 2048,
-    .line_offset = 8,
-    .loop_offset = 6144,
-    .frame_loop_cnt = 1,
-    .frame_tot_cnt = 1,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 0,
+    .frame_tot_cnt = 4,
     .nbits_in = 8,
     .nbits_out = 8,
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(1, &Conv2D_20_suboff_30_dma_init_out_0_19, 1);
+  LL_Streng_TensorInit(8, &Conv2D_22_suboff_39_dma_init_out_0_10, 1);
 
 
   /* Dma output bandwidth to memory pools: */
-  /* npuRAM5 <- 6144 */
+  /* npuRAM5 <- 8192 */
 
-  static const LL_Switch_InitTypeDef switch_init_in_19[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_16 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_16 IN: in unit=ARITH_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_suboff_30 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_suboff_30 OUT: in unit=STREAM_ENG_V2 1 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+  static const LL_Switch_InitTypeDef switch_init_in_10[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_18 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_18 IN: in unit=ARITH_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 9 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_suboff_39 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_suboff_39 OUT: in unit=STREAM_ENG_V2 8 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
   };
 
 
-  /* epoch=19 */
-  LL_Switch_Init(switch_init_in_19, 4);
+  /* epoch=10 */
+  LL_Switch_Init(switch_init_in_10, 4);
 
-  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_19_all_units[] = {
-    { {STRENG, 1} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_10_all_units[] = {
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
     { {ARITH, 1} }, /* ARITH_ACC_V2 */
-    { {ARITH, 2} }, /* ARITH_ACC_V2 */
-    { {STRENG, 3} }, /* STREAM_ENG_V2 */
-    { {STRENG, 7} }, /* STREAM_ENG_V2 */
+    { {ARITH, 3} }, /* ARITH_ACC_V2 */
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_EnableUnits_Init(Enable_epoch_19_all_units, 5);
+  LL_ATON_EnableUnits_Init(Enable_epoch_10_all_units, 5);
 
 }
 
-static void LL_ATON_End_EpochBlock_19(const void *epoch_block)
+static void LL_ATON_End_EpochBlock_10(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-  static const LL_Switch_DeinitTypeDef switch_deinit_in_19[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_16 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_16 IN: in unit=ARITH_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_suboff_30 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_suboff_30 OUT: in unit=STREAM_ENG_V2 1 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_10[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_18 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_18 IN: in unit=ARITH_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 9 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_suboff_39 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_suboff_39 OUT: in unit=STREAM_ENG_V2 8 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
   };
 
 
-  /* epoch=19 */
-  LL_Switch_Deinit(switch_deinit_in_19, 4);
+  /* epoch=10 */
+  LL_Switch_Deinit(switch_deinit_in_10, 4);
 
-  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_19_all_units[] = {
-    { {STRENG, 1} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_10_all_units[] = {
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
     { {ARITH, 1} }, /* ARITH_ACC_V2 */
-    { {ARITH, 2} }, /* ARITH_ACC_V2 */
-    { {STRENG, 3} }, /* STREAM_ENG_V2 */
-    { {STRENG, 7} }, /* STREAM_ENG_V2 */
+    { {ARITH, 3} }, /* ARITH_ACC_V2 */
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_DisableUnits_Init(Disable_epoch_19_all_units, 5);
+  LL_ATON_DisableUnits_Init(Disable_epoch_10_all_units, 5);
 
 }
 
 
-/* scheduling epoch=20   nodes=6   ------------------------------------------------------------------- */
+/* scheduling epoch=11   nodes=7   ------------------------------------------------------------------- */
 
-static void LL_ATON_Start_EpochBlock_20(const void *epoch_block)
+static void LL_ATON_Start_EpochBlock_11(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-  /* Unit= 12 [CONV_ACC_V2 2] */
-  /* kind=Conv node=Conv2D_20 */
-  static const LL_Convacc_InitTypeDef Conv2D_20_init20 = {
+  /* Unit= 10 [CONV_ACC_V2 0] */
+  /* kind=Conv node=Conv2D_22 */
+  static const LL_Convacc_InitTypeDef Conv2D_22_init11 = {
     .simd = 1,
     .fsub = 0,
     .accumulate = 0,
-    .kfilt_tot = 36,
+    .kfilt_tot = 48,
     .kfilt_first = 0,
     .kfilt_last = 11,
     .rounding_f = 0,
@@ -3751,7 +4394,7 @@ static void LL_ATON_Start_EpochBlock_20(const void *epoch_block)
     .zfbias = 0,
     .inbytes_f = 1,
     .shift_f = 0,
-    .shift_a = 4,
+    .shift_a = 5,
     .rounding_o = 1,
     .saturation_o = 1,
     .round_mode_o = 1,
@@ -3778,17 +4421,17 @@ static void LL_ATON_Start_EpochBlock_20(const void *epoch_block)
   };
 
   /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(2, &Conv2D_20_init20);
+  LL_Convacc_Init(0, &Conv2D_22_init11);
 
 
-  /* Unit= 10 [CONV_ACC_V2 0] */
-  /* kind=Conv node=Conv2D_20_ca_pipe_1 */
-  static const LL_Convacc_InitTypeDef Conv2D_20_ca_pipe_1_init20 = {
+  /* Unit= 11 [CONV_ACC_V2 1] */
+  /* kind=Conv node=Conv2D_22_ca_pipe_1 */
+  static const LL_Convacc_InitTypeDef Conv2D_22_ca_pipe_1_init11 = {
     .simd = 1,
     .fsub = 0,
     .accumulate = 1,
     .accumulate_first = 1,
-    .kfilt_tot = 36,
+    .kfilt_tot = 48,
     .kfilt_first = 12,
     .kfilt_last = 23,
     .rounding_f = 0,
@@ -3829,17 +4472,17 @@ static void LL_ATON_Start_EpochBlock_20(const void *epoch_block)
   };
 
   /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(0, &Conv2D_20_ca_pipe_1_init20);
+  LL_Convacc_Init(1, &Conv2D_22_ca_pipe_1_init11);
 
 
-  /* Unit= 11 [CONV_ACC_V2 1] */
-  /* kind=Conv node=Conv2D_20_ca_pipe_2 */
-  static const LL_Convacc_InitTypeDef Conv2D_20_ca_pipe_2_init20 = {
+  /* Unit= 12 [CONV_ACC_V2 2] */
+  /* kind=Conv node=Conv2D_22_ca_pipe_2 */
+  static const LL_Convacc_InitTypeDef Conv2D_22_ca_pipe_2_init11 = {
     .simd = 1,
     .fsub = 0,
     .accumulate = 1,
     .accumulate_first = 1,
-    .kfilt_tot = 36,
+    .kfilt_tot = 48,
     .kfilt_first = 24,
     .kfilt_last = 35,
     .rounding_f = 0,
@@ -3858,8 +4501,59 @@ static void LL_ATON_Start_EpochBlock_20(const void *epoch_block)
     .saturation_o = 1,
     .round_mode_o = 1,
     .relu_mode_o = 0,
+    .outbytes_o = 3,
+    .shift_o = 0,
+    .raw_o = 1,
+    .fWidth = 256,
+    .fHeight = 1,
+    .kernelWidth = 5,
+    .kernelHeight = 1,
+    .nKernels = 12,
+    .batchDepth = 8,
+    .hstride = 2,
+    .vstride = 1,
+    .left_padding = 2,
+    .right_padding = 1,
+    .top_padding = 0,
+    .bot_padding = 0,
+    .left_crop = 0,
+    .right_crop = 255,
+    .top_crop = 0,
+    .bot_crop = 0,
+  };
+
+  /* Unit=CONV_ACC_V2 */
+  LL_Convacc_Init(2, &Conv2D_22_ca_pipe_2_init11);
+
+
+  /* Unit= 13 [CONV_ACC_V2 3] */
+  /* kind=Conv node=Conv2D_22_ca_pipe_3 */
+  static const LL_Convacc_InitTypeDef Conv2D_22_ca_pipe_3_init11 = {
+    .simd = 1,
+    .fsub = 0,
+    .accumulate = 1,
+    .accumulate_first = 1,
+    .kfilt_tot = 48,
+    .kfilt_first = 36,
+    .kfilt_last = 47,
+    .rounding_f = 0,
+    .saturation_f = 0,
+    .round_mode_f = 0,
+    .f_unsigned = 1,
+    .k_unsigned = 0,
+    .deepmode = 0,
+    .dss2mode = 0,
+    .kseten = 0,
+    .zfbias = 0,
+    .inbytes_f = 1,
+    .shift_f = 0,
+    .shift_a = 0,
+    .rounding_o = 1,
+    .saturation_o = 1,
+    .round_mode_o = 1,
+    .relu_mode_o = 0,
     .outbytes_o = 2,
-    .shift_o = 4,
+    .shift_o = 5,
     .raw_o = 0,
     .fWidth = 256,
     .fHeight = 1,
@@ -3880,12 +4574,12 @@ static void LL_ATON_Start_EpochBlock_20(const void *epoch_block)
   };
 
   /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(1, &Conv2D_20_ca_pipe_2_init20);
+  LL_Convacc_Init(3, &Conv2D_22_ca_pipe_3_init11);
 
 
   /* Unit= 18 [ARITH_ACC_V2 0] */
-  /* kind=Mul node=Conv2D_20_mul_scale_34 */
-  static const LL_Arithacc_InitTypeDef Conv2D_20_mul_scale_34_init20 = {
+  /* kind=Mul node=Conv2D_22_mul_scale_43 */
+  static const LL_Arithacc_InitTypeDef Conv2D_22_mul_scale_43_init11 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -3905,7 +4599,7 @@ static void LL_ATON_Start_EpochBlock_20(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 2,
-    .shift_o = 16,
+    .shift_o = 14,
     .scalar = 0,
     .dualinput = 0,
     .operation = ARITH_AFFINE,
@@ -3922,19 +4616,19 @@ static void LL_ATON_Start_EpochBlock_20(const void *epoch_block)
     .A_scalar = 1,
     .B_scalar = 0,
     .C_scalar = 0,
-    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 97824))) /* Equivalent hex address = 0x71017e20UL */},
+    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 81952))) /* Equivalent hex address = 0x71014020UL */},
     .B_vector = {0},
     .C_vector = {0},
     .vec_precision = {16, 16, 16},
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(0, &Conv2D_20_mul_scale_34_init20);
+  LL_Arithacc_Init(0, &Conv2D_22_mul_scale_43_init11);
 
 
-  /* Unit= 21 [ARITH_ACC_V2 3] */
-  /* kind=Add node=Conv2D_20_off_bias_36 */
-  static const LL_Arithacc_InitTypeDef Conv2D_20_off_bias_36_init20 = {
+  /* Unit= 20 [ARITH_ACC_V2 2] */
+  /* kind=Add node=Conv2D_22_off_bias_45 */
+  static const LL_Arithacc_InitTypeDef Conv2D_22_off_bias_45_init11 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -3954,8 +4648,8 @@ static void LL_ATON_Start_EpochBlock_20(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 1,
-    .shift_o = 18,
-    .scalar = 1,
+    .shift_o = 20,
+    .scalar = 0,
     .dualinput = 0,
     .operation = ARITH_AFFINE,
     .bcast = ARITH_BCAST_CHAN,
@@ -3968,22 +4662,22 @@ static void LL_ATON_Start_EpochBlock_20(const void *epoch_block)
     .batchDepth = 12,
     .clipmin = 0,
     .clipmax = 0,
-    .A_scalar = 18044,
-    .B_scalar = -512,
+    .A_scalar = 32422,
+    .B_scalar = 0,
     .C_scalar = (short)0,
     .A_vector = {0},
     .B_vector = {0},
-    .C_vector = {0},
-    .vec_precision = {16, 16, 16},
+    .C_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 80656))) /* Equivalent hex address = 0x71013b10UL */},
+    .vec_precision = {16, 16, 32},
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(3, &Conv2D_20_off_bias_36_init20);
+  LL_Arithacc_Init(2, &Conv2D_22_off_bias_45_init11);
 
 
   /* Unit= 19 [ARITH_ACC_V2 1] */
-  /* kind=Sub node=Conv2D_24_suboff_39 */
-  static const LL_Arithacc_InitTypeDef Conv2D_24_suboff_39_init20 = {
+  /* kind=Sub node=Conv2D_26_suboff_48 */
+  static const LL_Arithacc_InitTypeDef Conv2D_26_suboff_48_init11 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -4027,30 +4721,30 @@ static void LL_ATON_Start_EpochBlock_20(const void *epoch_block)
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(1, &Conv2D_24_suboff_39_init20);
+  LL_Arithacc_Init(1, &Conv2D_26_suboff_48_init11);
 
 
   /* Dma inputs units to cycle: */
   /* Unit= 7 [STREAM_ENG_V2 7] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_20 input ports=0 range=1[12288,18432] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_22 input ports=0 range=1[294912,303104] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_20_dma_init_in_0_20 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_22_dma_init_in_0_11 = {
     /* 256x1x8(8 bits) */
     .dir = 0,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_20_zero_off_out_31 */
-    .offset_start = 12288,
-    .offset_end = 14336,
-    .offset_limit = 18496,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_22_zero_off_out_40 */
+    .offset_start = 294912,
+    .offset_end = 296960,
+    .offset_limit = 303168,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
     .batch_depth = 0,
     .batch_offset = 0,
-    .frame_offset = 6144,
+    .frame_offset = 8192,
     .line_offset = 0,
     .loop_offset = 0,
     .frame_loop_cnt = 1,
@@ -4060,13 +4754,13 @@ static void LL_ATON_Start_EpochBlock_20(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(7, &Conv2D_20_dma_init_in_0_20, 1);
+  LL_Streng_TensorInit(7, &Conv2D_22_dma_init_in_0_11, 1);
 
-  /* Unit= 5 [STREAM_ENG_V2 5] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_20 input ports=1 range=8[89088,94848] */
+  /* Unit= 8 [STREAM_ENG_V2 8] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_22 input ports=1 range=8[56832,64512] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_20_dma_init_in_1_20 = {
-    /* 48x5x1x24(8 bits) */
+  static const LL_Streng_TensorInitTypeDef Conv2D_22_dma_init_in_1_11 = {
+    /* 48x5x1x32(8 bits) */
     .dir = 0,
     .raw = 1,
     .continuous = 1,
@@ -4075,10 +4769,10 @@ static void LL_ATON_Start_EpochBlock_20(const void *epoch_block)
     .nbits_unsigned = 0,
     .cacheable = 1,
     .cache_allocate = 0,
-    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_20_weights */
-    .offset_start = 89088,
-    .offset_end = 94848,
-    .offset_limit = 94912,
+    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_22_weights */
+    .offset_start = 56832,
+    .offset_end = 64512,
+    .offset_limit = 64576,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -4094,28 +4788,28 @@ static void LL_ATON_Start_EpochBlock_20(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(5, &Conv2D_20_dma_init_in_1_20, 1);
+  LL_Streng_TensorInit(8, &Conv2D_22_dma_init_in_1_11, 1);
 
-  /* Unit= 9 [STREAM_ENG_V2 9] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_20_ca_pipe_1 input ports=0 range=1[12288,18432] */
+  /* Unit= 2 [STREAM_ENG_V2 2] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_22_ca_pipe_1 input ports=0 range=1[294912,303104] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_20_ca_pipe_1_dma_init_in_0_20 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_22_ca_pipe_1_dma_init_in_0_11 = {
     /* 256x1x8(8 bits) */
     .dir = 0,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_20_zero_off_out_31_copy_in_25 ca pipe offset=1 */
-    .offset_start = 14336,
-    .offset_end = 16384,
-    .offset_limit = 18496,
+    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_22_zero_off_out_40_copy_in_51 ca pipe offset=1 */
+    .offset_start = 296960,
+    .offset_end = 299008,
+    .offset_limit = 303168,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
     .batch_depth = 0,
     .batch_offset = 0,
-    .frame_offset = 6144,
+    .frame_offset = 8192,
     .line_offset = 0,
     .loop_offset = 0,
     .frame_loop_cnt = 1,
@@ -4125,28 +4819,59 @@ static void LL_ATON_Start_EpochBlock_20(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(9, &Conv2D_20_ca_pipe_1_dma_init_in_0_20, 1);
+  LL_Streng_TensorInit(2, &Conv2D_22_ca_pipe_1_dma_init_in_0_11, 1);
+
+  /* Unit= 3 [STREAM_ENG_V2 3] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_22_ca_pipe_2 input ports=0 range=1[294912,303104] */
+
+  static const LL_Streng_TensorInitTypeDef Conv2D_22_ca_pipe_2_dma_init_in_0_11 = {
+    /* 256x1x8(8 bits) */
+    .dir = 0,
+    .raw = 1,
+    .noblk = 0,
+    .align_right = 0,
+    .nbits_unsigned = 1,
+    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_22_zero_off_out_40_copy_in_52 ca pipe offset=2 */
+    .offset_start = 299008,
+    .offset_end = 301056,
+    .offset_limit = 303168,
+    .frame_count = 0,
+    .fwidth = 0,
+    .fheight = 0,
+    .batch_depth = 0,
+    .batch_offset = 0,
+    .frame_offset = 8192,
+    .line_offset = 0,
+    .loop_offset = 0,
+    .frame_loop_cnt = 1,
+    .frame_tot_cnt = 4,
+    .nbits_in = 8,
+    .nbits_out = 8,
+  };
+
+  /* Unit=STREAM_ENG_V2 */
+  LL_Streng_TensorInit(3, &Conv2D_22_ca_pipe_2_dma_init_in_0_11, 1);
 
   /* Unit= 4 [STREAM_ENG_V2 4] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_20_ca_pipe_2 input ports=0 range=1[12288,18432] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_22_ca_pipe_3 input ports=0 range=1[294912,303104] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_20_ca_pipe_2_dma_init_in_0_20 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_22_ca_pipe_3_dma_init_in_0_11 = {
     /* 256x1x8(8 bits) */
     .dir = 0,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_20_zero_off_out_31_copy_in_26 ca pipe offset=2 */
-    .offset_start = 16384,
-    .offset_end = 18432,
-    .offset_limit = 18496,
+    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_22_zero_off_out_40_copy_in_53 ca pipe offset=3 */
+    .offset_start = 301056,
+    .offset_end = 303104,
+    .offset_limit = 303168,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
     .batch_depth = 0,
     .batch_offset = 0,
-    .frame_offset = 6144,
+    .frame_offset = 8192,
     .line_offset = 0,
     .loop_offset = 0,
     .frame_loop_cnt = 1,
@@ -4156,28 +4881,28 @@ static void LL_ATON_Start_EpochBlock_20(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(4, &Conv2D_20_ca_pipe_2_dma_init_in_0_20, 1);
+  LL_Streng_TensorInit(4, &Conv2D_22_ca_pipe_3_dma_init_in_0_11, 1);
 
 
   /* Dma input bandwidth from memory pools: */
-  /* npuRAM5 -> 24576 */
-  /* octoFlash -> 5760 */
+  /* npuRAM5 -> 32768 */
+  /* octoFlash -> 7680 */
 
   /* Dma output units from cycle: */
-  /* Unit= 3 [STREAM_ENG_V2 3] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_20_off_bias_36 output ports=0 range=1[0,6144] */
+  /* Unit= 5 [STREAM_ENG_V2 5] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_22_off_bias_45 output ports=0 range=1[303104,309248] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_20_off_bias_36_dma_init_out_0_20 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_22_off_bias_45_dma_init_out_0_11 = {
     /* to memory with batch=12 */
     .dir = 1,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_20_off_bias_out_37 */
-    .offset_start = 0,
-    .offset_end = 1536,
-    .offset_limit = 6208,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_22_off_bias_out_46 */
+    .offset_start = 303104,
+    .offset_end = 304640,
+    .offset_limit = 309312,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -4193,20 +4918,20 @@ static void LL_ATON_Start_EpochBlock_20(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(3, &Conv2D_20_off_bias_36_dma_init_out_0_20, 1);
+  LL_Streng_TensorInit(5, &Conv2D_22_off_bias_45_dma_init_out_0_11, 1);
 
-  /* Unit= 0 [STREAM_ENG_V2 0] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_24_suboff_39 output ports=0 range=1[6144,12288] */
+  /* Unit= 9 [STREAM_ENG_V2 9] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_26_suboff_48 output ports=0 range=1[309248,315392] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_24_suboff_39_dma_init_out_0_20 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_26_suboff_48_dma_init_out_0_11 = {
     /* to memory canonical from batch=12 */
     .dir = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_24_zero_off_out_40 */
-    .offset_start = 6144,
-    .offset_limit = 12352,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_26_zero_off_out_49 */
+    .offset_start = 309248,
+    .offset_limit = 315456,
     .frame_count = 0,
     .fwidth = 128,
     .fheight = 1,
@@ -4222,106 +4947,116 @@ static void LL_ATON_Start_EpochBlock_20(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(0, &Conv2D_24_suboff_39_dma_init_out_0_20, 1);
+  LL_Streng_TensorInit(9, &Conv2D_26_suboff_48_dma_init_out_0_11, 1);
 
 
   /* Dma output bandwidth to memory pools: */
   /* npuRAM5 <- 12288 */
 
-  static const LL_Switch_InitTypeDef switch_init_in_20[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 9 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=CONV_ACC_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 4 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_mul_scale_34 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_off_bias_36 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_off_bias_36 OUT: in unit=STREAM_ENG_V2 3 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_suboff_39 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_suboff_39 OUT: in unit=STREAM_ENG_V2 0 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+  static const LL_Switch_InitTypeDef switch_init_in_11[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_ca_pipe_1 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_ca_pipe_1 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_ca_pipe_1 IN: in unit=CONV_ACC_V2 1 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=2 out unit=CONV_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_ca_pipe_3 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_ca_pipe_3 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_ca_pipe_3 IN: in unit=CONV_ACC_V2 3 in port=2 out unit=CONV_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_mul_scale_43 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_off_bias_45 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_off_bias_45 OUT: in unit=STREAM_ENG_V2 5 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_suboff_48 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_suboff_48 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
   };
 
 
-  /* epoch=20 */
-  LL_Switch_Init(switch_init_in_20, 13);
+  /* epoch=11 */
+  LL_Switch_Init(switch_init_in_11, 16);
 
-  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_20_all_units[] = {
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
-    { {STRENG, 3} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_11_all_units[] = {
+    { {STRENG, 5} }, /* STREAM_ENG_V2 */
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
     { {CONVACC, 0} }, /* CONV_ACC_V2 */
     { {CONVACC, 1} }, /* CONV_ACC_V2 */
     { {CONVACC, 2} }, /* CONV_ACC_V2 */
+    { {CONVACC, 3} }, /* CONV_ACC_V2 */
     { {ARITH, 0} }, /* ARITH_ACC_V2 */
     { {ARITH, 1} }, /* ARITH_ACC_V2 */
-    { {ARITH, 3} }, /* ARITH_ACC_V2 */
+    { {ARITH, 2} }, /* ARITH_ACC_V2 */
+    { {STRENG, 2} }, /* STREAM_ENG_V2 */
+    { {STRENG, 3} }, /* STREAM_ENG_V2 */
     { {STRENG, 4} }, /* STREAM_ENG_V2 */
-    { {STRENG, 5} }, /* STREAM_ENG_V2 */
     { {STRENG, 7} }, /* STREAM_ENG_V2 */
-    { {STRENG, 9} }, /* STREAM_ENG_V2 */
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_EnableUnits_Init(Enable_epoch_20_all_units, 12);
+  LL_ATON_EnableUnits_Init(Enable_epoch_11_all_units, 14);
 
 }
 
-static void LL_ATON_End_EpochBlock_20(const void *epoch_block)
+static void LL_ATON_End_EpochBlock_11(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-  static const LL_Switch_DeinitTypeDef switch_deinit_in_20[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 9 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=CONV_ACC_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 4 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_mul_scale_34 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_off_bias_36 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_20_off_bias_36 OUT: in unit=STREAM_ENG_V2 3 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_suboff_39 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_suboff_39 OUT: in unit=STREAM_ENG_V2 0 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_11[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_ca_pipe_1 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_ca_pipe_1 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_ca_pipe_1 IN: in unit=CONV_ACC_V2 1 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=2 out unit=CONV_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_ca_pipe_3 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_ca_pipe_3 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_ca_pipe_3 IN: in unit=CONV_ACC_V2 3 in port=2 out unit=CONV_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_mul_scale_43 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_off_bias_45 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_22_off_bias_45 OUT: in unit=STREAM_ENG_V2 5 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_suboff_48 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_suboff_48 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
   };
 
 
-  /* epoch=20 */
-  LL_Switch_Deinit(switch_deinit_in_20, 13);
+  /* epoch=11 */
+  LL_Switch_Deinit(switch_deinit_in_11, 16);
 
-  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_20_all_units[] = {
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
-    { {STRENG, 3} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_11_all_units[] = {
+    { {STRENG, 5} }, /* STREAM_ENG_V2 */
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
     { {CONVACC, 0} }, /* CONV_ACC_V2 */
     { {CONVACC, 1} }, /* CONV_ACC_V2 */
     { {CONVACC, 2} }, /* CONV_ACC_V2 */
+    { {CONVACC, 3} }, /* CONV_ACC_V2 */
     { {ARITH, 0} }, /* ARITH_ACC_V2 */
     { {ARITH, 1} }, /* ARITH_ACC_V2 */
-    { {ARITH, 3} }, /* ARITH_ACC_V2 */
+    { {ARITH, 2} }, /* ARITH_ACC_V2 */
+    { {STRENG, 2} }, /* STREAM_ENG_V2 */
+    { {STRENG, 3} }, /* STREAM_ENG_V2 */
     { {STRENG, 4} }, /* STREAM_ENG_V2 */
-    { {STRENG, 5} }, /* STREAM_ENG_V2 */
     { {STRENG, 7} }, /* STREAM_ENG_V2 */
-    { {STRENG, 9} }, /* STREAM_ENG_V2 */
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_DisableUnits_Init(Disable_epoch_20_all_units, 12);
+  LL_ATON_DisableUnits_Init(Disable_epoch_11_all_units, 14);
 
 }
 
 
-/* scheduling epoch=21   nodes=6   ------------------------------------------------------------------- */
+/* scheduling epoch=12   nodes=6   ------------------------------------------------------------------- */
 
-static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
+static void LL_ATON_Start_EpochBlock_12(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-  /* Unit= 13 [CONV_ACC_V2 3] */
-  /* kind=Conv node=Conv2D_24 */
-  static const LL_Convacc_InitTypeDef Conv2D_24_init21 = {
+  /* Unit= 10 [CONV_ACC_V2 0] */
+  /* kind=Conv node=Conv2D_26 */
+  static const LL_Convacc_InitTypeDef Conv2D_26_init12 = {
     .simd = 1,
     .fsub = 0,
     .accumulate = 1,
@@ -4343,7 +5078,7 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
     .zfbias = 0,
     .inbytes_f = 1,
     .shift_f = 0,
-    .shift_a = 5,
+    .shift_a = 6,
     .rounding_o = 1,
     .saturation_o = 1,
     .round_mode_o = 1,
@@ -4370,12 +5105,12 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
   };
 
   /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(3, &Conv2D_24_init21);
+  LL_Convacc_Init(0, &Conv2D_26_init12);
 
 
-  /* Unit= 10 [CONV_ACC_V2 0] */
-  /* kind=Conv node=Conv2D_24_ca_pipe_1 */
-  static const LL_Convacc_InitTypeDef Conv2D_24_ca_pipe_1_init21 = {
+  /* Unit= 11 [CONV_ACC_V2 1] */
+  /* kind=Conv node=Conv2D_26_ca_pipe_1 */
+  static const LL_Convacc_InitTypeDef Conv2D_26_ca_pipe_1_init12 = {
     .simd = 1,
     .fsub = 0,
     .accumulate = 1,
@@ -4421,12 +5156,12 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
   };
 
   /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(0, &Conv2D_24_ca_pipe_1_init21);
+  LL_Convacc_Init(1, &Conv2D_26_ca_pipe_1_init12);
 
 
-  /* Unit= 11 [CONV_ACC_V2 1] */
-  /* kind=Conv node=Conv2D_24_ca_pipe_2 */
-  static const LL_Convacc_InitTypeDef Conv2D_24_ca_pipe_2_init21 = {
+  /* Unit= 12 [CONV_ACC_V2 2] */
+  /* kind=Conv node=Conv2D_26_ca_pipe_2 */
+  static const LL_Convacc_InitTypeDef Conv2D_26_ca_pipe_2_init12 = {
     .simd = 1,
     .fsub = 0,
     .accumulate = 1,
@@ -4451,7 +5186,7 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 2,
-    .shift_o = 5,
+    .shift_o = 6,
     .raw_o = 0,
     .fWidth = 128,
     .fHeight = 1,
@@ -4472,12 +5207,12 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
   };
 
   /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(1, &Conv2D_24_ca_pipe_2_init21);
+  LL_Convacc_Init(2, &Conv2D_26_ca_pipe_2_init12);
 
 
-  /* Unit= 20 [ARITH_ACC_V2 2] */
-  /* kind=Mul node=Conv2D_24_mul_scale_43 */
-  static const LL_Arithacc_InitTypeDef Conv2D_24_mul_scale_43_init21 = {
+  /* Unit= 21 [ARITH_ACC_V2 3] */
+  /* kind=Mul node=Conv2D_26_mul_scale_52 */
+  static const LL_Arithacc_InitTypeDef Conv2D_26_mul_scale_52_init12 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -4497,7 +5232,7 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 2,
-    .shift_o = 16,
+    .shift_o = 12,
     .scalar = 0,
     .dualinput = 0,
     .operation = ARITH_AFFINE,
@@ -4514,19 +5249,19 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
     .A_scalar = 1,
     .B_scalar = 0,
     .C_scalar = 0,
-    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 97920))) /* Equivalent hex address = 0x71017e80UL */},
+    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 82048))) /* Equivalent hex address = 0x71014080UL */},
     .B_vector = {0},
     .C_vector = {0},
     .vec_precision = {16, 16, 16},
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(2, &Conv2D_24_mul_scale_43_init21);
+  LL_Arithacc_Init(3, &Conv2D_26_mul_scale_52_init12);
 
 
   /* Unit= 18 [ARITH_ACC_V2 0] */
-  /* kind=Add node=Conv2D_24_off_bias_45 */
-  static const LL_Arithacc_InitTypeDef Conv2D_24_off_bias_45_init21 = {
+  /* kind=Add node=Conv2D_26_off_bias_54 */
+  static const LL_Arithacc_InitTypeDef Conv2D_26_off_bias_54_init12 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -4546,8 +5281,8 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 1,
-    .shift_o = 18,
-    .scalar = 1,
+    .shift_o = 20,
+    .scalar = 0,
     .dualinput = 0,
     .operation = ARITH_AFFINE,
     .bcast = ARITH_BCAST_CHAN,
@@ -4560,22 +5295,22 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
     .batchDepth = 6,
     .clipmin = 0,
     .clipmax = 0,
-    .A_scalar = 31910,
-    .B_scalar = -512,
+    .A_scalar = 25943,
+    .B_scalar = 0,
     .C_scalar = (short)0,
     .A_vector = {0},
     .B_vector = {0},
-    .C_vector = {0},
-    .vec_precision = {16, 16, 16},
+    .C_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 80848))) /* Equivalent hex address = 0x71013bd0UL */},
+    .vec_precision = {16, 16, 32},
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(0, &Conv2D_24_off_bias_45_init21);
+  LL_Arithacc_Init(0, &Conv2D_26_off_bias_54_init12);
 
 
   /* Unit= 19 [ARITH_ACC_V2 1] */
-  /* kind=Sub node=Conv2D_28_suboff_48 */
-  static const LL_Arithacc_InitTypeDef Conv2D_28_suboff_48_init21 = {
+  /* kind=Sub node=Conv2D_30_suboff_57 */
+  static const LL_Arithacc_InitTypeDef Conv2D_30_suboff_57_init12 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -4619,21 +5354,21 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(1, &Conv2D_28_suboff_48_init21);
+  LL_Arithacc_Init(1, &Conv2D_30_suboff_57_init12);
 
 
   /* Dma inputs units to cycle: */
-  /* Unit= 6 [STREAM_ENG_V2 6] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_24 input ports=0 range=1[6144,12288] */
+  /* Unit= 5 [STREAM_ENG_V2 5] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_26 input ports=0 range=1[309248,315392] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_24_dma_init_in_0_21 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_26_dma_init_in_0_12 = {
     .dir = 0,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_24_zero_off_out_40 */
-    .offset_start = 6144,
-    .offset_limit = 12352,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_26_zero_off_out_49 */
+    .offset_start = 309248,
+    .offset_limit = 315456,
     .frame_count = 0,
     .fwidth = 128,
     .fheight = 1,
@@ -4649,12 +5384,12 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(6, &Conv2D_24_dma_init_in_0_21, 1);
+  LL_Streng_TensorInit(5, &Conv2D_26_dma_init_in_0_12, 1);
 
-  /* Unit= 7 [STREAM_ENG_V2 7] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_24 input ports=1 range=8[56832,68352] */
+  /* Unit= 4 [STREAM_ENG_V2 4] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_26 input ports=1 range=8[24576,36096] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_24_dma_init_in_1_21 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_26_dma_init_in_1_12 = {
     /* 48x5x1x48(8 bits) */
     .dir = 0,
     .raw = 1,
@@ -4664,10 +5399,10 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
     .nbits_unsigned = 0,
     .cacheable = 1,
     .cache_allocate = 0,
-    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_24_weights */
-    .offset_start = 56832,
-    .offset_end = 68352,
-    .offset_limit = 68416,
+    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_26_weights */
+    .offset_start = 24576,
+    .offset_end = 36096,
+    .offset_limit = 36160,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -4683,12 +5418,12 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(7, &Conv2D_24_dma_init_in_1_21, 1);
+  LL_Streng_TensorInit(4, &Conv2D_26_dma_init_in_1_12, 1);
 
-  /* Unit= 3 [STREAM_ENG_V2 3] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_24 input ports=2 range=1[24576,26112] */
+  /* Unit= 6 [STREAM_ENG_V2 6] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_26 input ports=2 range=1[327680,329216] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_24_dma_init_in_2_21 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_26_dma_init_in_2_12 = {
     /* partial accumulator 1536 (16 bits) */
     .dir = 0,
     .raw = 1,
@@ -4696,11 +5431,11 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
     .align_right = 1,
     .sync_with_other = 1,
     .nbits_unsigned = 0,
-    .sync_dma = 5,
+    .sync_dma = 0,
     .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ATONN_ACCUMULATOR_PORT */
-    .offset_start = 24576,
-    .offset_end = 26112,
-    .offset_limit = 26176,
+    .offset_start = 327680,
+    .offset_end = 329216,
+    .offset_limit = 329280,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -4716,19 +5451,19 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(3, &Conv2D_24_dma_init_in_2_21, 1);
+  LL_Streng_TensorInit(6, &Conv2D_26_dma_init_in_2_12, 1);
 
-  /* Unit= 8 [STREAM_ENG_V2 8] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_24_ca_pipe_1 input ports=0 range=1[6144,12288] */
+  /* Unit= 1 [STREAM_ENG_V2 1] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_26_ca_pipe_1 input ports=0 range=1[309248,315392] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_24_ca_pipe_1_dma_init_in_0_21 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_26_ca_pipe_1_dma_init_in_0_12 = {
     .dir = 0,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_24_zero_off_out_40_copy_in_27 ca pipe offset=1 */
-    .offset_start = 6152,
-    .offset_limit = 12352,
+    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_26_zero_off_out_49_copy_in_54 ca pipe offset=1 */
+    .offset_start = 309256,
+    .offset_limit = 315456,
     .frame_count = 0,
     .fwidth = 128,
     .fheight = 1,
@@ -4744,19 +5479,19 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(8, &Conv2D_24_ca_pipe_1_dma_init_in_0_21, 1);
+  LL_Streng_TensorInit(1, &Conv2D_26_ca_pipe_1_dma_init_in_0_12, 1);
 
-  /* Unit= 0 [STREAM_ENG_V2 0] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_24_ca_pipe_2 input ports=0 range=1[6144,12288] */
+  /* Unit= 3 [STREAM_ENG_V2 3] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_26_ca_pipe_2 input ports=0 range=1[309248,315392] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_24_ca_pipe_2_dma_init_in_0_21 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_26_ca_pipe_2_dma_init_in_0_12 = {
     .dir = 0,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_24_zero_off_out_40_copy_in_28 ca pipe offset=2 */
-    .offset_start = 6160,
-    .offset_limit = 12352,
+    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_26_zero_off_out_49_copy_in_55 ca pipe offset=2 */
+    .offset_start = 309264,
+    .offset_limit = 315456,
     .frame_count = 0,
     .fwidth = 128,
     .fheight = 1,
@@ -4772,7 +5507,7 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(0, &Conv2D_24_ca_pipe_2_dma_init_in_0_21, 1);
+  LL_Streng_TensorInit(3, &Conv2D_26_ca_pipe_2_dma_init_in_0_12, 1);
 
 
   /* Dma input bandwidth from memory pools: */
@@ -4780,20 +5515,20 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
   /* octoFlash -> 11520 */
 
   /* Dma output units from cycle: */
-  /* Unit= 5 [STREAM_ENG_V2 5] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_24_ca_pipe_2 output ports=0 range=1[24576,26112] */
+  /* Unit= 0 [STREAM_ENG_V2 0] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_26_ca_pipe_2 output ports=0 range=1[327680,329216] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_24_ca_pipe_2_dma_init_out_0_21 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_26_ca_pipe_2_dma_init_out_0_12 = {
     /* partial accumulator 1536 (16 bits) */
     .dir = 1,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_24_out_0_cp_in_27_cp_in_28 */
-    .offset_start = 24576,
-    .offset_end = 26112,
-    .offset_limit = 26176,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_26_out_0_cp_in_54_cp_in_55 */
+    .offset_start = 327680,
+    .offset_end = 329216,
+    .offset_limit = 329280,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -4809,20 +5544,20 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(5, &Conv2D_24_ca_pipe_2_dma_init_out_0_21, 1);
+  LL_Streng_TensorInit(0, &Conv2D_26_ca_pipe_2_dma_init_out_0_12, 1);
 
-  /* Unit= 9 [STREAM_ENG_V2 9] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_28_suboff_48 output ports=0 range=1[12288,18432] */
+  /* Unit= 2 [STREAM_ENG_V2 2] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_30_suboff_57 output ports=0 range=1[315392,321536] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_28_suboff_48_dma_init_out_0_21 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_30_suboff_57_dma_init_out_0_12 = {
     /* to memory canonical from batch=6 */
     .dir = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_28_zero_off_out_49 */
-    .offset_start = 12288,
-    .offset_limit = 18496,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_30_zero_off_out_58 */
+    .offset_start = 315392,
+    .offset_limit = 321600,
     .frame_count = 0,
     .fwidth = 128,
     .fheight = 1,
@@ -4838,110 +5573,110 @@ static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(9, &Conv2D_28_suboff_48_dma_init_out_0_21, 1);
+  LL_Streng_TensorInit(2, &Conv2D_30_suboff_57_dma_init_out_0_12, 1);
 
 
   /* Dma output bandwidth to memory pools: */
   /* npuRAM5 <- 36864 */
 
-  static const LL_Switch_InitTypeDef switch_init_in_21[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24 IN: in unit=CONV_ACC_V2 3 in port=2 out unit=STREAM_ENG_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=CONV_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_ca_pipe_2 OUT: in unit=STREAM_ENG_V2 5 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_24_mul_scale_43 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_off_bias_45 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_suboff_48 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_suboff_48 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+  static const LL_Switch_InitTypeDef switch_init_in_12[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 5 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=STREAM_ENG_V2 6 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_ca_pipe_1 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_ca_pipe_1 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_ca_pipe_1 IN: in unit=CONV_ACC_V2 1 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=2 out unit=CONV_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_ca_pipe_2 OUT: in unit=STREAM_ENG_V2 0 in port=0 out unit=CONV_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_26_mul_scale_52 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=CONV_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_off_bias_54 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_suboff_57 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_suboff_57 OUT: in unit=STREAM_ENG_V2 2 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
   };
 
 
-  /* epoch=21 */
-  LL_Switch_Init(switch_init_in_21, 14);
+  /* epoch=12 */
+  LL_Switch_Init(switch_init_in_12, 14);
 
-  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_21_all_units[] = {
-    { {STRENG, 5} }, /* STREAM_ENG_V2 */
-    { {STRENG, 9} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_12_all_units[] = {
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {STRENG, 2} }, /* STREAM_ENG_V2 */
     { {CONVACC, 0} }, /* CONV_ACC_V2 */
     { {CONVACC, 1} }, /* CONV_ACC_V2 */
-    { {CONVACC, 3} }, /* CONV_ACC_V2 */
+    { {CONVACC, 2} }, /* CONV_ACC_V2 */
     { {ARITH, 0} }, /* ARITH_ACC_V2 */
     { {ARITH, 1} }, /* ARITH_ACC_V2 */
-    { {ARITH, 2} }, /* ARITH_ACC_V2 */
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {ARITH, 3} }, /* ARITH_ACC_V2 */
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
     { {STRENG, 3} }, /* STREAM_ENG_V2 */
+    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+    { {STRENG, 5} }, /* STREAM_ENG_V2 */
     { {STRENG, 6} }, /* STREAM_ENG_V2 */
-    { {STRENG, 7} }, /* STREAM_ENG_V2 */
-    { {STRENG, 8} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_EnableUnits_Init(Enable_epoch_21_all_units, 13);
+  LL_ATON_EnableUnits_Init(Enable_epoch_12_all_units, 13);
 
 }
 
-static void LL_ATON_End_EpochBlock_21(const void *epoch_block)
+static void LL_ATON_End_EpochBlock_12(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-  static const LL_Switch_DeinitTypeDef switch_deinit_in_21[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24 IN: in unit=CONV_ACC_V2 3 in port=2 out unit=STREAM_ENG_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=CONV_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_ca_pipe_2 OUT: in unit=STREAM_ENG_V2 5 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_24_mul_scale_43 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_24_off_bias_45 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_suboff_48 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_suboff_48 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_12[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 5 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=STREAM_ENG_V2 6 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_ca_pipe_1 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_ca_pipe_1 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_ca_pipe_1 IN: in unit=CONV_ACC_V2 1 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_ca_pipe_2 IN: in unit=CONV_ACC_V2 2 in port=2 out unit=CONV_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_ca_pipe_2 OUT: in unit=STREAM_ENG_V2 0 in port=0 out unit=CONV_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_26_mul_scale_52 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=CONV_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_26_off_bias_54 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_suboff_57 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_suboff_57 OUT: in unit=STREAM_ENG_V2 2 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
   };
 
 
-  /* epoch=21 */
-  LL_Switch_Deinit(switch_deinit_in_21, 14);
+  /* epoch=12 */
+  LL_Switch_Deinit(switch_deinit_in_12, 14);
 
-  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_21_all_units[] = {
-    { {STRENG, 5} }, /* STREAM_ENG_V2 */
-    { {STRENG, 9} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_12_all_units[] = {
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {STRENG, 2} }, /* STREAM_ENG_V2 */
     { {CONVACC, 0} }, /* CONV_ACC_V2 */
     { {CONVACC, 1} }, /* CONV_ACC_V2 */
-    { {CONVACC, 3} }, /* CONV_ACC_V2 */
+    { {CONVACC, 2} }, /* CONV_ACC_V2 */
     { {ARITH, 0} }, /* ARITH_ACC_V2 */
     { {ARITH, 1} }, /* ARITH_ACC_V2 */
-    { {ARITH, 2} }, /* ARITH_ACC_V2 */
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {ARITH, 3} }, /* ARITH_ACC_V2 */
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
     { {STRENG, 3} }, /* STREAM_ENG_V2 */
+    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+    { {STRENG, 5} }, /* STREAM_ENG_V2 */
     { {STRENG, 6} }, /* STREAM_ENG_V2 */
-    { {STRENG, 7} }, /* STREAM_ENG_V2 */
-    { {STRENG, 8} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_DisableUnits_Init(Disable_epoch_21_all_units, 13);
+  LL_ATON_DisableUnits_Init(Disable_epoch_12_all_units, 13);
 
 }
 
 
-/* scheduling epoch=22   nodes=5   ------------------------------------------------------------------- */
+/* scheduling epoch=13   nodes=5   ------------------------------------------------------------------- */
 
-static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
+static void LL_ATON_Start_EpochBlock_13(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-  /* Unit= 12 [CONV_ACC_V2 2] */
-  /* kind=Conv node=Conv2D_28 */
-  static const LL_Convacc_InitTypeDef Conv2D_28_init22 = {
+  /* Unit= 13 [CONV_ACC_V2 3] */
+  /* kind=Conv node=Conv2D_30 */
+  static const LL_Convacc_InitTypeDef Conv2D_30_init13 = {
     .simd = 1,
     .fsub = 0,
     .accumulate = 1,
@@ -4963,7 +5698,7 @@ static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
     .zfbias = 0,
     .inbytes_f = 1,
     .shift_f = 0,
-    .shift_a = 5,
+    .shift_a = 6,
     .rounding_o = 1,
     .saturation_o = 1,
     .round_mode_o = 1,
@@ -4990,12 +5725,12 @@ static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
   };
 
   /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(2, &Conv2D_28_init22);
+  LL_Convacc_Init(3, &Conv2D_30_init13);
 
 
   /* Unit= 10 [CONV_ACC_V2 0] */
-  /* kind=Conv node=Conv2D_28_ca_pipe_1 */
-  static const LL_Convacc_InitTypeDef Conv2D_28_ca_pipe_1_init22 = {
+  /* kind=Conv node=Conv2D_30_ca_pipe_1 */
+  static const LL_Convacc_InitTypeDef Conv2D_30_ca_pipe_1_init13 = {
     .simd = 1,
     .fsub = 0,
     .accumulate = 1,
@@ -5041,12 +5776,12 @@ static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
   };
 
   /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(0, &Conv2D_28_ca_pipe_1_init22);
+  LL_Convacc_Init(0, &Conv2D_30_ca_pipe_1_init13);
 
 
   /* Unit= 11 [CONV_ACC_V2 1] */
-  /* kind=Conv node=Conv2D_28_ca_pipe_2 */
-  static const LL_Convacc_InitTypeDef Conv2D_28_ca_pipe_2_init22 = {
+  /* kind=Conv node=Conv2D_30_ca_pipe_2 */
+  static const LL_Convacc_InitTypeDef Conv2D_30_ca_pipe_2_init13 = {
     .simd = 1,
     .fsub = 0,
     .accumulate = 1,
@@ -5071,7 +5806,7 @@ static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 2,
-    .shift_o = 5,
+    .shift_o = 6,
     .raw_o = 0,
     .fWidth = 128,
     .fHeight = 1,
@@ -5092,12 +5827,12 @@ static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
   };
 
   /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(1, &Conv2D_28_ca_pipe_2_init22);
+  LL_Convacc_Init(1, &Conv2D_30_ca_pipe_2_init13);
 
 
-  /* Unit= 21 [ARITH_ACC_V2 3] */
-  /* kind=Mul node=Conv2D_28_mul_scale_52 */
-  static const LL_Arithacc_InitTypeDef Conv2D_28_mul_scale_52_init22 = {
+  /* Unit= 20 [ARITH_ACC_V2 2] */
+  /* kind=Mul node=Conv2D_30_mul_scale_61 */
+  static const LL_Arithacc_InitTypeDef Conv2D_30_mul_scale_61_init13 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -5117,7 +5852,7 @@ static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 2,
-    .shift_o = 17,
+    .shift_o = 14,
     .scalar = 0,
     .dualinput = 0,
     .operation = ARITH_AFFINE,
@@ -5134,19 +5869,19 @@ static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
     .A_scalar = 1,
     .B_scalar = 0,
     .C_scalar = 0,
-    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 98112))) /* Equivalent hex address = 0x71017f40UL */},
+    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 82144))) /* Equivalent hex address = 0x710140e0UL */},
     .B_vector = {0},
     .C_vector = {0},
     .vec_precision = {16, 16, 16},
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(3, &Conv2D_28_mul_scale_52_init22);
+  LL_Arithacc_Init(2, &Conv2D_30_mul_scale_61_init13);
 
 
   /* Unit= 18 [ARITH_ACC_V2 0] */
-  /* kind=Add node=Conv2D_28_off_bias_54 */
-  static const LL_Arithacc_InitTypeDef Conv2D_28_off_bias_54_init22 = {
+  /* kind=Add node=Conv2D_30_off_bias_63 */
+  static const LL_Arithacc_InitTypeDef Conv2D_30_off_bias_63_init13 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -5166,8 +5901,8 @@ static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 1,
-    .shift_o = 18,
-    .scalar = 1,
+    .shift_o = 20,
+    .scalar = 0,
     .dualinput = 0,
     .operation = ARITH_AFFINE,
     .bcast = ARITH_BCAST_CHAN,
@@ -5180,31 +5915,31 @@ static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
     .batchDepth = 6,
     .clipmin = 0,
     .clipmax = 0,
-    .A_scalar = 23802,
-    .B_scalar = 24,
+    .A_scalar = 26219,
+    .B_scalar = 0,
     .C_scalar = (short)0,
     .A_vector = {0},
     .B_vector = {0},
-    .C_vector = {0},
-    .vec_precision = {16, 16, 16},
+    .C_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 80464))) /* Equivalent hex address = 0x71013a50UL */},
+    .vec_precision = {16, 16, 32},
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(0, &Conv2D_28_off_bias_54_init22);
+  LL_Arithacc_Init(0, &Conv2D_30_off_bias_63_init13);
 
 
   /* Dma inputs units to cycle: */
-  /* Unit= 0 [STREAM_ENG_V2 0] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_28 input ports=0 range=1[12288,18432] */
+  /* Unit= 8 [STREAM_ENG_V2 8] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_30 input ports=0 range=1[315392,321536] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_28_dma_init_in_0_22 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_30_dma_init_in_0_13 = {
     .dir = 0,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_28_zero_off_out_49 */
-    .offset_start = 12288,
-    .offset_limit = 18496,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_30_zero_off_out_58 */
+    .offset_start = 315392,
+    .offset_limit = 321600,
     .frame_count = 0,
     .fwidth = 128,
     .fheight = 1,
@@ -5220,12 +5955,12 @@ static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(0, &Conv2D_28_dma_init_in_0_22, 1);
+  LL_Streng_TensorInit(8, &Conv2D_30_dma_init_in_0_13, 1);
 
-  /* Unit= 2 [STREAM_ENG_V2 2] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_28 input ports=1 range=8[68352,79872] */
+  /* Unit= 5 [STREAM_ENG_V2 5] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_30 input ports=1 range=8[36096,47616] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_28_dma_init_in_1_22 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_30_dma_init_in_1_13 = {
     /* 48x5x1x48(8 bits) */
     .dir = 0,
     .raw = 1,
@@ -5235,10 +5970,10 @@ static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
     .nbits_unsigned = 0,
     .cacheable = 1,
     .cache_allocate = 0,
-    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_28_weights */
-    .offset_start = 68352,
-    .offset_end = 79872,
-    .offset_limit = 79936,
+    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_30_weights */
+    .offset_start = 36096,
+    .offset_end = 47616,
+    .offset_limit = 47680,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -5254,12 +5989,12 @@ static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(2, &Conv2D_28_dma_init_in_1_22, 1);
+  LL_Streng_TensorInit(5, &Conv2D_30_dma_init_in_1_13, 1);
 
-  /* Unit= 6 [STREAM_ENG_V2 6] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_28 input ports=2 range=1[6144,7680] */
+  /* Unit= 4 [STREAM_ENG_V2 4] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_30 input ports=2 range=1[329216,330752] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_28_dma_init_in_2_22 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_30_dma_init_in_2_13 = {
     /* partial accumulator 1536 (16 bits) */
     .dir = 0,
     .raw = 1,
@@ -5267,11 +6002,11 @@ static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
     .align_right = 1,
     .sync_with_other = 1,
     .nbits_unsigned = 0,
-    .sync_dma = 3,
+    .sync_dma = 6,
     .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ATONN_ACCUMULATOR_PORT */
-    .offset_start = 6144,
-    .offset_end = 7680,
-    .offset_limit = 7744,
+    .offset_start = 329216,
+    .offset_end = 330752,
+    .offset_limit = 330816,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -5287,19 +6022,19 @@ static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(6, &Conv2D_28_dma_init_in_2_22, 1);
+  LL_Streng_TensorInit(4, &Conv2D_30_dma_init_in_2_13, 1);
 
-  /* Unit= 1 [STREAM_ENG_V2 1] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_28_ca_pipe_1 input ports=0 range=1[12288,18432] */
+  /* Unit= 0 [STREAM_ENG_V2 0] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_30_ca_pipe_1 input ports=0 range=1[315392,321536] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_28_ca_pipe_1_dma_init_in_0_22 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_30_ca_pipe_1_dma_init_in_0_13 = {
     .dir = 0,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_28_zero_off_out_49_copy_in_29 ca pipe offset=1 */
-    .offset_start = 12296,
-    .offset_limit = 18496,
+    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_30_zero_off_out_58_copy_in_56 ca pipe offset=1 */
+    .offset_start = 315400,
+    .offset_limit = 321600,
     .frame_count = 0,
     .fwidth = 128,
     .fheight = 1,
@@ -5315,19 +6050,19 @@ static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(1, &Conv2D_28_ca_pipe_1_dma_init_in_0_22, 1);
+  LL_Streng_TensorInit(0, &Conv2D_30_ca_pipe_1_dma_init_in_0_13, 1);
 
-  /* Unit= 7 [STREAM_ENG_V2 7] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_28_ca_pipe_2 input ports=0 range=1[12288,18432] */
+  /* Unit= 9 [STREAM_ENG_V2 9] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_30_ca_pipe_2 input ports=0 range=1[315392,321536] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_28_ca_pipe_2_dma_init_in_0_22 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_30_ca_pipe_2_dma_init_in_0_13 = {
     .dir = 0,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_28_zero_off_out_49_copy_in_30 ca pipe offset=2 */
-    .offset_start = 12304,
-    .offset_limit = 18496,
+    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_30_zero_off_out_58_copy_in_57 ca pipe offset=2 */
+    .offset_start = 315408,
+    .offset_limit = 321600,
     .frame_count = 0,
     .fwidth = 128,
     .fheight = 1,
@@ -5343,7 +6078,7 @@ static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(7, &Conv2D_28_ca_pipe_2_dma_init_in_0_22, 1);
+  LL_Streng_TensorInit(9, &Conv2D_30_ca_pipe_2_dma_init_in_0_13, 1);
 
 
   /* Dma input bandwidth from memory pools: */
@@ -5351,20 +6086,20 @@ static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
   /* octoFlash -> 11520 */
 
   /* Dma output units from cycle: */
-  /* Unit= 3 [STREAM_ENG_V2 3] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_28_ca_pipe_2 output ports=0 range=1[6144,7680] */
+  /* Unit= 6 [STREAM_ENG_V2 6] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_30_ca_pipe_2 output ports=0 range=1[329216,330752] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_28_ca_pipe_2_dma_init_out_0_22 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_30_ca_pipe_2_dma_init_out_0_13 = {
     /* partial accumulator 1536 (16 bits) */
     .dir = 1,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_28_out_0_cp_in_29_cp_in_30 */
-    .offset_start = 6144,
-    .offset_end = 7680,
-    .offset_limit = 7744,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_30_out_0_cp_in_56_cp_in_57 */
+    .offset_start = 329216,
+    .offset_end = 330752,
+    .offset_limit = 330816,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -5380,20 +6115,20 @@ static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(3, &Conv2D_28_ca_pipe_2_dma_init_out_0_22, 1);
+  LL_Streng_TensorInit(6, &Conv2D_30_ca_pipe_2_dma_init_out_0_13, 1);
 
-  /* Unit= 4 [STREAM_ENG_V2 4] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_28_off_bias_54 output ports=0 range=1[18432,24576] */
+  /* Unit= 7 [STREAM_ENG_V2 7] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_30_off_bias_63 output ports=0 range=1[321536,327680] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_28_off_bias_54_dma_init_out_0_22 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_30_off_bias_63_dma_init_out_0_13 = {
     /* to memory canonical from batch=6 */
     .dir = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_28_off_bias_out_55 */
-    .offset_start = 18432,
-    .offset_limit = 24640,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_30_off_bias_out_64 */
+    .offset_start = 321536,
+    .offset_limit = 327744,
     .frame_count = 0,
     .fwidth = 128,
     .fheight = 1,
@@ -5409,106 +6144,106 @@ static void LL_ATON_Start_EpochBlock_22(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(4, &Conv2D_28_off_bias_54_dma_init_out_0_22, 1);
+  LL_Streng_TensorInit(7, &Conv2D_30_off_bias_63_dma_init_out_0_13, 1);
 
 
   /* Dma output bandwidth to memory pools: */
   /* npuRAM5 <- 36864 */
 
-  static const LL_Switch_InitTypeDef switch_init_in_22[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28 IN: in unit=CONV_ACC_V2 2 in port=2 out unit=STREAM_ENG_V2 6 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=CONV_ACC_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_ca_pipe_2 OUT: in unit=STREAM_ENG_V2 3 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_28_mul_scale_52 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_off_bias_54 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_off_bias_54 OUT: in unit=STREAM_ENG_V2 4 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+  static const LL_Switch_InitTypeDef switch_init_in_13[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30 IN: in unit=CONV_ACC_V2 3 in port=2 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=CONV_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 9 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_ca_pipe_2 OUT: in unit=STREAM_ENG_V2 6 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_30_mul_scale_61 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_off_bias_63 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_off_bias_63 OUT: in unit=STREAM_ENG_V2 7 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
   };
 
 
-  /* epoch=22 */
-  LL_Switch_Init(switch_init_in_22, 13);
+  /* epoch=13 */
+  LL_Switch_Init(switch_init_in_13, 13);
 
-  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_22_all_units[] = {
-    { {STRENG, 3} }, /* STREAM_ENG_V2 */
-    { {STRENG, 4} }, /* STREAM_ENG_V2 */
-    { {CONVACC, 0} }, /* CONV_ACC_V2 */
-    { {CONVACC, 1} }, /* CONV_ACC_V2 */
-    { {CONVACC, 2} }, /* CONV_ACC_V2 */
-    { {ARITH, 0} }, /* ARITH_ACC_V2 */
-    { {ARITH, 3} }, /* ARITH_ACC_V2 */
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
-    { {STRENG, 1} }, /* STREAM_ENG_V2 */
-    { {STRENG, 2} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_13_all_units[] = {
     { {STRENG, 6} }, /* STREAM_ENG_V2 */
     { {STRENG, 7} }, /* STREAM_ENG_V2 */
+    { {CONVACC, 0} }, /* CONV_ACC_V2 */
+    { {CONVACC, 1} }, /* CONV_ACC_V2 */
+    { {CONVACC, 3} }, /* CONV_ACC_V2 */
+    { {ARITH, 0} }, /* ARITH_ACC_V2 */
+    { {ARITH, 2} }, /* ARITH_ACC_V2 */
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+    { {STRENG, 5} }, /* STREAM_ENG_V2 */
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_EnableUnits_Init(Enable_epoch_22_all_units, 12);
+  LL_ATON_EnableUnits_Init(Enable_epoch_13_all_units, 12);
 
 }
 
-static void LL_ATON_End_EpochBlock_22(const void *epoch_block)
+static void LL_ATON_End_EpochBlock_13(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-  static const LL_Switch_DeinitTypeDef switch_deinit_in_22[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28 IN: in unit=CONV_ACC_V2 2 in port=2 out unit=STREAM_ENG_V2 6 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=CONV_ACC_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_ca_pipe_2 OUT: in unit=STREAM_ENG_V2 3 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_28_mul_scale_52 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_off_bias_54 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_28_off_bias_54 OUT: in unit=STREAM_ENG_V2 4 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_13[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30 IN: in unit=CONV_ACC_V2 3 in port=2 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=CONV_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 9 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_ca_pipe_2 IN: in unit=CONV_ACC_V2 1 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_ca_pipe_2 OUT: in unit=STREAM_ENG_V2 6 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_30_mul_scale_61 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_off_bias_63 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_30_off_bias_63 OUT: in unit=STREAM_ENG_V2 7 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
   };
 
 
-  /* epoch=22 */
-  LL_Switch_Deinit(switch_deinit_in_22, 13);
+  /* epoch=13 */
+  LL_Switch_Deinit(switch_deinit_in_13, 13);
 
-  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_22_all_units[] = {
-    { {STRENG, 3} }, /* STREAM_ENG_V2 */
-    { {STRENG, 4} }, /* STREAM_ENG_V2 */
-    { {CONVACC, 0} }, /* CONV_ACC_V2 */
-    { {CONVACC, 1} }, /* CONV_ACC_V2 */
-    { {CONVACC, 2} }, /* CONV_ACC_V2 */
-    { {ARITH, 0} }, /* ARITH_ACC_V2 */
-    { {ARITH, 3} }, /* ARITH_ACC_V2 */
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
-    { {STRENG, 1} }, /* STREAM_ENG_V2 */
-    { {STRENG, 2} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_13_all_units[] = {
     { {STRENG, 6} }, /* STREAM_ENG_V2 */
     { {STRENG, 7} }, /* STREAM_ENG_V2 */
+    { {CONVACC, 0} }, /* CONV_ACC_V2 */
+    { {CONVACC, 1} }, /* CONV_ACC_V2 */
+    { {CONVACC, 3} }, /* CONV_ACC_V2 */
+    { {ARITH, 0} }, /* ARITH_ACC_V2 */
+    { {ARITH, 2} }, /* ARITH_ACC_V2 */
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+    { {STRENG, 5} }, /* STREAM_ENG_V2 */
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_DisableUnits_Init(Disable_epoch_22_all_units, 12);
+  LL_ATON_DisableUnits_Init(Disable_epoch_13_all_units, 12);
 
 }
 
 
-/* scheduling epoch=23   nodes=2   ------------------------------------------------------------------- */
+/* scheduling epoch=14   nodes=2   ------------------------------------------------------------------- */
 
-static void LL_ATON_Start_EpochBlock_23(const void *epoch_block)
+static void LL_ATON_Start_EpochBlock_14(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
   /* Unit= 19 [ARITH_ACC_V2 1] */
-  /* kind=Add node=Add_31 */
-  static const LL_Arithacc_InitTypeDef Add_31_init23 = {
+  /* kind=Add node=Add_33 */
+  static const LL_Arithacc_InitTypeDef Add_33_init14 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -5528,12 +6263,12 @@ static void LL_ATON_Start_EpochBlock_23(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 1,
-    .shift_o = 15,
+    .shift_o = 14,
     .scalar = 1,
     .dualinput = 1,
     .operation = ARITH_AFFINE,
     .bcast = ARITH_BCAST_NONE,
-    .Ax_shift = 0,
+    .Ax_shift = 2,
     .By_shift = 0,
     .C_shift = 6,
     .fWidth = 128,
@@ -5542,9 +6277,9 @@ static void LL_ATON_Start_EpochBlock_23(const void *epoch_block)
     .batchDepth = 12,
     .clipmin = 0,
     .clipmax = 0,
-    .A_scalar = 25059,
-    .B_scalar = 18997,
-    .C_scalar = -17199,
+    .A_scalar = 18821,
+    .B_scalar = 23274,
+    .C_scalar = -17903,
     .A_vector = {0},
     .B_vector = {0},
     .C_vector = {0},
@@ -5552,12 +6287,12 @@ static void LL_ATON_Start_EpochBlock_23(const void *epoch_block)
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(1, &Add_31_init23);
+  LL_Arithacc_Init(1, &Add_33_init14);
 
 
-  /* Unit= 20 [ARITH_ACC_V2 2] */
-  /* kind=Sub node=Conv2D_35_suboff_57 */
-  static const LL_Arithacc_InitTypeDef Conv2D_35_suboff_57_init23 = {
+  /* Unit= 21 [ARITH_ACC_V2 3] */
+  /* kind=Sub node=Conv2D_37_suboff_66 */
+  static const LL_Arithacc_InitTypeDef Conv2D_37_suboff_66_init14 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -5601,24 +6336,24 @@ static void LL_ATON_Start_EpochBlock_23(const void *epoch_block)
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(2, &Conv2D_35_suboff_57_init23);
+  LL_Arithacc_Init(3, &Conv2D_37_suboff_66_init14);
 
 
   /* Dma inputs units to cycle: */
-  /* Unit= 6 [STREAM_ENG_V2 6] */
-  /* Emit conf for STREAM_ENG_V2 node=Add_31 input ports=0 range=1[0,6144] */
+  /* Unit= 1 [STREAM_ENG_V2 1] */
+  /* Emit conf for STREAM_ENG_V2 node=Add_33 input ports=0 range=1[303104,309248] */
 
-  static const LL_Streng_TensorInitTypeDef Add_31_dma_init_in_0_23 = {
+  static const LL_Streng_TensorInitTypeDef Add_33_dma_init_in_0_14 = {
     /* from memory with batch=12 */
     .dir = 0,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Dequantize_22_out_0 */
-    .offset_start = 0,
-    .offset_end = 1536,
-    .offset_limit = 6208,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Dequantize_24_out_0 */
+    .offset_start = 303104,
+    .offset_end = 304640,
+    .offset_limit = 309312,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -5634,20 +6369,20 @@ static void LL_ATON_Start_EpochBlock_23(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(6, &Add_31_dma_init_in_0_23, 1);
+  LL_Streng_TensorInit(1, &Add_33_dma_init_in_0_14, 1);
 
-  /* Unit= 9 [STREAM_ENG_V2 9] */
-  /* Emit conf for STREAM_ENG_V2 node=Add_31 input ports=1 range=1[18432,24576] */
+  /* Unit= 0 [STREAM_ENG_V2 0] */
+  /* Emit conf for STREAM_ENG_V2 node=Add_33 input ports=1 range=1[321536,327680] */
 
-  static const LL_Streng_TensorInitTypeDef Add_31_dma_init_in_1_23 = {
+  static const LL_Streng_TensorInitTypeDef Add_33_dma_init_in_1_14 = {
     /* memory canonical to batch=12 */
     .dir = 0,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Dequantize_30_out_0 */
-    .offset_start = 18432,
-    .offset_limit = 24640,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Dequantize_32_out_0 */
+    .offset_start = 321536,
+    .offset_limit = 327744,
     .frame_count = 0,
     .fwidth = 128,
     .fheight = 1,
@@ -5663,27 +6398,27 @@ static void LL_ATON_Start_EpochBlock_23(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(9, &Add_31_dma_init_in_1_23, 1);
+  LL_Streng_TensorInit(0, &Add_33_dma_init_in_1_14, 1);
 
 
   /* Dma input bandwidth from memory pools: */
   /* npuRAM5 -> 12288 */
 
   /* Dma output units from cycle: */
-  /* Unit= 4 [STREAM_ENG_V2 4] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_35_suboff_57 output ports=0 range=1[8192,14336] */
+  /* Unit= 5 [STREAM_ENG_V2 5] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_37_suboff_66 output ports=0 range=1[309248,315392] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_35_suboff_57_dma_init_out_0_23 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_37_suboff_66_dma_init_out_0_14 = {
     /* to memory with batch=12 */
     .dir = 1,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_35_zero_off_out_58 */
-    .offset_start = 8192,
-    .offset_end = 9728,
-    .offset_limit = 14400,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_37_zero_off_out_67 */
+    .offset_start = 309248,
+    .offset_end = 310784,
+    .offset_limit = 315456,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -5699,74 +6434,74 @@ static void LL_ATON_Start_EpochBlock_23(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(4, &Conv2D_35_suboff_57_dma_init_out_0_23, 1);
+  LL_Streng_TensorInit(5, &Conv2D_37_suboff_66_dma_init_out_0_14, 1);
 
 
   /* Dma output bandwidth to memory pools: */
   /* npuRAM5 <- 6144 */
 
-  static const LL_Switch_InitTypeDef switch_init_in_23[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_31 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_31 IN: in unit=ARITH_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 9 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35_suboff_57 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35_suboff_57 OUT: in unit=STREAM_ENG_V2 4 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+  static const LL_Switch_InitTypeDef switch_init_in_14[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_33 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_33 IN: in unit=ARITH_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37_suboff_66 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37_suboff_66 OUT: in unit=STREAM_ENG_V2 5 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
   };
 
 
-  /* epoch=23 */
-  LL_Switch_Init(switch_init_in_23, 4);
+  /* epoch=14 */
+  LL_Switch_Init(switch_init_in_14, 4);
 
-  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_23_all_units[] = {
-    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_14_all_units[] = {
+    { {STRENG, 5} }, /* STREAM_ENG_V2 */
     { {ARITH, 1} }, /* ARITH_ACC_V2 */
-    { {ARITH, 2} }, /* ARITH_ACC_V2 */
-    { {STRENG, 6} }, /* STREAM_ENG_V2 */
-    { {STRENG, 9} }, /* STREAM_ENG_V2 */
+    { {ARITH, 3} }, /* ARITH_ACC_V2 */
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_EnableUnits_Init(Enable_epoch_23_all_units, 5);
+  LL_ATON_EnableUnits_Init(Enable_epoch_14_all_units, 5);
 
 }
 
-static void LL_ATON_End_EpochBlock_23(const void *epoch_block)
+static void LL_ATON_End_EpochBlock_14(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-  static const LL_Switch_DeinitTypeDef switch_deinit_in_23[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_31 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_31 IN: in unit=ARITH_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 9 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35_suboff_57 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35_suboff_57 OUT: in unit=STREAM_ENG_V2 4 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_14[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_33 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_33 IN: in unit=ARITH_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37_suboff_66 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37_suboff_66 OUT: in unit=STREAM_ENG_V2 5 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
   };
 
 
-  /* epoch=23 */
-  LL_Switch_Deinit(switch_deinit_in_23, 4);
+  /* epoch=14 */
+  LL_Switch_Deinit(switch_deinit_in_14, 4);
 
-  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_23_all_units[] = {
-    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_14_all_units[] = {
+    { {STRENG, 5} }, /* STREAM_ENG_V2 */
     { {ARITH, 1} }, /* ARITH_ACC_V2 */
-    { {ARITH, 2} }, /* ARITH_ACC_V2 */
-    { {STRENG, 6} }, /* STREAM_ENG_V2 */
-    { {STRENG, 9} }, /* STREAM_ENG_V2 */
+    { {ARITH, 3} }, /* ARITH_ACC_V2 */
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_DisableUnits_Init(Disable_epoch_23_all_units, 5);
+  LL_ATON_DisableUnits_Init(Disable_epoch_14_all_units, 5);
 
 }
 
 
-/* scheduling epoch=24   nodes=5   ------------------------------------------------------------------- */
+/* scheduling epoch=15   nodes=5   ------------------------------------------------------------------- */
 
-static void LL_ATON_Start_EpochBlock_24(const void *epoch_block)
+static void LL_ATON_Start_EpochBlock_15(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-  /* Unit= 13 [CONV_ACC_V2 3] */
-  /* kind=Conv node=Conv2D_35 */
-  static const LL_Convacc_InitTypeDef Conv2D_35_init24 = {
+  /* Unit= 12 [CONV_ACC_V2 2] */
+  /* kind=Conv node=Conv2D_37 */
+  static const LL_Convacc_InitTypeDef Conv2D_37_init15 = {
     .simd = 1,
     .fsub = 0,
     .accumulate = 1,
@@ -5815,12 +6550,12 @@ static void LL_ATON_Start_EpochBlock_24(const void *epoch_block)
   };
 
   /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(3, &Conv2D_35_init24);
+  LL_Convacc_Init(2, &Conv2D_37_init15);
 
 
   /* Unit= 10 [CONV_ACC_V2 0] */
-  /* kind=Conv node=Conv2D_35_ca_pipe_1 */
-  static const LL_Convacc_InitTypeDef Conv2D_35_ca_pipe_1_init24 = {
+  /* kind=Conv node=Conv2D_37_ca_pipe_1 */
+  static const LL_Convacc_InitTypeDef Conv2D_37_ca_pipe_1_init15 = {
     .simd = 1,
     .fsub = 0,
     .accumulate = 1,
@@ -5866,12 +6601,12 @@ static void LL_ATON_Start_EpochBlock_24(const void *epoch_block)
   };
 
   /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(0, &Conv2D_35_ca_pipe_1_init24);
+  LL_Convacc_Init(0, &Conv2D_37_ca_pipe_1_init15);
 
 
   /* Unit= 18 [ARITH_ACC_V2 0] */
-  /* kind=Mul node=Conv2D_35_mul_scale_61 */
-  static const LL_Arithacc_InitTypeDef Conv2D_35_mul_scale_61_init24 = {
+  /* kind=Mul node=Conv2D_37_mul_scale_70 */
+  static const LL_Arithacc_InitTypeDef Conv2D_37_mul_scale_70_init15 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -5891,7 +6626,7 @@ static void LL_ATON_Start_EpochBlock_24(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 2,
-    .shift_o = 15,
+    .shift_o = 13,
     .scalar = 0,
     .dualinput = 0,
     .operation = ARITH_AFFINE,
@@ -5908,19 +6643,19 @@ static void LL_ATON_Start_EpochBlock_24(const void *epoch_block)
     .A_scalar = 1,
     .B_scalar = 0,
     .C_scalar = 0,
-    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 97120))) /* Equivalent hex address = 0x71017b60UL */},
+    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 81568))) /* Equivalent hex address = 0x71013ea0UL */},
     .B_vector = {0},
     .C_vector = {0},
     .vec_precision = {16, 16, 16},
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(0, &Conv2D_35_mul_scale_61_init24);
+  LL_Arithacc_Init(0, &Conv2D_37_mul_scale_70_init15);
 
 
-  /* Unit= 21 [ARITH_ACC_V2 3] */
-  /* kind=Add node=Conv2D_35_off_bias_63 */
-  static const LL_Arithacc_InitTypeDef Conv2D_35_off_bias_63_init24 = {
+  /* Unit= 20 [ARITH_ACC_V2 2] */
+  /* kind=Add node=Conv2D_37_off_bias_72 */
+  static const LL_Arithacc_InitTypeDef Conv2D_37_off_bias_72_init15 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -5940,8 +6675,8 @@ static void LL_ATON_Start_EpochBlock_24(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 1,
-    .shift_o = 18,
-    .scalar = 1,
+    .shift_o = 20,
+    .scalar = 0,
     .dualinput = 0,
     .operation = ARITH_AFFINE,
     .bcast = ARITH_BCAST_CHAN,
@@ -5954,22 +6689,22 @@ static void LL_ATON_Start_EpochBlock_24(const void *epoch_block)
     .batchDepth = 8,
     .clipmin = 0,
     .clipmax = 0,
-    .A_scalar = 18269,
-    .B_scalar = -512,
+    .A_scalar = 21832,
+    .B_scalar = 0,
     .C_scalar = (short)0,
     .A_vector = {0},
     .B_vector = {0},
-    .C_vector = {0},
-    .vec_precision = {16, 16, 16},
+    .C_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 79504))) /* Equivalent hex address = 0x71013690UL */},
+    .vec_precision = {16, 16, 32},
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(3, &Conv2D_35_off_bias_63_init24);
+  LL_Arithacc_Init(2, &Conv2D_37_off_bias_72_init15);
 
 
   /* Unit= 19 [ARITH_ACC_V2 1] */
-  /* kind=Sub node=Conv2D_39_suboff_66 */
-  static const LL_Arithacc_InitTypeDef Conv2D_39_suboff_66_init24 = {
+  /* kind=Sub node=Conv2D_41_suboff_75 */
+  static const LL_Arithacc_InitTypeDef Conv2D_41_suboff_75_init15 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -6013,24 +6748,24 @@ static void LL_ATON_Start_EpochBlock_24(const void *epoch_block)
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(1, &Conv2D_39_suboff_66_init24);
+  LL_Arithacc_Init(1, &Conv2D_41_suboff_75_init15);
 
 
   /* Dma inputs units to cycle: */
   /* Unit= 4 [STREAM_ENG_V2 4] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_35 input ports=0 range=1[8192,14336] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_37 input ports=0 range=1[309248,315392] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_35_dma_init_in_0_24 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_37_dma_init_in_0_15 = {
     /* 128x1x12(8 bits) */
     .dir = 0,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_35_zero_off_out_58 */
-    .offset_start = 8192,
-    .offset_end = 9728,
-    .offset_limit = 14400,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_37_zero_off_out_67 */
+    .offset_start = 309248,
+    .offset_end = 310784,
+    .offset_limit = 315456,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -6046,12 +6781,12 @@ static void LL_ATON_Start_EpochBlock_24(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(4, &Conv2D_35_dma_init_in_0_24, 1);
+  LL_Streng_TensorInit(4, &Conv2D_37_dma_init_in_0_15, 1);
 
-  /* Unit= 8 [STREAM_ENG_V2 8] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_35 input ports=1 range=8[79872,89088] */
+  /* Unit= 5 [STREAM_ENG_V2 5] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_37 input ports=1 range=8[47616,56832] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_35_dma_init_in_1_24 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_37_dma_init_in_1_15 = {
     /* 64x3x1x48(8 bits) */
     .dir = 0,
     .raw = 1,
@@ -6061,10 +6796,10 @@ static void LL_ATON_Start_EpochBlock_24(const void *epoch_block)
     .nbits_unsigned = 0,
     .cacheable = 1,
     .cache_allocate = 0,
-    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_35_weights */
-    .offset_start = 79872,
-    .offset_end = 89088,
-    .offset_limit = 89152,
+    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_37_weights */
+    .offset_start = 47616,
+    .offset_end = 56832,
+    .offset_limit = 56896,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -6080,12 +6815,12 @@ static void LL_ATON_Start_EpochBlock_24(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(8, &Conv2D_35_dma_init_in_1_24, 1);
+  LL_Streng_TensorInit(5, &Conv2D_37_dma_init_in_1_15, 1);
 
-  /* Unit= 0 [STREAM_ENG_V2 0] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_35 input ports=2 range=1[18432,19456] */
+  /* Unit= 2 [STREAM_ENG_V2 2] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_37 input ports=2 range=1[319488,320512] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_35_dma_init_in_2_24 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_37_dma_init_in_2_15 = {
     /* partial accumulator 1024 (16 bits) */
     .dir = 0,
     .raw = 1,
@@ -6093,11 +6828,11 @@ static void LL_ATON_Start_EpochBlock_24(const void *epoch_block)
     .align_right = 1,
     .sync_with_other = 1,
     .nbits_unsigned = 0,
-    .sync_dma = 5,
+    .sync_dma = 9,
     .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ATONN_ACCUMULATOR_PORT */
-    .offset_start = 18432,
-    .offset_end = 19456,
-    .offset_limit = 19520,
+    .offset_start = 319488,
+    .offset_end = 320512,
+    .offset_limit = 320576,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -6113,22 +6848,22 @@ static void LL_ATON_Start_EpochBlock_24(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(0, &Conv2D_35_dma_init_in_2_24, 1);
+  LL_Streng_TensorInit(2, &Conv2D_37_dma_init_in_2_15, 1);
 
-  /* Unit= 7 [STREAM_ENG_V2 7] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_35_ca_pipe_1 input ports=0 range=1[8192,14336] */
+  /* Unit= 6 [STREAM_ENG_V2 6] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_37_ca_pipe_1 input ports=0 range=1[309248,315392] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_35_ca_pipe_1_dma_init_in_0_24 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_37_ca_pipe_1_dma_init_in_0_15 = {
     /* 128x1x12(8 bits) */
     .dir = 0,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_35_zero_off_out_58_copy_in_31 ca pipe offset=1 */
-    .offset_start = 9728,
-    .offset_end = 11264,
-    .offset_limit = 14400,
+    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_37_zero_off_out_67_copy_in_58 ca pipe offset=1 */
+    .offset_start = 310784,
+    .offset_end = 312320,
+    .offset_limit = 315456,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -6144,7 +6879,7 @@ static void LL_ATON_Start_EpochBlock_24(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(7, &Conv2D_35_ca_pipe_1_dma_init_in_0_24, 1);
+  LL_Streng_TensorInit(6, &Conv2D_37_ca_pipe_1_dma_init_in_0_15, 1);
 
 
   /* Dma input bandwidth from memory pools: */
@@ -6152,20 +6887,20 @@ static void LL_ATON_Start_EpochBlock_24(const void *epoch_block)
   /* octoFlash -> 9216 */
 
   /* Dma output units from cycle: */
-  /* Unit= 5 [STREAM_ENG_V2 5] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_35_ca_pipe_1 output ports=0 range=1[18432,19456] */
+  /* Unit= 9 [STREAM_ENG_V2 9] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_37_ca_pipe_1 output ports=0 range=1[319488,320512] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_35_ca_pipe_1_dma_init_out_0_24 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_37_ca_pipe_1_dma_init_out_0_15 = {
     /* partial accumulator 1024 (16 bits) */
     .dir = 1,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_35_out_0_cp_in_31 */
-    .offset_start = 18432,
-    .offset_end = 19456,
-    .offset_limit = 19520,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_37_out_0_cp_in_58 */
+    .offset_start = 319488,
+    .offset_end = 320512,
+    .offset_limit = 320576,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -6181,19 +6916,19 @@ static void LL_ATON_Start_EpochBlock_24(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(5, &Conv2D_35_ca_pipe_1_dma_init_out_0_24, 1);
+  LL_Streng_TensorInit(9, &Conv2D_37_ca_pipe_1_dma_init_out_0_15, 1);
 
-  /* Unit= 9 [STREAM_ENG_V2 9] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_35_off_bias_63 output ports=0 range=1[0,4096] */
+  /* Unit= 8 [STREAM_ENG_V2 8] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_37_off_bias_72 output ports=0 range=1[0,4096] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_35_off_bias_63_dma_init_out_0_24 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_37_off_bias_72_dma_init_out_0_15 = {
     /* to memory with batch=8 */
     .dir = 1,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_35_off_bias_out_64 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_37_off_bias_out_73 */
     .offset_start = 0,
     .offset_end = 512,
     .offset_limit = 4160,
@@ -6212,20 +6947,20 @@ static void LL_ATON_Start_EpochBlock_24(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(9, &Conv2D_35_off_bias_63_dma_init_out_0_24, 1);
+  LL_Streng_TensorInit(8, &Conv2D_37_off_bias_72_dma_init_out_0_15, 1);
 
-  /* Unit= 6 [STREAM_ENG_V2 6] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_39_suboff_66 output ports=0 range=1[14336,18432] */
+  /* Unit= 7 [STREAM_ENG_V2 7] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_41_suboff_75 output ports=0 range=1[315392,319488] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_39_suboff_66_dma_init_out_0_24 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_41_suboff_75_dma_init_out_0_15 = {
     /* to memory canonical from batch=8 */
     .dir = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_39_zero_off_out_67 */
-    .offset_start = 14336,
-    .offset_limit = 18496,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_41_zero_off_out_76 */
+    .offset_start = 315392,
+    .offset_limit = 319552,
     .frame_count = 0,
     .fwidth = 64,
     .fheight = 1,
@@ -6241,119 +6976,119 @@ static void LL_ATON_Start_EpochBlock_24(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(6, &Conv2D_39_suboff_66_dma_init_out_0_24, 1);
+  LL_Streng_TensorInit(7, &Conv2D_41_suboff_75_dma_init_out_0_15, 1);
 
 
   /* Dma output bandwidth to memory pools: */
   /* npuRAM5 <- 28672 */
 
-  static const LL_Switch_InitTypeDef switch_init_in_24[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 4 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 8 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35 IN: in unit=CONV_ACC_V2 3 in port=2 out unit=STREAM_ENG_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 8 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=CONV_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35_ca_pipe_1 OUT: in unit=STREAM_ENG_V2 5 in port=0 out unit=CONV_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_35_mul_scale_61 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=CONV_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35_off_bias_63 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35_off_bias_63 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39_suboff_66 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39_suboff_66 OUT: in unit=STREAM_ENG_V2 6 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+  static const LL_Switch_InitTypeDef switch_init_in_15[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37 IN: in unit=CONV_ACC_V2 2 in port=2 out unit=STREAM_ENG_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=CONV_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37_ca_pipe_1 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_37_mul_scale_70 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37_off_bias_72 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37_off_bias_72 OUT: in unit=STREAM_ENG_V2 8 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41_suboff_75 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41_suboff_75 OUT: in unit=STREAM_ENG_V2 7 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
   };
 
 
-  /* epoch=24 */
-  LL_Switch_Init(switch_init_in_24, 12);
+  /* epoch=15 */
+  LL_Switch_Init(switch_init_in_15, 12);
 
-  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_24_all_units[] = {
-    { {STRENG, 5} }, /* STREAM_ENG_V2 */
-    { {STRENG, 6} }, /* STREAM_ENG_V2 */
-    { {STRENG, 9} }, /* STREAM_ENG_V2 */
-    { {CONVACC, 0} }, /* CONV_ACC_V2 */
-    { {CONVACC, 3} }, /* CONV_ACC_V2 */
-    { {ARITH, 0} }, /* ARITH_ACC_V2 */
-    { {ARITH, 1} }, /* ARITH_ACC_V2 */
-    { {ARITH, 3} }, /* ARITH_ACC_V2 */
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
-    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_15_all_units[] = {
     { {STRENG, 7} }, /* STREAM_ENG_V2 */
     { {STRENG, 8} }, /* STREAM_ENG_V2 */
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
+    { {CONVACC, 0} }, /* CONV_ACC_V2 */
+    { {CONVACC, 2} }, /* CONV_ACC_V2 */
+    { {ARITH, 0} }, /* ARITH_ACC_V2 */
+    { {ARITH, 1} }, /* ARITH_ACC_V2 */
+    { {ARITH, 2} }, /* ARITH_ACC_V2 */
+    { {STRENG, 2} }, /* STREAM_ENG_V2 */
+    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+    { {STRENG, 5} }, /* STREAM_ENG_V2 */
+    { {STRENG, 6} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_EnableUnits_Init(Enable_epoch_24_all_units, 12);
+  LL_ATON_EnableUnits_Init(Enable_epoch_15_all_units, 12);
 
 }
 
-static void LL_ATON_End_EpochBlock_24(const void *epoch_block)
+static void LL_ATON_End_EpochBlock_15(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-  static const LL_Switch_DeinitTypeDef switch_deinit_in_24[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 4 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 8 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35 IN: in unit=CONV_ACC_V2 3 in port=2 out unit=STREAM_ENG_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 8 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=CONV_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35_ca_pipe_1 OUT: in unit=STREAM_ENG_V2 5 in port=0 out unit=CONV_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_35_mul_scale_61 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=CONV_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35_off_bias_63 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_35_off_bias_63 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39_suboff_66 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39_suboff_66 OUT: in unit=STREAM_ENG_V2 6 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_15[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37 IN: in unit=CONV_ACC_V2 2 in port=2 out unit=STREAM_ENG_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 5 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37_ca_pipe_1 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=CONV_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37_ca_pipe_1 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_37_mul_scale_70 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37_off_bias_72 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_37_off_bias_72 OUT: in unit=STREAM_ENG_V2 8 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41_suboff_75 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41_suboff_75 OUT: in unit=STREAM_ENG_V2 7 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
   };
 
 
-  /* epoch=24 */
-  LL_Switch_Deinit(switch_deinit_in_24, 12);
+  /* epoch=15 */
+  LL_Switch_Deinit(switch_deinit_in_15, 12);
 
-  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_24_all_units[] = {
-    { {STRENG, 5} }, /* STREAM_ENG_V2 */
-    { {STRENG, 6} }, /* STREAM_ENG_V2 */
-    { {STRENG, 9} }, /* STREAM_ENG_V2 */
-    { {CONVACC, 0} }, /* CONV_ACC_V2 */
-    { {CONVACC, 3} }, /* CONV_ACC_V2 */
-    { {ARITH, 0} }, /* ARITH_ACC_V2 */
-    { {ARITH, 1} }, /* ARITH_ACC_V2 */
-    { {ARITH, 3} }, /* ARITH_ACC_V2 */
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
-    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_15_all_units[] = {
     { {STRENG, 7} }, /* STREAM_ENG_V2 */
     { {STRENG, 8} }, /* STREAM_ENG_V2 */
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
+    { {CONVACC, 0} }, /* CONV_ACC_V2 */
+    { {CONVACC, 2} }, /* CONV_ACC_V2 */
+    { {ARITH, 0} }, /* ARITH_ACC_V2 */
+    { {ARITH, 1} }, /* ARITH_ACC_V2 */
+    { {ARITH, 2} }, /* ARITH_ACC_V2 */
+    { {STRENG, 2} }, /* STREAM_ENG_V2 */
+    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+    { {STRENG, 5} }, /* STREAM_ENG_V2 */
+    { {STRENG, 6} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_DisableUnits_Init(Disable_epoch_24_all_units, 12);
+  LL_ATON_DisableUnits_Init(Disable_epoch_15_all_units, 12);
 
 }
 
 
-/* scheduling epoch=25   nodes=1   ------------------------------------------------------------------- */
-/* no resources allocated to kind=Identity node=Conv2D_39_conv_identity */
+/* scheduling epoch=16   nodes=1   ------------------------------------------------------------------- */
+/* no resources allocated to kind=Identity node=Conv2D_41_conv_identity */
 
-static void LL_ATON_Start_EpochBlock_25(const void *epoch_block)
+static void LL_ATON_Start_EpochBlock_16(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
   /* Unit= 28 [NULL_UNIT 0] */
-  /* kind=Identity node=Conv2D_39_conv_identity */
-  /* node=Conv2D_39_conv_identity satisfies input and output adjacency (DMA->DMA) and can be omitted */
+  /* kind=Identity node=Conv2D_41_conv_identity */
+  /* node=Conv2D_41_conv_identity satisfies input and output adjacency (DMA->DMA) and can be omitted */
 
   /* Dma inputs units to cycle: */
-  /* Unit= 0 [STREAM_ENG_V2 0] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_39_conv_identity input ports=0 range=1[14336,18432] */
+  /* Unit= 4 [STREAM_ENG_V2 4] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_41_conv_identity input ports=0 range=1[315392,319488] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_39_conv_identity_dma_init_in_0_25 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_41_conv_identity_dma_init_in_0_16 = {
     /* memory canonical to batch=16 */
     .dir = 0,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_39_zero_off_out_67_copy_in_35 */
-    .offset_start = 14336,
-    .offset_limit = 18496,
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_41_zero_off_out_76_copy_in_62 */
+    .offset_start = 315392,
+    .offset_limit = 319552,
     .frame_count = 0,
     .fwidth = 64,
     .fheight = 1,
@@ -6369,24 +7104,24 @@ static void LL_ATON_Start_EpochBlock_25(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(0, &Conv2D_39_conv_identity_dma_init_in_0_25, 1);
+  LL_Streng_TensorInit(4, &Conv2D_41_conv_identity_dma_init_in_0_16, 1);
 
 
   /* Dma input bandwidth from memory pools: */
   /* npuRAM5 -> 4096 */
 
   /* Dma output units from cycle: */
-  /* Unit= 6 [STREAM_ENG_V2 6] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_39_conv_identity output ports=0 range=1[8192,12288] */
+  /* Unit= 9 [STREAM_ENG_V2 9] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_41_conv_identity output ports=0 range=1[8192,12288] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_39_conv_identity_dma_init_out_0_25 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_41_conv_identity_dma_init_out_0_16 = {
     /* to memory with batch=16 */
     .dir = 1,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_39_zero_off_out_67_cp_in_35 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_41_zero_off_out_76_cp_in_62 */
     .offset_start = 8192,
     .offset_end = 9216,
     .offset_limit = 12352,
@@ -6405,62 +7140,62 @@ static void LL_ATON_Start_EpochBlock_25(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(6, &Conv2D_39_conv_identity_dma_init_out_0_25, 1);
+  LL_Streng_TensorInit(9, &Conv2D_41_conv_identity_dma_init_out_0_16, 1);
 
 
   /* Dma output bandwidth to memory pools: */
   /* npuRAM5 <- 4096 */
 
-  static const LL_Switch_InitTypeDef switch_init_in_25[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39_conv_identity OUT: in unit=STREAM_ENG_V2 6 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
+  static const LL_Switch_InitTypeDef switch_init_in_16[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41_conv_identity OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=STREAM_ENG_V2 4 out port=0 */
   };
 
 
-  /* epoch=25 */
-  LL_Switch_Init(switch_init_in_25, 1);
+  /* epoch=16 */
+  LL_Switch_Init(switch_init_in_16, 1);
 
-  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_25_all_units[] = {
-    { {STRENG, 6} }, /* STREAM_ENG_V2 */
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_16_all_units[] = {
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
+    { {STRENG, 4} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_EnableUnits_Init(Enable_epoch_25_all_units, 2);
+  LL_ATON_EnableUnits_Init(Enable_epoch_16_all_units, 2);
 
 }
 
-static void LL_ATON_End_EpochBlock_25(const void *epoch_block)
+static void LL_ATON_End_EpochBlock_16(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-  static const LL_Switch_DeinitTypeDef switch_deinit_in_25[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39_conv_identity OUT: in unit=STREAM_ENG_V2 6 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_16[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41_conv_identity OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=STREAM_ENG_V2 4 out port=0 */
   };
 
 
-  /* epoch=25 */
-  LL_Switch_Deinit(switch_deinit_in_25, 1);
+  /* epoch=16 */
+  LL_Switch_Deinit(switch_deinit_in_16, 1);
 
-  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_25_all_units[] = {
-    { {STRENG, 6} }, /* STREAM_ENG_V2 */
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_16_all_units[] = {
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
+    { {STRENG, 4} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_DisableUnits_Init(Disable_epoch_25_all_units, 2);
+  LL_ATON_DisableUnits_Init(Disable_epoch_16_all_units, 2);
 
 }
 
 
-/* scheduling epoch=26   nodes=5   ------------------------------------------------------------------- */
+/* scheduling epoch=17   nodes=5   ------------------------------------------------------------------- */
 
-static void LL_ATON_Start_EpochBlock_26(const void *epoch_block)
+static void LL_ATON_Start_EpochBlock_17(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
   /* Unit= 11 [CONV_ACC_V2 1] */
-  /* kind=Conv node=Conv2D_39 */
-  static const LL_Convacc_InitTypeDef Conv2D_39_init26 = {
+  /* kind=Conv node=Conv2D_41 */
+  static const LL_Convacc_InitTypeDef Conv2D_41_init17 = {
     .simd = 1,
     .fsub = 0,
     .accumulate = 1,
@@ -6509,12 +7244,12 @@ static void LL_ATON_Start_EpochBlock_26(const void *epoch_block)
   };
 
   /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(1, &Conv2D_39_init26);
+  LL_Convacc_Init(1, &Conv2D_41_init17);
 
 
-  /* Unit= 12 [CONV_ACC_V2 2] */
-  /* kind=Conv node=Conv2D_39_ca_pipe_1 */
-  static const LL_Convacc_InitTypeDef Conv2D_39_ca_pipe_1_init26 = {
+  /* Unit= 13 [CONV_ACC_V2 3] */
+  /* kind=Conv node=Conv2D_41_ca_pipe_1 */
+  static const LL_Convacc_InitTypeDef Conv2D_41_ca_pipe_1_init17 = {
     .simd = 1,
     .fsub = 0,
     .accumulate = 1,
@@ -6560,12 +7295,12 @@ static void LL_ATON_Start_EpochBlock_26(const void *epoch_block)
   };
 
   /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(2, &Conv2D_39_ca_pipe_1_init26);
+  LL_Convacc_Init(3, &Conv2D_41_ca_pipe_1_init17);
 
 
-  /* Unit= 20 [ARITH_ACC_V2 2] */
-  /* kind=Mul node=Conv2D_39_mul_scale_70 */
-  static const LL_Arithacc_InitTypeDef Conv2D_39_mul_scale_70_init26 = {
+  /* Unit= 21 [ARITH_ACC_V2 3] */
+  /* kind=Mul node=Conv2D_41_mul_scale_79 */
+  static const LL_Arithacc_InitTypeDef Conv2D_41_mul_scale_79_init17 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -6585,7 +7320,7 @@ static void LL_ATON_Start_EpochBlock_26(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 2,
-    .shift_o = 16,
+    .shift_o = 13,
     .scalar = 0,
     .dualinput = 0,
     .operation = ARITH_AFFINE,
@@ -6602,19 +7337,19 @@ static void LL_ATON_Start_EpochBlock_26(const void *epoch_block)
     .A_scalar = 1,
     .B_scalar = 0,
     .C_scalar = 0,
-    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 97248))) /* Equivalent hex address = 0x71017be0UL */},
+    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 81696))) /* Equivalent hex address = 0x71013f20UL */},
     .B_vector = {0},
     .C_vector = {0},
     .vec_precision = {16, 16, 16},
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(2, &Conv2D_39_mul_scale_70_init26);
+  LL_Arithacc_Init(3, &Conv2D_41_mul_scale_79_init17);
 
 
   /* Unit= 18 [ARITH_ACC_V2 0] */
-  /* kind=Add node=Conv2D_39_off_bias_72 */
-  static const LL_Arithacc_InitTypeDef Conv2D_39_off_bias_72_init26 = {
+  /* kind=Add node=Conv2D_41_off_bias_81 */
+  static const LL_Arithacc_InitTypeDef Conv2D_41_off_bias_81_init17 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -6634,8 +7369,8 @@ static void LL_ATON_Start_EpochBlock_26(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 1,
-    .shift_o = 18,
-    .scalar = 1,
+    .shift_o = 20,
+    .scalar = 0,
     .dualinput = 0,
     .operation = ARITH_AFFINE,
     .bcast = ARITH_BCAST_CHAN,
@@ -6648,22 +7383,22 @@ static void LL_ATON_Start_EpochBlock_26(const void *epoch_block)
     .batchDepth = 8,
     .clipmin = 0,
     .clipmax = 0,
-    .A_scalar = 26377,
-    .B_scalar = -512,
+    .A_scalar = 22635,
+    .B_scalar = 0,
     .C_scalar = (short)0,
     .A_vector = {0},
     .B_vector = {0},
-    .C_vector = {0},
-    .vec_precision = {16, 16, 16},
+    .C_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 79760))) /* Equivalent hex address = 0x71013790UL */},
+    .vec_precision = {16, 16, 32},
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(0, &Conv2D_39_off_bias_72_init26);
+  LL_Arithacc_Init(0, &Conv2D_41_off_bias_81_init17);
 
 
   /* Unit= 19 [ARITH_ACC_V2 1] */
-  /* kind=Sub node=Conv2D_43_suboff_75 */
-  static const LL_Arithacc_InitTypeDef Conv2D_43_suboff_75_init26 = {
+  /* kind=Sub node=Conv2D_45_suboff_84 */
+  static const LL_Arithacc_InitTypeDef Conv2D_45_suboff_84_init17 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -6707,21 +7442,21 @@ static void LL_ATON_Start_EpochBlock_26(const void *epoch_block)
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(1, &Conv2D_43_suboff_75_init26);
+  LL_Arithacc_Init(1, &Conv2D_45_suboff_84_init17);
 
 
   /* Dma inputs units to cycle: */
-  /* Unit= 6 [STREAM_ENG_V2 6] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_39 input ports=0 range=1[8192,12288] */
+  /* Unit= 0 [STREAM_ENG_V2 0] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_41 input ports=0 range=1[8192,12288] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_39_dma_init_in_0_26 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_41_dma_init_in_0_17 = {
     /* 64x1x16(8 bits) */
     .dir = 0,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_39_zero_off_out_67 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_41_zero_off_out_76 */
     .offset_start = 8192,
     .offset_end = 9216,
     .offset_limit = 12352,
@@ -6740,12 +7475,12 @@ static void LL_ATON_Start_EpochBlock_26(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(6, &Conv2D_39_dma_init_in_0_26, 1);
+  LL_Streng_TensorInit(0, &Conv2D_41_dma_init_in_0_17, 1);
 
   /* Unit= 4 [STREAM_ENG_V2 4] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_39 input ports=1 range=8[32256,44544] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_41 input ports=1 range=8[0,12288] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_39_dma_init_in_1_26 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_41_dma_init_in_1_17 = {
     /* 64x3x1x64(8 bits) */
     .dir = 0,
     .raw = 1,
@@ -6755,10 +7490,10 @@ static void LL_ATON_Start_EpochBlock_26(const void *epoch_block)
     .nbits_unsigned = 0,
     .cacheable = 1,
     .cache_allocate = 0,
-    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_39_weights */
-    .offset_start = 32256,
-    .offset_end = 44544,
-    .offset_limit = 44608,
+    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_41_weights */
+    .offset_start = 0,
+    .offset_end = 12288,
+    .offset_limit = 12352,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -6774,12 +7509,12 @@ static void LL_ATON_Start_EpochBlock_26(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(4, &Conv2D_39_dma_init_in_1_26, 1);
+  LL_Streng_TensorInit(4, &Conv2D_41_dma_init_in_1_17, 1);
 
-  /* Unit= 5 [STREAM_ENG_V2 5] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_39 input ports=2 range=1[16384,17408] */
+  /* Unit= 7 [STREAM_ENG_V2 7] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_41 input ports=2 range=1[16384,17408] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_39_dma_init_in_2_26 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_41_dma_init_in_2_17 = {
     /* partial accumulator 1024 (16 bits) */
     .dir = 0,
     .raw = 1,
@@ -6807,19 +7542,19 @@ static void LL_ATON_Start_EpochBlock_26(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(5, &Conv2D_39_dma_init_in_2_26, 1);
+  LL_Streng_TensorInit(7, &Conv2D_41_dma_init_in_2_17, 1);
 
-  /* Unit= 1 [STREAM_ENG_V2 1] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_39_ca_pipe_1 input ports=0 range=1[8192,12288] */
+  /* Unit= 8 [STREAM_ENG_V2 8] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_41_ca_pipe_1 input ports=0 range=1[8192,12288] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_39_ca_pipe_1_dma_init_in_0_26 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_41_ca_pipe_1_dma_init_in_0_17 = {
     /* 64x1x16(8 bits) */
     .dir = 0,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_39_zero_off_out_67_copy_in_32 ca pipe offset=1 */
+    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_41_zero_off_out_76_copy_in_59 ca pipe offset=1 */
     .offset_start = 9216,
     .offset_end = 10240,
     .offset_limit = 12352,
@@ -6838,7 +7573,7 @@ static void LL_ATON_Start_EpochBlock_26(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(1, &Conv2D_39_ca_pipe_1_dma_init_in_0_26, 1);
+  LL_Streng_TensorInit(8, &Conv2D_41_ca_pipe_1_dma_init_in_0_17, 1);
 
 
   /* Dma input bandwidth from memory pools: */
@@ -6847,16 +7582,16 @@ static void LL_ATON_Start_EpochBlock_26(const void *epoch_block)
 
   /* Dma output units from cycle: */
   /* Unit= 3 [STREAM_ENG_V2 3] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_39_ca_pipe_1 output ports=0 range=1[16384,17408] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_41_ca_pipe_1 output ports=0 range=1[16384,17408] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_39_ca_pipe_1_dma_init_out_0_26 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_41_ca_pipe_1_dma_init_out_0_17 = {
     /* partial accumulator 1024 (16 bits) */
     .dir = 1,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_39_out_0_cp_in_32 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_41_out_0_cp_in_59 */
     .offset_start = 16384,
     .offset_end = 17408,
     .offset_limit = 17472,
@@ -6875,18 +7610,18 @@ static void LL_ATON_Start_EpochBlock_26(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(3, &Conv2D_39_ca_pipe_1_dma_init_out_0_26, 1);
+  LL_Streng_TensorInit(3, &Conv2D_41_ca_pipe_1_dma_init_out_0_17, 1);
 
-  /* Unit= 0 [STREAM_ENG_V2 0] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_43_suboff_75 output ports=0 range=1[12288,16384] */
+  /* Unit= 1 [STREAM_ENG_V2 1] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_45_suboff_84 output ports=0 range=1[12288,16384] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_43_suboff_75_dma_init_out_0_26 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_45_suboff_84_dma_init_out_0_17 = {
     /* to memory canonical from batch=8 */
     .dir = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_43_zero_off_out_76 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_45_zero_off_out_85 */
     .offset_start = 12288,
     .offset_limit = 16448,
     .frame_count = 0,
@@ -6904,113 +7639,113 @@ static void LL_ATON_Start_EpochBlock_26(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(0, &Conv2D_43_suboff_75_dma_init_out_0_26, 1);
+  LL_Streng_TensorInit(1, &Conv2D_45_suboff_84_dma_init_out_0_17, 1);
 
 
   /* Dma output bandwidth to memory pools: */
   /* npuRAM5 <- 24576 */
 
-  static const LL_Switch_InitTypeDef switch_init_in_26[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39 IN: in unit=CONV_ACC_V2 1 in port=2 out unit=STREAM_ENG_V2 5 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39_ca_pipe_1 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39_ca_pipe_1 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39_ca_pipe_1 IN: in unit=CONV_ACC_V2 2 in port=2 out unit=CONV_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39_ca_pipe_1 OUT: in unit=STREAM_ENG_V2 3 in port=0 out unit=CONV_ACC_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_39_mul_scale_70 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=CONV_ACC_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39_off_bias_72 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43_suboff_75 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43_suboff_75 OUT: in unit=STREAM_ENG_V2 0 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+  static const LL_Switch_InitTypeDef switch_init_in_17[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41 IN: in unit=CONV_ACC_V2 1 in port=2 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41_ca_pipe_1 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41_ca_pipe_1 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41_ca_pipe_1 IN: in unit=CONV_ACC_V2 3 in port=2 out unit=CONV_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41_ca_pipe_1 OUT: in unit=STREAM_ENG_V2 3 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_41_mul_scale_79 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41_off_bias_81 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45_suboff_84 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45_suboff_84 OUT: in unit=STREAM_ENG_V2 1 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
   };
 
 
-  /* epoch=26 */
-  LL_Switch_Init(switch_init_in_26, 11);
+  /* epoch=17 */
+  LL_Switch_Init(switch_init_in_17, 11);
 
-  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_26_all_units[] = {
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_17_all_units[] = {
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
     { {STRENG, 3} }, /* STREAM_ENG_V2 */
     { {CONVACC, 1} }, /* CONV_ACC_V2 */
-    { {CONVACC, 2} }, /* CONV_ACC_V2 */
+    { {CONVACC, 3} }, /* CONV_ACC_V2 */
     { {ARITH, 0} }, /* ARITH_ACC_V2 */
     { {ARITH, 1} }, /* ARITH_ACC_V2 */
-    { {ARITH, 2} }, /* ARITH_ACC_V2 */
-    { {STRENG, 1} }, /* STREAM_ENG_V2 */
+    { {ARITH, 3} }, /* ARITH_ACC_V2 */
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
     { {STRENG, 4} }, /* STREAM_ENG_V2 */
-    { {STRENG, 5} }, /* STREAM_ENG_V2 */
-    { {STRENG, 6} }, /* STREAM_ENG_V2 */
+    { {STRENG, 7} }, /* STREAM_ENG_V2 */
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_EnableUnits_Init(Enable_epoch_26_all_units, 11);
+  LL_ATON_EnableUnits_Init(Enable_epoch_17_all_units, 11);
 
 }
 
-static void LL_ATON_End_EpochBlock_26(const void *epoch_block)
+static void LL_ATON_End_EpochBlock_17(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-  static const LL_Switch_DeinitTypeDef switch_deinit_in_26[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39 IN: in unit=CONV_ACC_V2 1 in port=2 out unit=STREAM_ENG_V2 5 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39_ca_pipe_1 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39_ca_pipe_1 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39_ca_pipe_1 IN: in unit=CONV_ACC_V2 2 in port=2 out unit=CONV_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39_ca_pipe_1 OUT: in unit=STREAM_ENG_V2 3 in port=0 out unit=CONV_ACC_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_39_mul_scale_70 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=CONV_ACC_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_39_off_bias_72 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43_suboff_75 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43_suboff_75 OUT: in unit=STREAM_ENG_V2 0 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_17[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41 IN: in unit=CONV_ACC_V2 1 in port=2 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41_ca_pipe_1 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41_ca_pipe_1 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 4 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41_ca_pipe_1 IN: in unit=CONV_ACC_V2 3 in port=2 out unit=CONV_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41_ca_pipe_1 OUT: in unit=STREAM_ENG_V2 3 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_41_mul_scale_79 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_41_off_bias_81 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45_suboff_84 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45_suboff_84 OUT: in unit=STREAM_ENG_V2 1 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
   };
 
 
-  /* epoch=26 */
-  LL_Switch_Deinit(switch_deinit_in_26, 11);
+  /* epoch=17 */
+  LL_Switch_Deinit(switch_deinit_in_17, 11);
 
-  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_26_all_units[] = {
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_17_all_units[] = {
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
     { {STRENG, 3} }, /* STREAM_ENG_V2 */
     { {CONVACC, 1} }, /* CONV_ACC_V2 */
-    { {CONVACC, 2} }, /* CONV_ACC_V2 */
+    { {CONVACC, 3} }, /* CONV_ACC_V2 */
     { {ARITH, 0} }, /* ARITH_ACC_V2 */
     { {ARITH, 1} }, /* ARITH_ACC_V2 */
-    { {ARITH, 2} }, /* ARITH_ACC_V2 */
-    { {STRENG, 1} }, /* STREAM_ENG_V2 */
+    { {ARITH, 3} }, /* ARITH_ACC_V2 */
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
     { {STRENG, 4} }, /* STREAM_ENG_V2 */
-    { {STRENG, 5} }, /* STREAM_ENG_V2 */
-    { {STRENG, 6} }, /* STREAM_ENG_V2 */
+    { {STRENG, 7} }, /* STREAM_ENG_V2 */
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_DisableUnits_Init(Disable_epoch_26_all_units, 11);
+  LL_ATON_DisableUnits_Init(Disable_epoch_17_all_units, 11);
 
 }
 
 
-/* scheduling epoch=27   nodes=1   ------------------------------------------------------------------- */
-/* no resources allocated to kind=Identity node=Conv2D_43_conv_identity */
+/* scheduling epoch=18   nodes=1   ------------------------------------------------------------------- */
+/* no resources allocated to kind=Identity node=Conv2D_45_conv_identity */
 
-static void LL_ATON_Start_EpochBlock_27(const void *epoch_block)
+static void LL_ATON_Start_EpochBlock_18(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
   /* Unit= 28 [NULL_UNIT 0] */
-  /* kind=Identity node=Conv2D_43_conv_identity */
-  /* node=Conv2D_43_conv_identity satisfies input and output adjacency (DMA->DMA) and can be omitted */
+  /* kind=Identity node=Conv2D_45_conv_identity */
+  /* node=Conv2D_45_conv_identity satisfies input and output adjacency (DMA->DMA) and can be omitted */
 
   /* Dma inputs units to cycle: */
-  /* Unit= 5 [STREAM_ENG_V2 5] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_43_conv_identity input ports=0 range=1[12288,16384] */
+  /* Unit= 9 [STREAM_ENG_V2 9] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_45_conv_identity input ports=0 range=1[12288,16384] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_43_conv_identity_dma_init_in_0_27 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_45_conv_identity_dma_init_in_0_18 = {
     /* memory canonical to batch=16 */
     .dir = 0,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_43_zero_off_out_76_copy_in_36 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_45_zero_off_out_85_copy_in_63 */
     .offset_start = 12288,
     .offset_limit = 16448,
     .frame_count = 0,
@@ -7028,24 +7763,24 @@ static void LL_ATON_Start_EpochBlock_27(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(5, &Conv2D_43_conv_identity_dma_init_in_0_27, 1);
+  LL_Streng_TensorInit(9, &Conv2D_45_conv_identity_dma_init_in_0_18, 1);
 
 
   /* Dma input bandwidth from memory pools: */
   /* npuRAM5 -> 4096 */
 
   /* Dma output units from cycle: */
-  /* Unit= 2 [STREAM_ENG_V2 2] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_43_conv_identity output ports=0 range=1[8192,12288] */
+  /* Unit= 0 [STREAM_ENG_V2 0] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_45_conv_identity output ports=0 range=1[8192,12288] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_43_conv_identity_dma_init_out_0_27 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_45_conv_identity_dma_init_out_0_18 = {
     /* to memory with batch=16 */
     .dir = 1,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_43_zero_off_out_76_cp_in_36 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_45_zero_off_out_85_cp_in_63 */
     .offset_start = 8192,
     .offset_end = 9216,
     .offset_limit = 12352,
@@ -7064,62 +7799,62 @@ static void LL_ATON_Start_EpochBlock_27(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(2, &Conv2D_43_conv_identity_dma_init_out_0_27, 1);
+  LL_Streng_TensorInit(0, &Conv2D_45_conv_identity_dma_init_out_0_18, 1);
 
 
   /* Dma output bandwidth to memory pools: */
   /* npuRAM5 <- 4096 */
 
-  static const LL_Switch_InitTypeDef switch_init_in_27[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43_conv_identity OUT: in unit=STREAM_ENG_V2 2 in port=0 out unit=STREAM_ENG_V2 5 out port=0 */
+  static const LL_Switch_InitTypeDef switch_init_in_18[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45_conv_identity OUT: in unit=STREAM_ENG_V2 0 in port=0 out unit=STREAM_ENG_V2 9 out port=0 */
   };
 
 
-  /* epoch=27 */
-  LL_Switch_Init(switch_init_in_27, 1);
+  /* epoch=18 */
+  LL_Switch_Init(switch_init_in_18, 1);
 
-  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_27_all_units[] = {
-    { {STRENG, 2} }, /* STREAM_ENG_V2 */
-    { {STRENG, 5} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_18_all_units[] = {
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_EnableUnits_Init(Enable_epoch_27_all_units, 2);
+  LL_ATON_EnableUnits_Init(Enable_epoch_18_all_units, 2);
 
 }
 
-static void LL_ATON_End_EpochBlock_27(const void *epoch_block)
+static void LL_ATON_End_EpochBlock_18(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-  static const LL_Switch_DeinitTypeDef switch_deinit_in_27[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43_conv_identity OUT: in unit=STREAM_ENG_V2 2 in port=0 out unit=STREAM_ENG_V2 5 out port=0 */
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_18[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45_conv_identity OUT: in unit=STREAM_ENG_V2 0 in port=0 out unit=STREAM_ENG_V2 9 out port=0 */
   };
 
 
-  /* epoch=27 */
-  LL_Switch_Deinit(switch_deinit_in_27, 1);
+  /* epoch=18 */
+  LL_Switch_Deinit(switch_deinit_in_18, 1);
 
-  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_27_all_units[] = {
-    { {STRENG, 2} }, /* STREAM_ENG_V2 */
-    { {STRENG, 5} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_18_all_units[] = {
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_DisableUnits_Init(Disable_epoch_27_all_units, 2);
+  LL_ATON_DisableUnits_Init(Disable_epoch_18_all_units, 2);
 
 }
 
 
-/* scheduling epoch=28   nodes=4   ------------------------------------------------------------------- */
+/* scheduling epoch=19   nodes=4   ------------------------------------------------------------------- */
 
-static void LL_ATON_Start_EpochBlock_28(const void *epoch_block)
+static void LL_ATON_Start_EpochBlock_19(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
   /* Unit= 10 [CONV_ACC_V2 0] */
-  /* kind=Conv node=Conv2D_43 */
-  static const LL_Convacc_InitTypeDef Conv2D_43_init28 = {
+  /* kind=Conv node=Conv2D_45 */
+  static const LL_Convacc_InitTypeDef Conv2D_45_init19 = {
     .simd = 1,
     .fsub = 0,
     .accumulate = 1,
@@ -7168,12 +7903,12 @@ static void LL_ATON_Start_EpochBlock_28(const void *epoch_block)
   };
 
   /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(0, &Conv2D_43_init28);
+  LL_Convacc_Init(0, &Conv2D_45_init19);
 
 
-  /* Unit= 13 [CONV_ACC_V2 3] */
-  /* kind=Conv node=Conv2D_43_ca_pipe_1 */
-  static const LL_Convacc_InitTypeDef Conv2D_43_ca_pipe_1_init28 = {
+  /* Unit= 12 [CONV_ACC_V2 2] */
+  /* kind=Conv node=Conv2D_45_ca_pipe_1 */
+  static const LL_Convacc_InitTypeDef Conv2D_45_ca_pipe_1_init19 = {
     .simd = 1,
     .fsub = 0,
     .accumulate = 1,
@@ -7219,12 +7954,12 @@ static void LL_ATON_Start_EpochBlock_28(const void *epoch_block)
   };
 
   /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(3, &Conv2D_43_ca_pipe_1_init28);
+  LL_Convacc_Init(2, &Conv2D_45_ca_pipe_1_init19);
 
 
-  /* Unit= 21 [ARITH_ACC_V2 3] */
-  /* kind=Mul node=Conv2D_43_mul_scale_79 */
-  static const LL_Arithacc_InitTypeDef Conv2D_43_mul_scale_79_init28 = {
+  /* Unit= 20 [ARITH_ACC_V2 2] */
+  /* kind=Mul node=Conv2D_45_mul_scale_88 */
+  static const LL_Arithacc_InitTypeDef Conv2D_45_mul_scale_88_init19 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -7244,7 +7979,7 @@ static void LL_ATON_Start_EpochBlock_28(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 2,
-    .shift_o = 16,
+    .shift_o = 14,
     .scalar = 0,
     .dualinput = 0,
     .operation = ARITH_AFFINE,
@@ -7261,19 +7996,19 @@ static void LL_ATON_Start_EpochBlock_28(const void *epoch_block)
     .A_scalar = 1,
     .B_scalar = 0,
     .C_scalar = 0,
-    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 97504))) /* Equivalent hex address = 0x71017ce0UL */},
+    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 81824))) /* Equivalent hex address = 0x71013fa0UL */},
     .B_vector = {0},
     .C_vector = {0},
     .vec_precision = {16, 16, 16},
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(3, &Conv2D_43_mul_scale_79_init28);
+  LL_Arithacc_Init(2, &Conv2D_45_mul_scale_88_init19);
 
 
   /* Unit= 18 [ARITH_ACC_V2 0] */
-  /* kind=Add node=Conv2D_43_off_bias_81 */
-  static const LL_Arithacc_InitTypeDef Conv2D_43_off_bias_81_init28 = {
+  /* kind=Add node=Conv2D_45_off_bias_90 */
+  static const LL_Arithacc_InitTypeDef Conv2D_45_off_bias_90_init19 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -7293,8 +8028,8 @@ static void LL_ATON_Start_EpochBlock_28(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 1,
-    .shift_o = 18,
-    .scalar = 1,
+    .shift_o = 20,
+    .scalar = 0,
     .dualinput = 0,
     .operation = ARITH_AFFINE,
     .bcast = ARITH_BCAST_CHAN,
@@ -7307,31 +8042,31 @@ static void LL_ATON_Start_EpochBlock_28(const void *epoch_block)
     .batchDepth = 8,
     .clipmin = 0,
     .clipmax = 0,
-    .A_scalar = 25706,
-    .B_scalar = 56,
+    .A_scalar = 16507,
+    .B_scalar = 0,
     .C_scalar = (short)0,
     .A_vector = {0},
     .B_vector = {0},
-    .C_vector = {0},
-    .vec_precision = {16, 16, 16},
+    .C_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 79248))) /* Equivalent hex address = 0x71013590UL */},
+    .vec_precision = {16, 16, 32},
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(0, &Conv2D_43_off_bias_81_init28);
+  LL_Arithacc_Init(0, &Conv2D_45_off_bias_90_init19);
 
 
   /* Dma inputs units to cycle: */
-  /* Unit= 6 [STREAM_ENG_V2 6] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_43 input ports=0 range=1[8192,12288] */
+  /* Unit= 8 [STREAM_ENG_V2 8] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_45 input ports=0 range=1[8192,12288] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_43_dma_init_in_0_28 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_45_dma_init_in_0_19 = {
     /* 64x1x16(8 bits) */
     .dir = 0,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_43_zero_off_out_76 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_45_zero_off_out_85 */
     .offset_start = 8192,
     .offset_end = 9216,
     .offset_limit = 12352,
@@ -7350,12 +8085,12 @@ static void LL_ATON_Start_EpochBlock_28(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(6, &Conv2D_43_dma_init_in_0_28, 1);
+  LL_Streng_TensorInit(8, &Conv2D_45_dma_init_in_0_19, 1);
 
-  /* Unit= 2 [STREAM_ENG_V2 2] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_43 input ports=1 range=8[44544,56832] */
+  /* Unit= 7 [STREAM_ENG_V2 7] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_45 input ports=1 range=8[12288,24576] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_43_dma_init_in_1_28 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_45_dma_init_in_1_19 = {
     /* 64x3x1x64(8 bits) */
     .dir = 0,
     .raw = 1,
@@ -7365,10 +8100,10 @@ static void LL_ATON_Start_EpochBlock_28(const void *epoch_block)
     .nbits_unsigned = 0,
     .cacheable = 1,
     .cache_allocate = 0,
-    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_43_weights */
-    .offset_start = 44544,
-    .offset_end = 56832,
-    .offset_limit = 56896,
+    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Conv2D_45_weights */
+    .offset_start = 12288,
+    .offset_end = 24576,
+    .offset_limit = 24640,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -7384,12 +8119,12 @@ static void LL_ATON_Start_EpochBlock_28(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(2, &Conv2D_43_dma_init_in_1_28, 1);
+  LL_Streng_TensorInit(7, &Conv2D_45_dma_init_in_1_19, 1);
 
-  /* Unit= 7 [STREAM_ENG_V2 7] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_43 input ports=2 range=1[12288,13312] */
+  /* Unit= 2 [STREAM_ENG_V2 2] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_45 input ports=2 range=1[12288,13312] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_43_dma_init_in_2_28 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_45_dma_init_in_2_19 = {
     /* partial accumulator 1024 (16 bits) */
     .dir = 0,
     .raw = 1,
@@ -7397,7 +8132,7 @@ static void LL_ATON_Start_EpochBlock_28(const void *epoch_block)
     .align_right = 1,
     .sync_with_other = 1,
     .nbits_unsigned = 0,
-    .sync_dma = 3,
+    .sync_dma = 5,
     .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* ATONN_ACCUMULATOR_PORT */
     .offset_start = 12288,
     .offset_end = 13312,
@@ -7417,19 +8152,19 @@ static void LL_ATON_Start_EpochBlock_28(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(7, &Conv2D_43_dma_init_in_2_28, 1);
+  LL_Streng_TensorInit(2, &Conv2D_45_dma_init_in_2_19, 1);
 
-  /* Unit= 0 [STREAM_ENG_V2 0] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_43_ca_pipe_1 input ports=0 range=1[8192,12288] */
+  /* Unit= 3 [STREAM_ENG_V2 3] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_45_ca_pipe_1 input ports=0 range=1[8192,12288] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_43_ca_pipe_1_dma_init_in_0_28 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_45_ca_pipe_1_dma_init_in_0_19 = {
     /* 64x1x16(8 bits) */
     .dir = 0,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_43_zero_off_out_76_copy_in_33 ca pipe offset=1 */
+    .addr_base = {(unsigned char *)ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_45_zero_off_out_85_copy_in_60 ca pipe offset=1 */
     .offset_start = 9216,
     .offset_end = 10240,
     .offset_limit = 12352,
@@ -7448,7 +8183,7 @@ static void LL_ATON_Start_EpochBlock_28(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(0, &Conv2D_43_ca_pipe_1_dma_init_in_0_28, 1);
+  LL_Streng_TensorInit(3, &Conv2D_45_ca_pipe_1_dma_init_in_0_19, 1);
 
 
   /* Dma input bandwidth from memory pools: */
@@ -7456,17 +8191,17 @@ static void LL_ATON_Start_EpochBlock_28(const void *epoch_block)
   /* octoFlash -> 12288 */
 
   /* Dma output units from cycle: */
-  /* Unit= 3 [STREAM_ENG_V2 3] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_43_ca_pipe_1 output ports=0 range=1[12288,13312] */
+  /* Unit= 5 [STREAM_ENG_V2 5] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_45_ca_pipe_1 output ports=0 range=1[12288,13312] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_43_ca_pipe_1_dma_init_out_0_28 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_45_ca_pipe_1_dma_init_out_0_19 = {
     /* partial accumulator 1024 (16 bits) */
     .dir = 1,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_43_out_0_cp_in_33 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_45_out_0_cp_in_60 */
     .offset_start = 12288,
     .offset_end = 13312,
     .offset_limit = 13376,
@@ -7485,19 +8220,19 @@ static void LL_ATON_Start_EpochBlock_28(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(3, &Conv2D_43_ca_pipe_1_dma_init_out_0_28, 1);
+  LL_Streng_TensorInit(5, &Conv2D_45_ca_pipe_1_dma_init_out_0_19, 1);
 
-  /* Unit= 4 [STREAM_ENG_V2 4] */
-  /* Emit conf for STREAM_ENG_V2 node=Conv2D_43_off_bias_81 output ports=0 range=1[4096,8192] */
+  /* Unit= 9 [STREAM_ENG_V2 9] */
+  /* Emit conf for STREAM_ENG_V2 node=Conv2D_45_off_bias_90 output ports=0 range=1[4096,8192] */
 
-  static const LL_Streng_TensorInitTypeDef Conv2D_43_off_bias_81_dma_init_out_0_28 = {
+  static const LL_Streng_TensorInitTypeDef Conv2D_45_off_bias_90_dma_init_out_0_19 = {
     /* to memory with batch=8 */
     .dir = 1,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_43_off_bias_out_82 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Conv2D_45_off_bias_out_91 */
     .offset_start = 4096,
     .offset_end = 4608,
     .offset_limit = 8256,
@@ -7516,96 +8251,96 @@ static void LL_ATON_Start_EpochBlock_28(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(4, &Conv2D_43_off_bias_81_dma_init_out_0_28, 1);
+  LL_Streng_TensorInit(9, &Conv2D_45_off_bias_90_dma_init_out_0_19, 1);
 
 
   /* Dma output bandwidth to memory pools: */
   /* npuRAM5 <- 24576 */
 
-  static const LL_Switch_InitTypeDef switch_init_in_28[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43_ca_pipe_1 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43_ca_pipe_1 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43_ca_pipe_1 IN: in unit=CONV_ACC_V2 3 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43_ca_pipe_1 OUT: in unit=STREAM_ENG_V2 3 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_43_mul_scale_79 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43_off_bias_81 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43_off_bias_81 OUT: in unit=STREAM_ENG_V2 4 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+  static const LL_Switch_InitTypeDef switch_init_in_19[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=STREAM_ENG_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45_ca_pipe_1 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45_ca_pipe_1 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45_ca_pipe_1 IN: in unit=CONV_ACC_V2 2 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45_ca_pipe_1 OUT: in unit=STREAM_ENG_V2 5 in port=0 out unit=CONV_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_45_mul_scale_88 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=CONV_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45_off_bias_90 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45_off_bias_90 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
   };
 
 
-  /* epoch=28 */
-  LL_Switch_Init(switch_init_in_28, 10);
+  /* epoch=19 */
+  LL_Switch_Init(switch_init_in_19, 10);
 
-  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_28_all_units[] = {
-    { {STRENG, 3} }, /* STREAM_ENG_V2 */
-    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_19_all_units[] = {
+    { {STRENG, 5} }, /* STREAM_ENG_V2 */
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
     { {CONVACC, 0} }, /* CONV_ACC_V2 */
-    { {CONVACC, 3} }, /* CONV_ACC_V2 */
+    { {CONVACC, 2} }, /* CONV_ACC_V2 */
     { {ARITH, 0} }, /* ARITH_ACC_V2 */
-    { {ARITH, 3} }, /* ARITH_ACC_V2 */
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {ARITH, 2} }, /* ARITH_ACC_V2 */
     { {STRENG, 2} }, /* STREAM_ENG_V2 */
-    { {STRENG, 6} }, /* STREAM_ENG_V2 */
+    { {STRENG, 3} }, /* STREAM_ENG_V2 */
     { {STRENG, 7} }, /* STREAM_ENG_V2 */
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_EnableUnits_Init(Enable_epoch_28_all_units, 10);
+  LL_ATON_EnableUnits_Init(Enable_epoch_19_all_units, 10);
 
 }
 
-static void LL_ATON_End_EpochBlock_28(const void *epoch_block)
+static void LL_ATON_End_EpochBlock_19(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-  static const LL_Switch_DeinitTypeDef switch_deinit_in_28[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=STREAM_ENG_V2 7 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43_ca_pipe_1 IN: in unit=CONV_ACC_V2 3 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43_ca_pipe_1 IN: in unit=CONV_ACC_V2 3 in port=1 out unit=STREAM_ENG_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 3, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43_ca_pipe_1 IN: in unit=CONV_ACC_V2 3 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43_ca_pipe_1 OUT: in unit=STREAM_ENG_V2 3 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 3, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_43_mul_scale_79 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=CONV_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43_off_bias_81 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 4, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_43_off_bias_81 OUT: in unit=STREAM_ENG_V2 4 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_19[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45 IN: in unit=CONV_ACC_V2 0 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45 IN: in unit=CONV_ACC_V2 0 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 0, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45 IN: in unit=CONV_ACC_V2 0 in port=2 out unit=STREAM_ENG_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45_ca_pipe_1 IN: in unit=CONV_ACC_V2 2 in port=0 out unit=STREAM_ENG_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 7, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45_ca_pipe_1 IN: in unit=CONV_ACC_V2 2 in port=1 out unit=STREAM_ENG_V2 7 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 2, 2), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45_ca_pipe_1 IN: in unit=CONV_ACC_V2 2 in port=2 out unit=CONV_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 5, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45_ca_pipe_1 OUT: in unit=STREAM_ENG_V2 5 in port=0 out unit=CONV_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(0) = 0, LL_Switch_Init_Frames(0) = 1, LL_Switch_Init_Source(1) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 2, 0), LL_Switch_Init_Context(1) = 1, LL_Switch_Init_Frames(1) = 1, }, /* Conv2D_45_mul_scale_88 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=CONV_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45_off_bias_90 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Conv2D_45_off_bias_90 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
   };
 
 
-  /* epoch=28 */
-  LL_Switch_Deinit(switch_deinit_in_28, 10);
+  /* epoch=19 */
+  LL_Switch_Deinit(switch_deinit_in_19, 10);
 
-  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_28_all_units[] = {
-    { {STRENG, 3} }, /* STREAM_ENG_V2 */
-    { {STRENG, 4} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_19_all_units[] = {
+    { {STRENG, 5} }, /* STREAM_ENG_V2 */
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
     { {CONVACC, 0} }, /* CONV_ACC_V2 */
-    { {CONVACC, 3} }, /* CONV_ACC_V2 */
+    { {CONVACC, 2} }, /* CONV_ACC_V2 */
     { {ARITH, 0} }, /* ARITH_ACC_V2 */
-    { {ARITH, 3} }, /* ARITH_ACC_V2 */
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {ARITH, 2} }, /* ARITH_ACC_V2 */
     { {STRENG, 2} }, /* STREAM_ENG_V2 */
-    { {STRENG, 6} }, /* STREAM_ENG_V2 */
+    { {STRENG, 3} }, /* STREAM_ENG_V2 */
     { {STRENG, 7} }, /* STREAM_ENG_V2 */
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_DisableUnits_Init(Disable_epoch_28_all_units, 10);
+  LL_ATON_DisableUnits_Init(Disable_epoch_19_all_units, 10);
 
 }
 
 
-/* scheduling epoch=29   nodes=4   ------------------------------------------------------------------- */
+/* scheduling epoch=20   nodes=4   ------------------------------------------------------------------- */
 
-static void LL_ATON_Start_EpochBlock_29(const void *epoch_block)
+static void LL_ATON_Start_EpochBlock_20(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
   /* Unit= 19 [ARITH_ACC_V2 1] */
-  /* kind=Add node=Add_46 */
-  static const LL_Arithacc_InitTypeDef Add_46_init29 = {
+  /* kind=Add node=Add_48 */
+  static const LL_Arithacc_InitTypeDef Add_48_init20 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -7630,18 +8365,18 @@ static void LL_ATON_Start_EpochBlock_29(const void *epoch_block)
     .dualinput = 1,
     .operation = ARITH_AFFINE,
     .bcast = ARITH_BCAST_NONE,
-    .Ax_shift = 0,
-    .By_shift = 1,
-    .C_shift = 2,
+    .Ax_shift = 2,
+    .By_shift = 0,
+    .C_shift = 6,
     .fWidth = 64,
     .fHeight = 1,
     .fChannels = 64,
     .batchDepth = 8,
     .clipmin = 0,
     .clipmax = 0,
-    .A_scalar = 18631,
-    .B_scalar = 26481,
-    .C_scalar = 25554,
+    .A_scalar = 22168,
+    .B_scalar = 29318,
+    .C_scalar = -24891,
     .A_vector = {0},
     .B_vector = {0},
     .C_vector = {0},
@@ -7649,12 +8384,12 @@ static void LL_ATON_Start_EpochBlock_29(const void *epoch_block)
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(1, &Add_46_init29);
+  LL_Arithacc_Init(1, &Add_48_init20);
 
 
   /* Unit= 22 [POOL_ACC_V2 0] */
-  /* kind=AveragePool node=AveragePool_49 */
-  static const LL_Poolacc_InitTypeDef AveragePool_49_init29 = {
+  /* kind=AveragePool node=AveragePool_51 */
+  static const LL_Poolacc_InitTypeDef AveragePool_51_init20 = {
     .operation = POOL_GAVG,
     .avgnopad = 0,
     .inputX = 64,
@@ -7693,12 +8428,12 @@ static void LL_ATON_Start_EpochBlock_29(const void *epoch_block)
   };
 
   /* Unit=POOL_ACC_V2 */
-  LL_Poolacc_Init(0, &AveragePool_49_init29);
+  LL_Poolacc_Init(0, &AveragePool_51_init20);
 
 
-  /* Unit= 20 [ARITH_ACC_V2 2] */
-  /* kind=Add node=RequantizeLinear_inserted_id219 */
-  static const LL_Arithacc_InitTypeDef RequantizeLinear_inserted_id219_init29 = {
+  /* Unit= 21 [ARITH_ACC_V2 3] */
+  /* kind=Add node=RequantizeLinear_inserted_id234 */
+  static const LL_Arithacc_InitTypeDef RequantizeLinear_inserted_id234_init20 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -7718,7 +8453,7 @@ static void LL_ATON_Start_EpochBlock_29(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 1,
-    .shift_o = 13,
+    .shift_o = 12,
     .scalar = 1,
     .dualinput = 0,
     .operation = ARITH_AFFINE,
@@ -7732,9 +8467,9 @@ static void LL_ATON_Start_EpochBlock_29(const void *epoch_block)
     .batchDepth = 8,
     .clipmin = 0,
     .clipmax = 0,
-    .A_scalar = 21718,
-    .B_scalar = 26,
-    .C_scalar = (short)27363,
+    .A_scalar = 19380,
+    .B_scalar = 29,
+    .C_scalar = (short)55814,
     .A_vector = {0},
     .B_vector = {0},
     .C_vector = {0},
@@ -7742,12 +8477,12 @@ static void LL_ATON_Start_EpochBlock_29(const void *epoch_block)
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(2, &RequantizeLinear_inserted_id219_init29);
+  LL_Arithacc_Init(3, &RequantizeLinear_inserted_id234_init20);
 
 
   /* Unit= 18 [ARITH_ACC_V2 0] */
-  /* kind=Sub node=Gemm_51_conv_4_suboff_84 */
-  static const LL_Arithacc_InitTypeDef Gemm_51_conv_4_suboff_84_init29 = {
+  /* kind=Sub node=Gemm_53_conv_4_suboff_93 */
+  static const LL_Arithacc_InitTypeDef Gemm_53_conv_4_suboff_93_init20 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -7791,21 +8526,21 @@ static void LL_ATON_Start_EpochBlock_29(const void *epoch_block)
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(0, &Gemm_51_conv_4_suboff_84_init29);
+  LL_Arithacc_Init(0, &Gemm_53_conv_4_suboff_93_init20);
 
 
   /* Dma inputs units to cycle: */
-  /* Unit= 0 [STREAM_ENG_V2 0] */
-  /* Emit conf for STREAM_ENG_V2 node=Add_46 input ports=0 range=1[0,4096] */
+  /* Unit= 6 [STREAM_ENG_V2 6] */
+  /* Emit conf for STREAM_ENG_V2 node=Add_48 input ports=0 range=1[0,4096] */
 
-  static const LL_Streng_TensorInitTypeDef Add_46_dma_init_in_0_29 = {
+  static const LL_Streng_TensorInitTypeDef Add_48_dma_init_in_0_20 = {
     /* from memory with batch=8 */
     .dir = 0,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Dequantize_37_out_0 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Dequantize_39_out_0 */
     .offset_start = 0,
     .offset_end = 512,
     .offset_limit = 4160,
@@ -7824,19 +8559,19 @@ static void LL_ATON_Start_EpochBlock_29(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(0, &Add_46_dma_init_in_0_29, 1);
+  LL_Streng_TensorInit(6, &Add_48_dma_init_in_0_20, 1);
 
-  /* Unit= 6 [STREAM_ENG_V2 6] */
-  /* Emit conf for STREAM_ENG_V2 node=Add_46 input ports=1 range=1[4096,8192] */
+  /* Unit= 1 [STREAM_ENG_V2 1] */
+  /* Emit conf for STREAM_ENG_V2 node=Add_48 input ports=1 range=1[4096,8192] */
 
-  static const LL_Streng_TensorInitTypeDef Add_46_dma_init_in_1_29 = {
+  static const LL_Streng_TensorInitTypeDef Add_48_dma_init_in_1_20 = {
     /* from memory with batch=8 */
     .dir = 0,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Dequantize_45_out_0 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Dequantize_47_out_0 */
     .offset_start = 4096,
     .offset_end = 4608,
     .offset_limit = 8256,
@@ -7855,24 +8590,24 @@ static void LL_ATON_Start_EpochBlock_29(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(6, &Add_46_dma_init_in_1_29, 1);
+  LL_Streng_TensorInit(1, &Add_48_dma_init_in_1_20, 1);
 
 
   /* Dma input bandwidth from memory pools: */
   /* npuRAM5 -> 8192 */
 
   /* Dma output units from cycle: */
-  /* Unit= 8 [STREAM_ENG_V2 8] */
-  /* Emit conf for STREAM_ENG_V2 node=Gemm_51_conv_4_suboff_84 output ports=0 range=1[8192,8256] */
+  /* Unit= 9 [STREAM_ENG_V2 9] */
+  /* Emit conf for STREAM_ENG_V2 node=Gemm_53_conv_4_suboff_93 output ports=0 range=1[8192,8256] */
 
-  static const LL_Streng_TensorInitTypeDef Gemm_51_conv_4_suboff_84_dma_init_out_0_29 = {
+  static const LL_Streng_TensorInitTypeDef Gemm_53_conv_4_suboff_93_dma_init_out_0_20 = {
     /* to memory with batch=8 */
     .dir = 1,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Gemm_51_conv_4_zero_off_out_85 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Gemm_53_conv_4_zero_off_out_94 */
     .offset_start = 8192,
     .offset_end = 8200,
     .offset_limit = 8320,
@@ -7891,82 +8626,82 @@ static void LL_ATON_Start_EpochBlock_29(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(8, &Gemm_51_conv_4_suboff_84_dma_init_out_0_29, 1);
+  LL_Streng_TensorInit(9, &Gemm_53_conv_4_suboff_93_dma_init_out_0_20, 1);
 
 
   /* Dma output bandwidth to memory pools: */
   /* npuRAM5 <- 64 */
 
-  static const LL_Switch_InitTypeDef switch_init_in_29[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_46 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_46 IN: in unit=ARITH_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 6 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, POOL, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* AveragePool_49 IN: in unit=POOL_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, POOL, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* RequantizeLinear_inserted_id219 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=POOL_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_51_conv_4_suboff_84 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_51_conv_4_suboff_84 OUT: in unit=STREAM_ENG_V2 8 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+  static const LL_Switch_InitTypeDef switch_init_in_20[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_48 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_48 IN: in unit=ARITH_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, POOL, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* AveragePool_51 IN: in unit=POOL_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, POOL, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* RequantizeLinear_inserted_id234 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=POOL_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_53_conv_4_suboff_93 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_53_conv_4_suboff_93 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
   };
 
 
-  /* epoch=29 */
-  LL_Switch_Init(switch_init_in_29, 6);
+  /* epoch=20 */
+  LL_Switch_Init(switch_init_in_20, 6);
 
-  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_29_all_units[] = {
-    { {STRENG, 8} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_20_all_units[] = {
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
     { {ARITH, 0} }, /* ARITH_ACC_V2 */
     { {ARITH, 1} }, /* ARITH_ACC_V2 */
-    { {ARITH, 2} }, /* ARITH_ACC_V2 */
+    { {ARITH, 3} }, /* ARITH_ACC_V2 */
     { {POOL, 0} }, /* POOL_ACC_V2 */
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
     { {STRENG, 6} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_EnableUnits_Init(Enable_epoch_29_all_units, 7);
+  LL_ATON_EnableUnits_Init(Enable_epoch_20_all_units, 7);
 
 }
 
-static void LL_ATON_End_EpochBlock_29(const void *epoch_block)
+static void LL_ATON_End_EpochBlock_20(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-  static const LL_Switch_DeinitTypeDef switch_deinit_in_29[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_46 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_46 IN: in unit=ARITH_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 6 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, POOL, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* AveragePool_49 IN: in unit=POOL_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, POOL, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* RequantizeLinear_inserted_id219 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=POOL_ACC_V2 0 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_51_conv_4_suboff_84 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_51_conv_4_suboff_84 OUT: in unit=STREAM_ENG_V2 8 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_20[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 6, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_48 IN: in unit=ARITH_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 6 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Add_48 IN: in unit=ARITH_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, POOL, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* AveragePool_51 IN: in unit=POOL_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, POOL, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* RequantizeLinear_inserted_id234 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=POOL_ACC_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_53_conv_4_suboff_93 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_53_conv_4_suboff_93 OUT: in unit=STREAM_ENG_V2 9 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
   };
 
 
-  /* epoch=29 */
-  LL_Switch_Deinit(switch_deinit_in_29, 6);
+  /* epoch=20 */
+  LL_Switch_Deinit(switch_deinit_in_20, 6);
 
-  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_29_all_units[] = {
-    { {STRENG, 8} }, /* STREAM_ENG_V2 */
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_20_all_units[] = {
+    { {STRENG, 9} }, /* STREAM_ENG_V2 */
     { {ARITH, 0} }, /* ARITH_ACC_V2 */
     { {ARITH, 1} }, /* ARITH_ACC_V2 */
-    { {ARITH, 2} }, /* ARITH_ACC_V2 */
+    { {ARITH, 3} }, /* ARITH_ACC_V2 */
     { {POOL, 0} }, /* POOL_ACC_V2 */
-    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {STRENG, 1} }, /* STREAM_ENG_V2 */
     { {STRENG, 6} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_DisableUnits_Init(Disable_epoch_29_all_units, 7);
+  LL_ATON_DisableUnits_Init(Disable_epoch_20_all_units, 7);
 
 }
 
 
-/* scheduling epoch=30   nodes=4   ------------------------------------------------------------------- */
+/* scheduling epoch=21   nodes=4   ------------------------------------------------------------------- */
 
-static void LL_ATON_Start_EpochBlock_30(const void *epoch_block)
+static void LL_ATON_Start_EpochBlock_21(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
   /* Unit= 11 [CONV_ACC_V2 1] */
-  /* kind=Conv node=Gemm_51_conv_4 */
-  static const LL_Convacc_InitTypeDef Gemm_51_conv_4_init30 = {
+  /* kind=Conv node=Gemm_53_conv_4 */
+  static const LL_Convacc_InitTypeDef Gemm_53_conv_4_init21 = {
     .simd = 1,
     .fsub = 0,
     .accumulate = 0,
@@ -7981,13 +8716,13 @@ static void LL_ATON_Start_EpochBlock_30(const void *epoch_block)
     .zfbias = 0,
     .inbytes_f = 3,
     .shift_f = 0,
-    .shift_a = 4,
+    .shift_a = 2,
     .rounding_o = 1,
     .saturation_o = 1,
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 2,
-    .shift_o = 4,
+    .shift_o = 2,
     .raw_o = 0,
     .fWidth = 1,
     .fHeight = 1,
@@ -8008,12 +8743,12 @@ static void LL_ATON_Start_EpochBlock_30(const void *epoch_block)
   };
 
   /* Unit=CONV_ACC_V2 */
-  LL_Convacc_Init(1, &Gemm_51_conv_4_init30);
+  LL_Convacc_Init(1, &Gemm_53_conv_4_init21);
 
 
-  /* Unit= 21 [ARITH_ACC_V2 3] */
-  /* kind=Mul node=Gemm_51_conv_4_mul_scale_88 */
-  static const LL_Arithacc_InitTypeDef Gemm_51_conv_4_mul_scale_88_init30 = {
+  /* Unit= 20 [ARITH_ACC_V2 2] */
+  /* kind=Mul node=Gemm_53_conv_4_mul_scale_97 */
+  static const LL_Arithacc_InitTypeDef Gemm_53_conv_4_mul_scale_97_init21 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -8033,7 +8768,7 @@ static void LL_ATON_Start_EpochBlock_30(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 2,
-    .shift_o = 17,
+    .shift_o = 16,
     .scalar = 0,
     .dualinput = 0,
     .operation = ARITH_AFFINE,
@@ -8050,19 +8785,19 @@ static void LL_ATON_Start_EpochBlock_30(const void *epoch_block)
     .A_scalar = 1,
     .B_scalar = 0,
     .C_scalar = 0,
-    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 98496))) /* Equivalent hex address = 0x710180c0UL */},
+    .A_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 82496))) /* Equivalent hex address = 0x71014240UL */},
     .B_vector = {0},
     .C_vector = {0},
     .vec_precision = {16, 16, 16},
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(3, &Gemm_51_conv_4_mul_scale_88_init30);
+  LL_Arithacc_Init(2, &Gemm_53_conv_4_mul_scale_97_init21);
 
 
   /* Unit= 18 [ARITH_ACC_V2 0] */
-  /* kind=Add node=Gemm_51_conv_4_off_bias_90 */
-  static const LL_Arithacc_InitTypeDef Gemm_51_conv_4_off_bias_90_init30 = {
+  /* kind=Add node=Gemm_53_conv_4_off_bias_99 */
+  static const LL_Arithacc_InitTypeDef Gemm_53_conv_4_off_bias_99_init21 = {
     .rounding_x = 0,
     .saturation_x = 0,
     .round_mode_x = 0,
@@ -8082,8 +8817,8 @@ static void LL_ATON_Start_EpochBlock_30(const void *epoch_block)
     .round_mode_o = 1,
     .relu_mode_o = 0,
     .outbytes_o = 1,
-    .shift_o = 17,
-    .scalar = 1,
+    .shift_o = 20,
+    .scalar = 0,
     .dualinput = 0,
     .operation = ARITH_AFFINE,
     .bcast = ARITH_BCAST_CHAN,
@@ -8096,24 +8831,24 @@ static void LL_ATON_Start_EpochBlock_30(const void *epoch_block)
     .batchDepth = 4,
     .clipmin = 0,
     .clipmax = 0,
-    .A_scalar = 29841,
-    .B_scalar = -256,
+    .A_scalar = 19357,
+    .B_scalar = 0,
     .C_scalar = (short)0,
     .A_vector = {0},
     .B_vector = {0},
-    .C_vector = {0},
-    .vec_precision = {16, 16, 16},
+    .C_vector = {((unsigned char *)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x71000000UL + 82480))) /* Equivalent hex address = 0x71014230UL */},
+    .vec_precision = {16, 16, 32},
   };
 
   /* Unit=ARITH_ACC_V2 */
-  LL_Arithacc_Init(0, &Gemm_51_conv_4_off_bias_90_init30);
+  LL_Arithacc_Init(0, &Gemm_53_conv_4_off_bias_99_init21);
 
 
   /* Dma inputs units to cycle: */
-  /* Unit= 9 [STREAM_ENG_V2 9] */
-  /* Emit conf for STREAM_ENG_V2 node=Gemm_51_conv_4 input ports=0 range=1[8192,8256] */
+  /* Unit= 8 [STREAM_ENG_V2 8] */
+  /* Emit conf for STREAM_ENG_V2 node=Gemm_53_conv_4 input ports=0 range=1[8192,8256] */
 
-  static const LL_Streng_TensorInitTypeDef Gemm_51_conv_4_dma_init_in_0_30 = {
+  static const LL_Streng_TensorInitTypeDef Gemm_53_conv_4_dma_init_in_0_21 = {
     /* 1x1x64(8 bits) */
     .dir = 0,
     .raw = 1,
@@ -8121,7 +8856,7 @@ static void LL_ATON_Start_EpochBlock_30(const void *epoch_block)
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 1,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Gemm_51_conv_4_zero_off_out_85 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Gemm_53_conv_4_zero_off_out_94 */
     .offset_start = 8192,
     .offset_end = 8258,
     .offset_limit = 8320,
@@ -8140,12 +8875,12 @@ static void LL_ATON_Start_EpochBlock_30(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(9, &Gemm_51_conv_4_dma_init_in_0_30, 1);
+  LL_Streng_TensorInit(8, &Gemm_53_conv_4_dma_init_in_0_21, 1);
 
-  /* Unit= 3 [STREAM_ENG_V2 3] */
-  /* Emit conf for STREAM_ENG_V2 node=Gemm_51_conv_4 input ports=1 range=8[96000,96258] */
+  /* Unit= 0 [STREAM_ENG_V2 0] */
+  /* Emit conf for STREAM_ENG_V2 node=Gemm_53_conv_4 input ports=1 range=8[78976,79234] */
 
-  static const LL_Streng_TensorInitTypeDef Gemm_51_conv_4_dma_init_in_1_30 = {
+  static const LL_Streng_TensorInitTypeDef Gemm_53_conv_4_dma_init_in_1_21 = {
     /* 4x1x1x64(8 bits) */
     .dir = 0,
     .raw = 1,
@@ -8155,10 +8890,10 @@ static void LL_ATON_Start_EpochBlock_30(const void *epoch_block)
     .nbits_unsigned = 0,
     .cacheable = 1,
     .cache_allocate = 0,
-    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Gemm_51_weights_transposed_3 */
-    .offset_start = 96000,
-    .offset_end = 96258,
-    .offset_limit = 96328,
+    .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */}, /* Gemm_53_weights_transposed_3 */
+    .offset_start = 78976,
+    .offset_end = 79234,
+    .offset_limit = 79304,
     .frame_count = 0,
     .fwidth = 0,
     .fheight = 0,
@@ -8174,7 +8909,7 @@ static void LL_ATON_Start_EpochBlock_30(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(3, &Gemm_51_conv_4_dma_init_in_1_30, 1);
+  LL_Streng_TensorInit(0, &Gemm_53_conv_4_dma_init_in_1_21, 1);
 
 
   /* Dma input bandwidth from memory pools: */
@@ -8183,16 +8918,16 @@ static void LL_ATON_Start_EpochBlock_30(const void *epoch_block)
 
   /* Dma output units from cycle: */
   /* Unit= 2 [STREAM_ENG_V2 2] */
-  /* Emit conf for STREAM_ENG_V2 node=Gemm_51_conv_4_off_bias_90 output ports=0 range=1[0,4] */
+  /* Emit conf for STREAM_ENG_V2 node=Gemm_53_conv_4_off_bias_99 output ports=0 range=1[0,4] */
 
-  static const LL_Streng_TensorInitTypeDef Gemm_51_conv_4_off_bias_90_dma_init_out_0_30 = {
+  static const LL_Streng_TensorInitTypeDef Gemm_53_conv_4_off_bias_99_dma_init_out_0_21 = {
     /* to memory with batch=4 */
     .dir = 1,
     .raw = 1,
     .noblk = 0,
     .align_right = 0,
     .nbits_unsigned = 0,
-    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Gemm_51_conv_4_off_bias_out_91 */
+    .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */}, /* Gemm_53_conv_4_off_bias_out_100 */
     .offset_start = 0,
     .offset_end = 4,
     .offset_limit = 72,
@@ -8211,23 +8946,23 @@ static void LL_ATON_Start_EpochBlock_30(const void *epoch_block)
   };
 
   /* Unit=STREAM_ENG_V2 */
-  LL_Streng_TensorInit(2, &Gemm_51_conv_4_off_bias_90_dma_init_out_0_30, 1);
+  LL_Streng_TensorInit(2, &Gemm_53_conv_4_off_bias_99_dma_init_out_0_21, 1);
 
 
   /* Dma output bandwidth to memory pools: */
   /* npuRAM5 <- 4 */
 
-  static const LL_Switch_InitTypeDef switch_init_in_30[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_51_conv_4 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 9 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_51_conv_4 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_51_conv_4_mul_scale_88 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_51_conv_4_off_bias_90 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_51_conv_4_off_bias_90 OUT: in unit=STREAM_ENG_V2 2 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+  static const LL_Switch_InitTypeDef switch_init_in_21[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_53_conv_4 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_53_conv_4 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_53_conv_4_mul_scale_97 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_53_conv_4_off_bias_99 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_53_conv_4_off_bias_99 OUT: in unit=STREAM_ENG_V2 2 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
   };
 
 
-  /* epoch=30 */
-  LL_Switch_Init(switch_init_in_30, 5);
+  /* epoch=21 */
+  LL_Switch_Init(switch_init_in_21, 5);
 
   /* *** MCU cache invalidate (only) operation (HW, whole range) *** */
   /*     memory pool: 1 */
@@ -8235,52 +8970,52 @@ static void LL_ATON_Start_EpochBlock_30(const void *epoch_block)
   /*     end:   ((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 32))) */
   LL_ATON_Cache_MCU_Invalidate_Range(((uintptr_t)(ATON_LIB_PHYSICAL_TO_VIRTUAL_ADDR(0x342e0000UL + 0))) /* Equivalent hex address = 0x342e0000UL */, 32);
 
-  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_30_all_units[] = {
+  static const LL_ATON_EnableUnits_InitTypeDef Enable_epoch_21_all_units[] = {
     { {STRENG, 2} }, /* STREAM_ENG_V2 */
     { {CONVACC, 1} }, /* CONV_ACC_V2 */
     { {ARITH, 0} }, /* ARITH_ACC_V2 */
-    { {ARITH, 3} }, /* ARITH_ACC_V2 */
-    { {STRENG, 3} }, /* STREAM_ENG_V2 */
-    { {STRENG, 9} }, /* STREAM_ENG_V2 */
+    { {ARITH, 2} }, /* ARITH_ACC_V2 */
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_EnableUnits_Init(Enable_epoch_30_all_units, 6);
+  LL_ATON_EnableUnits_Init(Enable_epoch_21_all_units, 6);
 
 }
 
-static void LL_ATON_End_EpochBlock_30(const void *epoch_block)
+static void LL_ATON_End_EpochBlock_21(const void *epoch_block)
 {
   LL_ATON_LIB_UNUSED(epoch_block);
 
-  static const LL_Switch_DeinitTypeDef switch_deinit_in_30[] = {
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 9, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_51_conv_4 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 9 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_51_conv_4 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_51_conv_4_mul_scale_88 IN: in unit=ARITH_ACC_V2 3 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 3, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_51_conv_4_off_bias_90 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 3 out port=0 */
-    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_51_conv_4_off_bias_90 OUT: in unit=STREAM_ENG_V2 2 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
+  static const LL_Switch_DeinitTypeDef switch_deinit_in_21[] = {
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 8, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_53_conv_4 IN: in unit=CONV_ACC_V2 1 in port=0 out unit=STREAM_ENG_V2 8 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, CONVACC, 1, 1), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, STRENG, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_53_conv_4 IN: in unit=CONV_ACC_V2 1 in port=1 out unit=STREAM_ENG_V2 0 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, CONVACC, 1, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_53_conv_4_mul_scale_97 IN: in unit=ARITH_ACC_V2 2 in port=0 out unit=CONV_ACC_V2 1 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 2, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_53_conv_4_off_bias_99 IN: in unit=ARITH_ACC_V2 0 in port=0 out unit=ARITH_ACC_V2 2 out port=0 */
+    { LL_Switch_Init_Dest() = ATONN_DSTPORT(STRSWITCH, 0, STRENG, 2, 0), LL_Switch_Init_Source(0) = ATONN_SRCPORT(STRSWITCH, 0, ARITH, 0, 0), LL_Switch_Init_Context(0) = 1, LL_Switch_Init_Frames(0) = 0, }, /* Gemm_53_conv_4_off_bias_99 OUT: in unit=STREAM_ENG_V2 2 in port=0 out unit=ARITH_ACC_V2 0 out port=0 */
   };
 
 
-  /* epoch=30 */
-  LL_Switch_Deinit(switch_deinit_in_30, 5);
+  /* epoch=21 */
+  LL_Switch_Deinit(switch_deinit_in_21, 5);
 
-  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_30_all_units[] = {
+  static const LL_ATON_DisableUnits_InitTypeDef Disable_epoch_21_all_units[] = {
     { {STRENG, 2} }, /* STREAM_ENG_V2 */
     { {CONVACC, 1} }, /* CONV_ACC_V2 */
     { {ARITH, 0} }, /* ARITH_ACC_V2 */
-    { {ARITH, 3} }, /* ARITH_ACC_V2 */
-    { {STRENG, 3} }, /* STREAM_ENG_V2 */
-    { {STRENG, 9} }, /* STREAM_ENG_V2 */
+    { {ARITH, 2} }, /* ARITH_ACC_V2 */
+    { {STRENG, 0} }, /* STREAM_ENG_V2 */
+    { {STRENG, 8} }, /* STREAM_ENG_V2 */
   };
 
 
-  LL_ATON_DisableUnits_Init(Disable_epoch_30_all_units, 6);
+  LL_ATON_DisableUnits_Init(Disable_epoch_21_all_units, 6);
 
 }
 
 
-/* scheduling epoch=31   nodes=1   ------------------------------------------------------------------- */
+/* scheduling epoch=22   nodes=1   ------------------------------------------------------------------- */
 
 /* scheduling DONE                 ------------------------------------------------------------------- */
 
@@ -8290,13 +9025,13 @@ const EpochBlock_ItemTypeDef *LL_ATON_EpochBlockItems_tiny_temporal_mixer_8ch_in
     {
       .start_epoch_block = LL_ATON_Start_EpochBlock_1,
       .end_epoch_block = LL_ATON_End_EpochBlock_1,
-      .wait_mask = 0x00000015,
+      .wait_mask = 0x00000070,
       .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 1,
       .last_epoch_num = 1,
-      .in_streng_mask = 0x000003e8,
-      .out_streng_mask = 0x00000015,
+      .in_streng_mask = 0x0000038e,
+      .out_streng_mask = 0x00000070,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
@@ -8304,13 +9039,13 @@ const EpochBlock_ItemTypeDef *LL_ATON_EpochBlockItems_tiny_temporal_mixer_8ch_in
     {
       .start_epoch_block = LL_ATON_Start_EpochBlock_2,
       .end_epoch_block = LL_ATON_End_EpochBlock_2,
-      .wait_mask = 0x00000029,
+      .wait_mask = 0x000000a2,
       .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 2,
       .last_epoch_num = 2,
-      .in_streng_mask = 0x000003d6,
-      .out_streng_mask = 0x00000029,
+      .in_streng_mask = 0x0000015d,
+      .out_streng_mask = 0x000000a2,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
@@ -8318,13 +9053,13 @@ const EpochBlock_ItemTypeDef *LL_ATON_EpochBlockItems_tiny_temporal_mixer_8ch_in
     {
       .start_epoch_block = LL_ATON_Start_EpochBlock_3,
       .end_epoch_block = LL_ATON_End_EpochBlock_3,
-      .wait_mask = 0x00000204,
+      .wait_mask = 0x00000088,
       .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 3,
       .last_epoch_num = 3,
-      .in_streng_mask = 0x00000198,
-      .out_streng_mask = 0x00000204,
+      .in_streng_mask = 0x00000216,
+      .out_streng_mask = 0x00000088,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
@@ -8332,13 +9067,13 @@ const EpochBlock_ItemTypeDef *LL_ATON_EpochBlockItems_tiny_temporal_mixer_8ch_in
     {
       .start_epoch_block = LL_ATON_Start_EpochBlock_4,
       .end_epoch_block = LL_ATON_End_EpochBlock_4,
-      .wait_mask = 0x00000008,
+      .wait_mask = 0x00000100,
       .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 4,
       .last_epoch_num = 4,
-      .in_streng_mask = 0x00000084,
-      .out_streng_mask = 0x00000008,
+      .in_streng_mask = 0x00000041,
+      .out_streng_mask = 0x00000100,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
@@ -8346,69 +9081,69 @@ const EpochBlock_ItemTypeDef *LL_ATON_EpochBlockItems_tiny_temporal_mixer_8ch_in
     {
       .start_epoch_block = LL_ATON_Start_EpochBlock_5,
       .end_epoch_block = LL_ATON_End_EpochBlock_5,
-      .wait_mask = 0x00000010,
+      .wait_mask = 0x00000002,
       .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 5,
       .last_epoch_num = 5,
-      .in_streng_mask = 0x00000021,
-      .out_streng_mask = 0x00000010,
+      .in_streng_mask = 0x00000084,
+      .out_streng_mask = 0x00000002,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
     },
     {
-      .start_epoch_block = NULL,
+      .start_epoch_block = LL_ATON_Start_EpochBlock_6,
       .end_epoch_block = LL_ATON_End_EpochBlock_6,
-      .wait_mask = 0x00000000,
-      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_sw,
+      .wait_mask = 0x00000200,
+      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 6,
       .last_epoch_num = 6,
-      .in_streng_mask = 0x00000000,
-      .out_streng_mask = 0x00000000,
+      .in_streng_mask = 0x00000110,
+      .out_streng_mask = 0x00000200,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
     },
     {
-      .start_epoch_block = NULL,
+      .start_epoch_block = LL_ATON_Start_EpochBlock_7,
       .end_epoch_block = LL_ATON_End_EpochBlock_7,
-      .wait_mask = 0x00000000,
-      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_sw,
+      .wait_mask = 0x00000014,
+      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 7,
       .last_epoch_num = 7,
-      .in_streng_mask = 0x00000000,
-      .out_streng_mask = 0x00000000,
+      .in_streng_mask = 0x00000149,
+      .out_streng_mask = 0x00000014,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
     },
     {
-      .start_epoch_block = NULL,
+      .start_epoch_block = LL_ATON_Start_EpochBlock_8,
       .end_epoch_block = LL_ATON_End_EpochBlock_8,
-      .wait_mask = 0x00000000,
-      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_sw,
+      .wait_mask = 0x00000004,
+      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 8,
       .last_epoch_num = 8,
-      .in_streng_mask = 0x00000000,
-      .out_streng_mask = 0x00000000,
+      .in_streng_mask = 0x000001a9,
+      .out_streng_mask = 0x00000004,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
     },
     {
-      .start_epoch_block = NULL,
+      .start_epoch_block = LL_ATON_Start_EpochBlock_9,
       .end_epoch_block = LL_ATON_End_EpochBlock_9,
-      .wait_mask = 0x00000000,
-      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_sw,
+      .wait_mask = 0x00000200,
+      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 9,
       .last_epoch_num = 9,
-      .in_streng_mask = 0x00000000,
-      .out_streng_mask = 0x00000000,
+      .in_streng_mask = 0x000000da,
+      .out_streng_mask = 0x00000200,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
@@ -8421,50 +9156,50 @@ const EpochBlock_ItemTypeDef *LL_ATON_EpochBlockItems_tiny_temporal_mixer_8ch_in
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 10,
       .last_epoch_num = 10,
-      .in_streng_mask = 0x00000004,
+      .in_streng_mask = 0x00000202,
       .out_streng_mask = 0x00000100,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
     },
     {
-      .start_epoch_block = NULL,
+      .start_epoch_block = LL_ATON_Start_EpochBlock_11,
       .end_epoch_block = LL_ATON_End_EpochBlock_11,
-      .wait_mask = 0x00000000,
-      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_sw,
+      .wait_mask = 0x00000220,
+      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 11,
       .last_epoch_num = 11,
-      .in_streng_mask = 0x00000000,
-      .out_streng_mask = 0x00000000,
+      .in_streng_mask = 0x0000019c,
+      .out_streng_mask = 0x00000220,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
     },
     {
-      .start_epoch_block = NULL,
+      .start_epoch_block = LL_ATON_Start_EpochBlock_12,
       .end_epoch_block = LL_ATON_End_EpochBlock_12,
-      .wait_mask = 0x00000000,
-      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_sw,
+      .wait_mask = 0x00000005,
+      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 12,
       .last_epoch_num = 12,
-      .in_streng_mask = 0x00000000,
-      .out_streng_mask = 0x00000000,
+      .in_streng_mask = 0x0000007a,
+      .out_streng_mask = 0x00000005,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
     },
     {
-      .start_epoch_block = NULL,
+      .start_epoch_block = LL_ATON_Start_EpochBlock_13,
       .end_epoch_block = LL_ATON_End_EpochBlock_13,
-      .wait_mask = 0x00000000,
-      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_hybrid,
+      .wait_mask = 0x000000c0,
+      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 13,
       .last_epoch_num = 13,
-      .in_streng_mask = 0x00000000,
-      .out_streng_mask = 0x00000000,
+      .in_streng_mask = 0x00000331,
+      .out_streng_mask = 0x000000c0,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
@@ -8472,55 +9207,55 @@ const EpochBlock_ItemTypeDef *LL_ATON_EpochBlockItems_tiny_temporal_mixer_8ch_in
     {
       .start_epoch_block = LL_ATON_Start_EpochBlock_14,
       .end_epoch_block = LL_ATON_End_EpochBlock_14,
-      .wait_mask = 0x00000004,
+      .wait_mask = 0x00000020,
       .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 14,
       .last_epoch_num = 14,
-      .in_streng_mask = 0x00000080,
-      .out_streng_mask = 0x00000004,
+      .in_streng_mask = 0x00000003,
+      .out_streng_mask = 0x00000020,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
     },
     {
-      .start_epoch_block = NULL,
+      .start_epoch_block = LL_ATON_Start_EpochBlock_15,
       .end_epoch_block = LL_ATON_End_EpochBlock_15,
-      .wait_mask = 0x00000000,
-      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_sw,
+      .wait_mask = 0x00000380,
+      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 15,
       .last_epoch_num = 15,
-      .in_streng_mask = 0x00000000,
-      .out_streng_mask = 0x00000000,
+      .in_streng_mask = 0x00000074,
+      .out_streng_mask = 0x00000380,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
     },
     {
-      .start_epoch_block = NULL,
+      .start_epoch_block = LL_ATON_Start_EpochBlock_16,
       .end_epoch_block = LL_ATON_End_EpochBlock_16,
-      .wait_mask = 0x00000000,
-      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_sw,
+      .wait_mask = 0x00000200,
+      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 16,
       .last_epoch_num = 16,
-      .in_streng_mask = 0x00000000,
-      .out_streng_mask = 0x00000000,
+      .in_streng_mask = 0x00000010,
+      .out_streng_mask = 0x00000200,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
     },
     {
-      .start_epoch_block = NULL,
+      .start_epoch_block = LL_ATON_Start_EpochBlock_17,
       .end_epoch_block = LL_ATON_End_EpochBlock_17,
-      .wait_mask = 0x00000000,
-      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_hybrid,
+      .wait_mask = 0x0000000a,
+      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 17,
       .last_epoch_num = 17,
-      .in_streng_mask = 0x00000000,
-      .out_streng_mask = 0x00000000,
+      .in_streng_mask = 0x00000191,
+      .out_streng_mask = 0x0000000a,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
@@ -8528,13 +9263,13 @@ const EpochBlock_ItemTypeDef *LL_ATON_EpochBlockItems_tiny_temporal_mixer_8ch_in
     {
       .start_epoch_block = LL_ATON_Start_EpochBlock_18,
       .end_epoch_block = LL_ATON_End_EpochBlock_18,
-      .wait_mask = 0x00000200,
+      .wait_mask = 0x00000001,
       .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 18,
       .last_epoch_num = 18,
-      .in_streng_mask = 0x00000002,
-      .out_streng_mask = 0x00000200,
+      .in_streng_mask = 0x00000200,
+      .out_streng_mask = 0x00000001,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
@@ -8542,13 +9277,13 @@ const EpochBlock_ItemTypeDef *LL_ATON_EpochBlockItems_tiny_temporal_mixer_8ch_in
     {
       .start_epoch_block = LL_ATON_Start_EpochBlock_19,
       .end_epoch_block = LL_ATON_End_EpochBlock_19,
-      .wait_mask = 0x00000002,
+      .wait_mask = 0x00000220,
       .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 19,
       .last_epoch_num = 19,
-      .in_streng_mask = 0x00000088,
-      .out_streng_mask = 0x00000002,
+      .in_streng_mask = 0x0000018c,
+      .out_streng_mask = 0x00000220,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
@@ -8556,13 +9291,13 @@ const EpochBlock_ItemTypeDef *LL_ATON_EpochBlockItems_tiny_temporal_mixer_8ch_in
     {
       .start_epoch_block = LL_ATON_Start_EpochBlock_20,
       .end_epoch_block = LL_ATON_End_EpochBlock_20,
-      .wait_mask = 0x00000009,
+      .wait_mask = 0x00000200,
       .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 20,
       .last_epoch_num = 20,
-      .in_streng_mask = 0x000002b0,
-      .out_streng_mask = 0x00000009,
+      .in_streng_mask = 0x00000042,
+      .out_streng_mask = 0x00000200,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
 #endif // LL_ATON_EB_DBG_INFO
@@ -8570,138 +9305,12 @@ const EpochBlock_ItemTypeDef *LL_ATON_EpochBlockItems_tiny_temporal_mixer_8ch_in
     {
       .start_epoch_block = LL_ATON_Start_EpochBlock_21,
       .end_epoch_block = LL_ATON_End_EpochBlock_21,
-      .wait_mask = 0x00000220,
+      .wait_mask = 0x00000004,
       .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
 #ifdef LL_ATON_EB_DBG_INFO
       .epoch_num = 21,
       .last_epoch_num = 21,
-      .in_streng_mask = 0x000001c9,
-      .out_streng_mask = 0x00000220,
-      .estimated_npu_cycles = 0,
-      .estimated_tot_cycles = 0,
-#endif // LL_ATON_EB_DBG_INFO
-    },
-    {
-      .start_epoch_block = LL_ATON_Start_EpochBlock_22,
-      .end_epoch_block = LL_ATON_End_EpochBlock_22,
-      .wait_mask = 0x00000018,
-      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
-#ifdef LL_ATON_EB_DBG_INFO
-      .epoch_num = 22,
-      .last_epoch_num = 22,
-      .in_streng_mask = 0x000000c7,
-      .out_streng_mask = 0x00000018,
-      .estimated_npu_cycles = 0,
-      .estimated_tot_cycles = 0,
-#endif // LL_ATON_EB_DBG_INFO
-    },
-    {
-      .start_epoch_block = LL_ATON_Start_EpochBlock_23,
-      .end_epoch_block = LL_ATON_End_EpochBlock_23,
-      .wait_mask = 0x00000010,
-      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
-#ifdef LL_ATON_EB_DBG_INFO
-      .epoch_num = 23,
-      .last_epoch_num = 23,
-      .in_streng_mask = 0x00000240,
-      .out_streng_mask = 0x00000010,
-      .estimated_npu_cycles = 0,
-      .estimated_tot_cycles = 0,
-#endif // LL_ATON_EB_DBG_INFO
-    },
-    {
-      .start_epoch_block = LL_ATON_Start_EpochBlock_24,
-      .end_epoch_block = LL_ATON_End_EpochBlock_24,
-      .wait_mask = 0x00000260,
-      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
-#ifdef LL_ATON_EB_DBG_INFO
-      .epoch_num = 24,
-      .last_epoch_num = 24,
-      .in_streng_mask = 0x00000191,
-      .out_streng_mask = 0x00000260,
-      .estimated_npu_cycles = 0,
-      .estimated_tot_cycles = 0,
-#endif // LL_ATON_EB_DBG_INFO
-    },
-    {
-      .start_epoch_block = LL_ATON_Start_EpochBlock_25,
-      .end_epoch_block = LL_ATON_End_EpochBlock_25,
-      .wait_mask = 0x00000040,
-      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
-#ifdef LL_ATON_EB_DBG_INFO
-      .epoch_num = 25,
-      .last_epoch_num = 25,
-      .in_streng_mask = 0x00000001,
-      .out_streng_mask = 0x00000040,
-      .estimated_npu_cycles = 0,
-      .estimated_tot_cycles = 0,
-#endif // LL_ATON_EB_DBG_INFO
-    },
-    {
-      .start_epoch_block = LL_ATON_Start_EpochBlock_26,
-      .end_epoch_block = LL_ATON_End_EpochBlock_26,
-      .wait_mask = 0x00000009,
-      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
-#ifdef LL_ATON_EB_DBG_INFO
-      .epoch_num = 26,
-      .last_epoch_num = 26,
-      .in_streng_mask = 0x00000072,
-      .out_streng_mask = 0x00000009,
-      .estimated_npu_cycles = 0,
-      .estimated_tot_cycles = 0,
-#endif // LL_ATON_EB_DBG_INFO
-    },
-    {
-      .start_epoch_block = LL_ATON_Start_EpochBlock_27,
-      .end_epoch_block = LL_ATON_End_EpochBlock_27,
-      .wait_mask = 0x00000004,
-      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
-#ifdef LL_ATON_EB_DBG_INFO
-      .epoch_num = 27,
-      .last_epoch_num = 27,
-      .in_streng_mask = 0x00000020,
-      .out_streng_mask = 0x00000004,
-      .estimated_npu_cycles = 0,
-      .estimated_tot_cycles = 0,
-#endif // LL_ATON_EB_DBG_INFO
-    },
-    {
-      .start_epoch_block = LL_ATON_Start_EpochBlock_28,
-      .end_epoch_block = LL_ATON_End_EpochBlock_28,
-      .wait_mask = 0x00000018,
-      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
-#ifdef LL_ATON_EB_DBG_INFO
-      .epoch_num = 28,
-      .last_epoch_num = 28,
-      .in_streng_mask = 0x000000c5,
-      .out_streng_mask = 0x00000018,
-      .estimated_npu_cycles = 0,
-      .estimated_tot_cycles = 0,
-#endif // LL_ATON_EB_DBG_INFO
-    },
-    {
-      .start_epoch_block = LL_ATON_Start_EpochBlock_29,
-      .end_epoch_block = LL_ATON_End_EpochBlock_29,
-      .wait_mask = 0x00000100,
-      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
-#ifdef LL_ATON_EB_DBG_INFO
-      .epoch_num = 29,
-      .last_epoch_num = 29,
-      .in_streng_mask = 0x00000041,
-      .out_streng_mask = 0x00000100,
-      .estimated_npu_cycles = 0,
-      .estimated_tot_cycles = 0,
-#endif // LL_ATON_EB_DBG_INFO
-    },
-    {
-      .start_epoch_block = LL_ATON_Start_EpochBlock_30,
-      .end_epoch_block = LL_ATON_End_EpochBlock_30,
-      .wait_mask = 0x00000004,
-      .flags = EpochBlock_Flags_epoch_start | EpochBlock_Flags_epoch_end | EpochBlock_Flags_pure_hw,
-#ifdef LL_ATON_EB_DBG_INFO
-      .epoch_num = 30,
-      .last_epoch_num = 30,
-      .in_streng_mask = 0x00000208,
+      .in_streng_mask = 0x00000101,
       .out_streng_mask = 0x00000004,
       .estimated_npu_cycles = 0,
       .estimated_tot_cycles = 0,
@@ -8720,85 +9329,97 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
 {
   static const uint32_t buff_info__shape_1_1_8_1024[] = { 1, 8, 1024, 1 };
   static const uint32_t buff_info__mem_shape_F_1_1_8_1024[] = { 1, 1, 8, 1024 };
-  static const float buff_info_Input_0_out_0_quant_scale[] = { 0.00199928018264472 };
+  static const float buff_info_Input_0_out_0_quant_scale[] = { 0.00675407843664289 };
   static const int16_t buff_info_Input_0_out_0_quant_offset[] = { 0 };
 #if LL_ATON_DBG_BUFFER_INFO_EXCLUDED == 0
-  static const uint32_t buff_info__shape_24_24_1_7[] = { 24, 1, 7, 24 };
-  static const uint32_t buff_info__mem_shape_L_24_24_1_7[] = { 24, 1, 7, 24 };
-  static const uint32_t buff_info__shape_48_24_1_5[] = { 48, 1, 5, 24 };
-  static const uint32_t buff_info__mem_shape_M8_48_24_1_5[] = { 48, 3, 1, 5, 8 };
-  static const float buff_info_Conv2D_20_weights_quant_scale[] = { 0.00101318140514195, 0.00101534300483763, 0.00101368501782417, 0.00100807833950967, 0.00101521599572152, 0.00101566046942025, 0.00101486989296973, 0.00101645977701992, 0.000996882212348282, 0.00101223273668438, 0.0010156137868762, 0.00101490330416709, 0.00100705376826227, 0.000999716226942837, 0.00100212427787483, 0.00101174716837704, 0.00100963632576168, 0.00101242738310248, 0.00101600424386561, 0.00101497315336019, 0.00101481669116765, 0.00100870954338461, 0.00101594475563616, 0.000998323666863143, 0.00101628038100898, 0.00101490668021142, 0.00101372681092471, 0.00100278691388667, 0.00101614848244935, 0.00101199152413756, 0.00101309956517071, 0.00101303751580417, 0.00100888521410525, 0.00101027509663254, 0.00100080587435514, 0.000994592672213912, 0.00101630622521043, 0.00101491098757833, 0.00101295218337327, 0.00100402720272541, 0.00101014389656484, 0.000990404980257154, 0.000983723439276218, 0.00101316219661385, 0.0010126163251698, 0.00101386581081897, 0.00100565631873906, 0.00101048324722797 };
-  static const int16_t buff_info_Conv2D_20_weights_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  static const uint32_t buff_info__shape_32_24_1_4[] = { 32, 1, 4, 24 };
+  static const uint32_t buff_info__mem_shape_M8_32_24_1_4[] = { 32, 3, 1, 4, 8 };
+  static const float buff_info_Conv2D_7_weights_quant_scale[] = { 0.00139687513001263, 0.00156063819304109, 0.00141750334296376, 0.00153526209760457, 0.00166379741858691, 0.00135992898140103, 0.00131286028772593, 0.00167085183784366, 0.00149801874067634, 0.00146756484173238, 0.00146094593219459, 0.00141554174479097, 0.00145764171611518, 0.00150621007196605, 0.00151423504576087, 0.00153035845141858, 0.00152567052282393, 0.00153488898649812, 0.00149501056876034, 0.00138106127269566, 0.00148482993245125, 0.00153139303438365, 0.00146835867781192, 0.00133324577473104, 0.00141380575951189, 0.0016499477205798, 0.00157802563626319, 0.00148147961590439, 0.00174728408455849, 0.00142147566657513, 0.00137285504024476, 0.00143760966602713 };
+  static const int16_t buff_info_Conv2D_7_weights_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  static const uint32_t buff_info__shape_32_32_1_5[] = { 32, 1, 5, 32 };
+  static const uint32_t buff_info__mem_shape_M8_32_32_1_5[] = { 32, 4, 1, 5, 8 };
+  static const float buff_info_Conv2D_11_weights_quant_scale[] = { 0.00135428411886096, 0.00121800287161022, 0.00128268986009061, 0.00131356343626976, 0.00124738470185548, 0.00122447207104415, 0.00148635823279619, 0.00132969673722982, 0.00112407491542399, 0.00134770013391972, 0.0014267290243879, 0.0013448583194986, 0.00113384227734059, 0.00135898147709668, 0.00128244189545512, 0.00119248940609396, 0.00135193485766649, 0.00124463893007487, 0.00153664674144238, 0.00143505318555981, 0.0013738808920607, 0.00138640380464494, 0.00120785715989769, 0.0011837468482554, 0.00132040854077786, 0.00131412537302822, 0.00133311294484884, 0.00136797421146184, 0.00116989191155881, 0.00127184810116887, 0.00123477692250162, 0.00138326361775398 };
+  static const int16_t buff_info_Conv2D_11_weights_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  static const float buff_info_Conv2D_15_weights_quant_scale[] = { 0.00155419902876019, 0.00142574368510395, 0.00180808280128986, 0.00160347740165889, 0.00126768846530467, 0.00168167473748326, 0.00127900496590883, 0.00166782655287534, 0.00132449611555785, 0.00116588431410491, 0.0014483742415905, 0.00131300371140242, 0.0013757070992142, 0.00134371069725603, 0.00164002203382552, 0.00143818429205567, 0.00169450254179537, 0.00135596573818475, 0.00137549103237689, 0.00173105567228049, 0.00135837052948773, 0.0021321012172848, 0.00133382738567889, 0.00137373746838421, 0.00141314836218953, 0.00147834850940853, 0.00152098713442683, 0.00164638971909881, 0.0018254027236253, 0.00154987268615514, 0.0014087479794398, 0.00138736004009843 };
+  static const int16_t buff_info_Conv2D_15_weights_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  static const uint32_t buff_info__shape_48_32_1_5[] = { 48, 1, 5, 32 };
+  static const uint32_t buff_info__mem_shape_M8_48_32_1_5[] = { 48, 4, 1, 5, 8 };
+  static const float buff_info_Conv2D_22_weights_quant_scale[] = { 0.00115566595923156, 0.00109524559229612, 0.00170664093457162, 0.00113811250776052, 0.0011427701683715, 0.00119095062837005, 0.001189558301121, 0.00155457633081824, 0.00139861821662635, 0.00142054865136743, 0.00134136585984379, 0.00136718235444278, 0.00119010685011744, 0.00104637013282627, 0.001224773703143, 0.00156536849681288, 0.00117532920558006, 0.00172109575942159, 0.00137013092171401, 0.00116881763096899, 0.00117622141260654, 0.00141336326487362, 0.00122750643640757, 0.00144910428207368, 0.00142089929431677, 0.00135024439077824, 0.0012391097843647, 0.00128857453819364, 0.00111766858026385, 0.00126230181194842, 0.00132562138605863, 0.00120100006461143, 0.00133667432237417, 0.00118549447506666, 0.00160348589997739, 0.00121027475688607, 0.00168083130847663, 0.00115695816930383, 0.00116822251584381, 0.0011630414519459, 0.00108117680065334, 0.00163556484039873, 0.00143655366264284, 0.00146473303902894, 0.00171758932992816, 0.00122774264309555, 0.00127811881247908, 0.00126386852934957 };
+  static const int16_t buff_info_Conv2D_22_weights_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   static const uint32_t buff_info__shape_48_48_1_5[] = { 48, 1, 5, 48 };
   static const uint32_t buff_info__mem_shape_M8_48_48_1_5[] = { 48, 6, 1, 5, 8 };
-  static const float buff_info_Conv2D_24_weights_quant_scale[] = { 0.000880302337463945, 0.000880054489243776, 0.00087990058818832, 0.000878176710102707, 0.000877463782671839, 0.000872408912982792, 0.000874662946444005, 0.000868079659994692, 0.000880239764228463, 0.00087344425264746, 0.0008749162661843, 0.000879729108419269, 0.000878856866620481, 0.000877853133715689, 0.000878280319739133, 0.000878209946677089, 0.000877351849339902, 0.000876650039572269, 0.000875543162692338, 0.000877907092217356, 0.000876690086442977, 0.000873545650392771, 0.000879838713444769, 0.000867567548993975, 0.000870856805704534, 0.000874133082106709, 0.000876501784659922, 0.000875158933922648, 0.000878528167959303, 0.000880064093507826, 0.000878823164384812, 0.000877545040566474, 0.000877923856023699, 0.00087677693227306, 0.000875590660143644, 0.000879400759004056, 0.0008786745602265, 0.00087344809435308, 0.000873965444043279, 0.000877958722412586, 0.000878801278304309, 0.000879391911439598, 0.000879982253536582, 0.00087944237748161, 0.000877780432347208, 0.000875858590006828, 0.000874136050697416, 0.000873233715537935 };
-  static const int16_t buff_info_Conv2D_24_weights_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-  static const float buff_info_Conv2D_28_weights_quant_scale[] = { 0.000874073943123221, 0.000876831240020692, 0.000879702507518232, 0.000880233710631728, 0.000871521071530879, 0.000872539996635169, 0.000871537951752543, 0.000876608188264072, 0.000876299978699535, 0.00087881728541106, 0.000876015285030007, 0.000880100124049932, 0.000876595207955688, 0.000872748671099544, 0.000869484036229551, 0.000870807387400419, 0.000877376587595791, 0.000879967061337084, 0.000877959420904517, 0.000875339901540428, 0.000867400201968849, 0.000878260820172727, 0.000877075653988868, 0.00087849679403007, 0.000880222592968494, 0.000875213590916246, 0.000878561986610293, 0.000878483522683382, 0.000876614241860807, 0.000879199069458991, 0.000877981015946716, 0.000868243630975485, 0.000879640399944037, 0.000877931015565991, 0.000879296741914004, 0.000876248348504305, 0.000878857914358377, 0.000880137551575899, 0.000878077058587223, 0.000872256932780147, 0.000876078964211047, 0.000879557977896184, 0.000878807448316365, 0.000876320467796177, 0.000870137009769678, 0.000878826947882771, 0.000876526813954115, 0.000876501202583313 };
-  static const int16_t buff_info_Conv2D_28_weights_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  static const float buff_info_Conv2D_26_weights_quant_scale[] = { 0.00101182935759425, 0.00154879386536777, 0.00128281372599304, 0.00108046666719019, 0.00133770133834332, 0.00125779223162681, 0.00173356209415942, 0.00145319767761976, 0.00168387417215854, 0.00144936714787036, 0.00129844329785556, 0.00133537722285837, 0.00162141514010727, 0.0012429601047188, 0.00116345717106014, 0.00147033447865397, 0.00133904872927815, 0.00128921191208065, 0.00132444535847753, 0.00196589902043343, 0.00148787954822183, 0.000892726529855281, 0.001240418641828, 0.00147703441325575, 0.000957439886406064, 0.00173715432174504, 0.00105334771797061, 0.00156549992971122, 0.00177320127841085, 0.00132579973433167, 0.00163547904230654, 0.00195545214228332, 0.00153447140473872, 0.00149653758853674, 0.00141703046392649, 0.00147704547271132, 0.00186423806007951, 0.00184792373329401, 0.00135848775971681, 0.00160208845045418, 0.0014020714443177, 0.00166918465401977, 0.00136569503229111, 0.00160240812692791, 0.00140231347177178, 0.00160524563398212, 0.00144621462095529, 0.000977389747276902 };
+  static const int16_t buff_info_Conv2D_26_weights_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  static const float buff_info_Conv2D_30_weights_quant_scale[] = { 0.00131727941334248, 0.00147395813837647, 0.00127723149489611, 0.000969958317000419, 0.00126789463683963, 0.00143811583984643, 0.00207614782266319, 0.00164142099674791, 0.00146553886588663, 0.00146871746983379, 0.00127955735661089, 0.00127304496709257, 0.00136844115331769, 0.00124615186359733, 0.00143026339355856, 0.00177372165489942, 0.00187330530025065, 0.00131399661768228, 0.00155803456436843, 0.00133926374837756, 0.00163106166291982, 0.00179674627725035, 0.00128162594046444, 0.00126282742712647, 0.00107205600943416, 0.00105521315708756, 0.0015240388456732, 0.00138846423942596, 0.00155646714847535, 0.00159368745516986, 0.00139523600228131, 0.00150590820703655, 0.00149801652878523, 0.0016427239170298, 0.00139024551026523, 0.00127458851784468, 0.00118178664706647, 0.00124257535208017, 0.00114624109119177, 0.00180642656050622, 0.0014093320351094, 0.00157475774176419, 0.00163918326143175, 0.00138175277970731, 0.00124526373110712, 0.00151844008360058, 0.00105904659722, 0.00175878300797194 };
+  static const int16_t buff_info_Conv2D_30_weights_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   static const uint32_t buff_info__shape_64_48_1_3[] = { 64, 1, 3, 48 };
   static const uint32_t buff_info__mem_shape_M12_64_48_1_3[] = { 64, 4, 1, 3, 12 };
-  static const float buff_info_Conv2D_35_weights_quant_scale[] = { 0.00104471482336521, 0.00104781927075237, 0.00105142849497497, 0.00104647583793849, 0.00104893185198307, 0.00104018079582602, 0.00105080346111208, 0.00104603101499379, 0.00102436111774296, 0.00105164025444537, 0.00105017132591456, 0.00104883301537484, 0.00104599038604647, 0.00103858823422343, 0.00104987004306167, 0.00105074245948344, 0.00104245415423065, 0.00103615317493677, 0.00104761717375368, 0.00104896607808769, 0.00103015115018934, 0.00104738771915436, 0.00104694627225399, 0.00104732008185238, 0.00104797293897718, 0.00104538630694151, 0.00104722718242556, 0.0010474860901013, 0.00102817453444004, 0.00104154960718006, 0.00104285660199821, 0.00103212217800319, 0.00104909087531269, 0.00103979441337287, 0.00104281667154282, 0.00105082022491843, 0.00104633311275393, 0.001031857682392, 0.00104643474332988, 0.00103259517345577, 0.00105151964817196, 0.0010478375479579, 0.001036032801494, 0.00104590377304703, 0.00105053070001304, 0.00104810507036746, 0.00103963038418442, 0.00105053198058158, 0.00102801050525159, 0.00104502937756479, 0.00102961179800332, 0.00104296917561442, 0.00105135084595531, 0.00104685802944005, 0.00105086050461978, 0.00104971113614738, 0.0010520889190957, 0.00105138006620109, 0.0010485922684893, 0.00104788725730032, 0.00104340550024062, 0.00104668259155005, 0.00105209043249488, 0.00105134083423764 };
-  static const int16_t buff_info_Conv2D_35_weights_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  static const float buff_info_Conv2D_37_weights_quant_scale[] = { 0.00111183733679354, 0.00178535468876362, 0.00110706291161478, 0.00183720327913761, 0.00129289971664548, 0.00195701466873288, 0.00134359078947455, 0.00110013666562736, 0.0015713720349595, 0.0014433404430747, 0.00120293477084488, 0.00157666124869138, 0.00127293274272233, 0.00151640619151294, 0.00164834095630795, 0.00141069549135864, 0.00149278820026666, 0.00196473835967481, 0.00165958690922707, 0.00158989673946053, 0.00223710108548403, 0.00165554601699114, 0.00163607101421803, 0.00138033647090197, 0.00166922912467271, 0.00116575788706541, 0.00167786481324583, 0.00136338733136654, 0.00225083809345961, 0.00237293285317719, 0.00143755099270493, 0.00126735237427056, 0.00235421000979841, 0.00108018913306296, 0.0011058640666306, 0.00138764677103609, 0.00136646500322968, 0.0012180678313598, 0.00156301213428378, 0.00158912618644536, 0.00114630605094135, 0.00108906882815063, 0.00141984841320664, 0.00186794030014426, 0.00166489649564028, 0.00302430475130677, 0.00161119480617344, 0.00139730679802597, 0.00175402383320034, 0.00158475595526397, 0.00123260193504393, 0.00109072437044233, 0.00130859797354788, 0.00138493441045284, 0.00116189115215093, 0.00209785439074039, 0.00127889972645789, 0.00133673660457134, 0.00123234337661415, 0.00203076074831188, 0.00163365749176592, 0.00140601361636072, 0.00118586933240294, 0.00236681383103132 };
+  static const int16_t buff_info_Conv2D_37_weights_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   static const uint32_t buff_info__shape_64_64_1_3[] = { 64, 1, 3, 64 };
   static const uint32_t buff_info__mem_shape_M16_64_64_1_3[] = { 64, 4, 1, 3, 16 };
-  static const float buff_info_Conv2D_39_weights_quant_scale[] = { 0.000983309117145836, 0.000978126539848745, 0.000978467869572341, 0.0009819061961025, 0.000978843425400555, 0.000983639969490469, 0.000953174137976021, 0.000980941113084555, 0.000982052879408002, 0.00097531103529036, 0.000983689096756279, 0.000979961361736059, 0.000984154990874231, 0.00095806794706732, 0.000975654576905072, 0.000977301970124245, 0.00098067382350564, 0.000984048121608794, 0.00098130211699754, 0.000982567551545799, 0.000976037059444934, 0.000982816680334508, 0.000980855547823012, 0.000977426650933921, 0.000972116074990481, 0.000981015618890524, 0.000982788391411304, 0.000978745752945542, 0.000983275007456541, 0.000982505735009909, 0.000981000252068043, 0.000982848810963333, 0.000971939880400896, 0.000982549740001559, 0.000981788383796811, 0.000980583019554615, 0.000978687312453985, 0.000949039589613676, 0.000977662275545299, 0.000981682911515236, 0.000975941133219749, 0.000981349381618202, 0.000971982080955058, 0.00098401156719774, 0.00098316406365484, 0.000980656011961401, 0.000978243188001215, 0.00098245672415942, 0.00097156671108678, 0.000983594916760921, 0.000961542129516602, 0.000980132375843823, 0.000984056270681322, 0.000981273595243692, 0.000981058226898313, 0.000982549390755594, 0.000984114012680948, 0.000983103178441525, 0.000984181533567607, 0.000979624572210014, 0.000983566045761108, 0.000980478362180293, 0.000980944721959531, 0.000983336940407753 };
-  static const int16_t buff_info_Conv2D_39_weights_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-  static const float buff_info_Conv2D_43_weights_quant_scale[] = { 0.000983099918812513, 0.000979576609097421, 0.00098025519400835, 0.000958225748036057, 0.000983374775387347, 0.000982557306997478, 0.000980805372819304, 0.000983337289653718, 0.000983430771157146, 0.000982306082732975, 0.000983578618615866, 0.000975274888332933, 0.000983079080469906, 0.000983066391199827, 0.000953038048464805, 0.00098163855727762, 0.000965945131611079, 0.000982219120487571, 0.000979712000116706, 0.000976076174993068, 0.000968425185419619, 0.000974739261437207, 0.000975801143795252, 0.000962321122642606, 0.000983915408141911, 0.00098297675140202, 0.000982222030870616, 0.000974857190158218, 0.000960007542744279, 0.000984039972536266, 0.000971228466369212, 0.00097448198357597, 0.000980823766440153, 0.000980785465799272, 0.000978216761723161, 0.000983227742835879, 0.000982700730673969, 0.000977420713752508, 0.000982059398666024, 0.000971988891251385, 0.00098132505081594, 0.000979890231974423, 0.000983798643574119, 0.0009722511167638, 0.00097814342007041, 0.000974702299572527, 0.000983790843747556, 0.000973677088040859, 0.000980303739197552, 0.000969862972851843, 0.000983591307885945, 0.000977528281509876, 0.000977244228124619, 0.000974061898887157, 0.000981358229182661, 0.00097146478947252, 0.000980896526016295, 0.000982726225629449, 0.000983949634246528, 0.000981661840341985, 0.000984221696853638, 0.00098147033713758, 0.000983814825303853, 0.000980207230895758 };
-  static const int16_t buff_info_Conv2D_43_weights_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  static const float buff_info_Conv2D_41_weights_quant_scale[] = { 0.00133584439754486, 0.00112044799607247, 0.00204456364735961, 0.00143462815321982, 0.00132829672656953, 0.00100283336360008, 0.00140742037910968, 0.00175819091964513, 0.00179328676313162, 0.0017420866061002, 0.00163964240346104, 0.000971537665463984, 0.0013198604574427, 0.00124064635019749, 0.00114184536505491, 0.000984027166850865, 0.00103115185629576, 0.00160287611652166, 0.00189653830602765, 0.00279704760760069, 0.00114391813986003, 0.00150567793752998, 0.00133575685322285, 0.00175359274726361, 0.00115771789569408, 0.00126951478887349, 0.00106614909600466, 0.00105201045516878, 0.00196475186385214, 0.00149258831515908, 0.00161206256598234, 0.0012617523316294, 0.00163641618564725, 0.00117571442387998, 0.00140842341352254, 0.00109624734614044, 0.00209166039712727, 0.00193039781879634, 0.00182566081639379, 0.00104671530425549, 0.00135617505293339, 0.00117432721890509, 0.00195198704022914, 0.00122629723045975, 0.00163724308367819, 0.00161532941274345, 0.00153060152661055, 0.00165402540005744, 0.00186055852100253, 0.00179910741280764, 0.0015665153041482, 0.0015121839242056, 0.00105915660969913, 0.00127696013078094, 0.00152941595297307, 0.0013728664489463, 0.00206051417626441, 0.00111835752613842, 0.00141972023993731, 0.00168123783078045, 0.00123198109213263, 0.00209779688157141, 0.00140104815363884, 0.00160368566866964 };
+  static const int16_t buff_info_Conv2D_41_weights_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  static const float buff_info_Conv2D_45_weights_quant_scale[] = { 0.00171332829631865, 0.00249445089139044, 0.00166806858032942, 0.00187769252806902, 0.00212339265272021, 0.00225682859309018, 0.00226686452515423, 0.0014129945775494, 0.00214443099685013, 0.00135476118884981, 0.00120670476462692, 0.00252908654510975, 0.00154538033530116, 0.00177457020618021, 0.00203721830621362, 0.00181074009742588, 0.0014824039535597, 0.00212035467848182, 0.00245616445317864, 0.00195958511903882, 0.00194668932817876, 0.00226765731349587, 0.00167576724197716, 0.00184549565892667, 0.00135729264002293, 0.00117393734399229, 0.0022254791110754, 0.00178163684904575, 0.00147898984141648, 0.00139009917620569, 0.00117968348786235, 0.00204905983991921, 0.00170571147464216, 0.00183187157381326, 0.00153394648805261, 0.00148516963236034, 0.00240143900737166, 0.00196568435057998, 0.00136979925446212, 0.00133597920648754, 0.00164792849682271, 0.00186025258153677, 0.00223317509517074, 0.00135425431653857, 0.00171068904455751, 0.00216735014691949, 0.00159939448349178, 0.0017799410270527, 0.00146651337854564, 0.00184278015512973, 0.00114520953502506, 0.00143545598257333, 0.00169117806944996, 0.00170414813328534, 0.00108667020685971, 0.00182809249963611, 0.00224670325405896, 0.00132308003958315, 0.00121387420222163, 0.00145743240136653, 0.00148942717351019, 0.00153794197831303, 0.00167383800726384, 0.00127934745978564 };
+  static const int16_t buff_info_Conv2D_45_weights_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   static const uint32_t buff_info__shape_4_64_1_1[] = { 4, 1, 1, 64 };
   static const uint32_t buff_info__mem_shape_F_4_64_1_1[] = { 4, 64, 1, 1 };
-  static const float buff_info_Gemm_51_weights_transposed_3_quant_scale[] = { 0.00230131507851183, 0.00228630308993161, 0.00230328901670873, 0.00233085104264319 };
-  static const int16_t buff_info_Gemm_51_weights_transposed_3_quant_offset[] = { 0, 0, 0, 0 };
+  static const float buff_info_Gemm_53_weights_transposed_3_quant_scale[] = { 0.00356133305467665, 0.00247606611810625, 0.00338805583305657, 0.00256721558980644 };
+  static const int16_t buff_info_Gemm_53_weights_transposed_3_quant_offset[] = { 0, 0, 0, 0 };
   static const uint32_t buff_info__shape_24_1_1[] = { 1, 1, 1, 24 };
   static const uint32_t buff_info__mem_shape_M4_24_1_1[] = { 6, 1, 1, 4 };
   static const uint32_t buff_info__shape_1[] = { 1, 1, 1, 1 };
   static const uint32_t buff_info__mem_shape_U_1[] = { 1 };
-  static const float buff_info_Conv2D_9_zero_off_14_quant_scale[] = { 0.000426385173341259 };
-  static const int16_t buff_info_Conv2D_9_zero_off_14_quant_offset[] = { 0 };
-  static const uint32_t buff_info__mem_shape_F_24_1_1[] = { 24, 1, 1 };
-  static const float buff_info_Conv2D_13_zero_off_23_quant_scale[] = { 0.000387348554795608 };
-  static const int16_t buff_info_Conv2D_13_zero_off_23_quant_offset[] = { 0 };
-  static const float buff_info_Conv2D_20_zero_off_32_quant_scale[] = { 0.000538957538083196 };
-  static const int16_t buff_info_Conv2D_20_zero_off_32_quant_offset[] = { 0 };
+  static const float buff_info_Conv2D_7_zero_off_14_quant_scale[] = { 0.00421814760193229 };
+  static const int16_t buff_info_Conv2D_7_zero_off_14_quant_offset[] = { 0 };
+  static const uint32_t buff_info__shape_32_1_1[] = { 1, 1, 1, 32 };
+  static const uint32_t buff_info__mem_shape_M8_32_1_1[] = { 4, 1, 1, 8 };
+  static const float buff_info_Conv2D_11_zero_off_23_quant_scale[] = { 0.00812493823468685 };
+  static const int16_t buff_info_Conv2D_11_zero_off_23_quant_offset[] = { 0 };
+  static const uint32_t buff_info__mem_shape_M4_32_1_1[] = { 8, 1, 1, 4 };
+  static const float buff_info_Conv2D_15_zero_off_32_quant_scale[] = { 0.00639741774648428 };
+  static const int16_t buff_info_Conv2D_15_zero_off_32_quant_offset[] = { 0 };
+  static const float buff_info_Conv2D_22_zero_off_41_quant_scale[] = { 0.0134714720770717 };
+  static const int16_t buff_info_Conv2D_22_zero_off_41_quant_offset[] = { 0 };
   static const uint32_t buff_info__shape_48_1_1[] = { 1, 1, 1, 48 };
   static const uint32_t buff_info__mem_shape_M12_48_1_1[] = { 4, 1, 1, 12 };
-  static const float buff_info_Conv2D_24_zero_off_41_quant_scale[] = { 0.000443359749624506 };
-  static const int16_t buff_info_Conv2D_24_zero_off_41_quant_offset[] = { 0 };
+  static const float buff_info_Conv2D_26_zero_off_50_quant_scale[] = { 0.015791742131114 };
+  static const int16_t buff_info_Conv2D_26_zero_off_50_quant_offset[] = { 0 };
   static const uint32_t buff_info__mem_shape_M6_48_1_1[] = { 8, 1, 1, 6 };
-  static const float buff_info_Conv2D_28_zero_off_50_quant_scale[] = { 0.000250703858910128 };
-  static const int16_t buff_info_Conv2D_28_zero_off_50_quant_offset[] = { 0 };
-  static const float buff_info_Conv2D_35_zero_off_59_quant_scale[] = { 0.000579750980250537 };
-  static const int16_t buff_info_Conv2D_35_zero_off_59_quant_offset[] = { 0 };
+  static const float buff_info_Conv2D_30_zero_off_59_quant_scale[] = { 0.0197359435260296 };
+  static const int16_t buff_info_Conv2D_30_zero_off_59_quant_offset[] = { 0 };
+  static const float buff_info_Conv2D_37_zero_off_68_quant_scale[] = { 0.0549873374402523 };
+  static const int16_t buff_info_Conv2D_37_zero_off_68_quant_offset[] = { 0 };
   static const uint32_t buff_info__shape_64_1_1[] = { 1, 1, 1, 64 };
   static const uint32_t buff_info__mem_shape_M8_64_1_1[] = { 8, 1, 1, 8 };
-  static const float buff_info_Conv2D_39_zero_off_68_quant_scale[] = { 0.000437898241216317 };
-  static const int16_t buff_info_Conv2D_39_zero_off_68_quant_offset[] = { 0 };
-  static const float buff_info_Conv2D_43_zero_off_77_quant_scale[] = { 0.000303293141769245 };
-  static const int16_t buff_info_Conv2D_43_zero_off_77_quant_offset[] = { 0 };
-  static const float buff_info_Gemm_51_conv_4_zero_off_86_quant_scale[] = { 0.000145257043186575 };
-  static const int16_t buff_info_Gemm_51_conv_4_zero_off_86_quant_offset[] = { 0 };
+  static const float buff_info_Conv2D_41_zero_off_77_quant_scale[] = { 0.0938091725111008 };
+  static const int16_t buff_info_Conv2D_41_zero_off_77_quant_offset[] = { 0 };
+  static const float buff_info_Conv2D_45_zero_off_86_quant_scale[] = { 0.180956557393074 };
+  static const int16_t buff_info_Conv2D_45_zero_off_86_quant_offset[] = { 0 };
+  static const float buff_info_Gemm_53_conv_4_zero_off_95_quant_scale[] = { 0.0586150586605072 };
+  static const int16_t buff_info_Gemm_53_conv_4_zero_off_95_quant_offset[] = { 0 };
   static const uint32_t buff_info__shape_4_1_1[] = { 1, 1, 1, 4 };
   static const uint32_t buff_info__mem_shape_F_4_1_1[] = { 4, 1, 1 };
   static const uint32_t buff_info__shape_24_1_3_6[] = { 24, 3, 6, 1 };
   static const uint32_t buff_info__mem_shape_F_24_1_3_6[] = { 24, 1, 3, 6 };
-  static const float buff_info_Conv2D_4_weights_submask_0_0_0_0_24_1_3_6_94_quant_scale[] = { 0.00045342615339905, 0.000440661824541166, 0.000454370427178219, 0.000439824390923604, 0.000450580904725939, 0.000450390129117295, 0.000413183297496289, 0.00044035300379619, 0.00045150812366046, 0.000450440973509103, 0.000454171997262165, 0.000451221421826631, 0.000450318242656067, 0.000453970715170726, 0.000450887222541496, 0.000431588559877127, 0.000439785770140588, 0.000446736376034096, 0.000453076441772282, 0.000444394972873852, 0.000452362524811178, 0.000435815891250968, 0.000450935069238767, 0.00044320899178274 };
-  static const int16_t buff_info_Conv2D_4_weights_submask_0_0_0_0_24_1_3_6_94_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-  static const float buff_info_Conv2D_4_weights_submask_0_0_3_0_24_1_3_6_95_quant_scale[] = { 0.00045342615339905, 0.000440661824541166, 0.000454370427178219, 0.000439824390923604, 0.000450580904725939, 0.000450390129117295, 0.000413183297496289, 0.00044035300379619, 0.00045150812366046, 0.000450440973509103, 0.000454171997262165, 0.000451221421826631, 0.000450318242656067, 0.000453970715170726, 0.000450887222541496, 0.000431588559877127, 0.000439785770140588, 0.000446736376034096, 0.000453076441772282, 0.000444394972873852, 0.000452362524811178, 0.000435815891250968, 0.000450935069238767, 0.00044320899178274 };
-  static const int16_t buff_info_Conv2D_4_weights_submask_0_0_3_0_24_1_3_6_95_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  static const float buff_info_Conv2D_4_weights_submask_0_0_0_0_24_1_3_6_103_quant_scale[] = { 0.000532415113411844, 0.000672291789669544, 0.000643983890768141, 0.000584468012675643, 0.000772408267948776, 0.000845298985950649, 0.000646408763714135, 0.000815571343991905, 0.000721282092854381, 0.00063269108068198, 0.000702141667716205, 0.000545442628208548, 0.000653484195936471, 0.000625009357463568, 0.000811649777460843, 0.000728625513147563, 0.000533336249645799, 0.000602080312091857, 0.000613972428254783, 0.000552806362975389, 0.000778708490543067, 0.000621193554252386, 0.000620473816525191, 0.000535272003617138 };
+  static const int16_t buff_info_Conv2D_4_weights_submask_0_0_0_0_24_1_3_6_103_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  static const float buff_info_Conv2D_4_weights_submask_0_0_3_0_24_1_3_6_104_quant_scale[] = { 0.000532415113411844, 0.000672291789669544, 0.000643983890768141, 0.000584468012675643, 0.000772408267948776, 0.000845298985950649, 0.000646408763714135, 0.000815571343991905, 0.000721282092854381, 0.00063269108068198, 0.000702141667716205, 0.000545442628208548, 0.000653484195936471, 0.000625009357463568, 0.000811649777460843, 0.000728625513147563, 0.000533336249645799, 0.000602080312091857, 0.000613972428254783, 0.000552806362975389, 0.000778708490543067, 0.000621193554252386, 0.000620473816525191, 0.000535272003617138 };
+  static const int16_t buff_info_Conv2D_4_weights_submask_0_0_3_0_24_1_3_6_104_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   static const uint32_t buff_info__shape_24_1_3_3[] = { 24, 3, 3, 1 };
   static const uint32_t buff_info__mem_shape_F_24_1_3_3[] = { 24, 1, 3, 3 };
-  static const float buff_info_Conv2D_4_weights_submask_0_0_0_6_24_1_3_3_96_quant_scale[] = { 0.00045342615339905, 0.000440661824541166, 0.000454370427178219, 0.000439824390923604, 0.000450580904725939, 0.000450390129117295, 0.000413183297496289, 0.00044035300379619, 0.00045150812366046, 0.000450440973509103, 0.000454171997262165, 0.000451221421826631, 0.000450318242656067, 0.000453970715170726, 0.000450887222541496, 0.000431588559877127, 0.000439785770140588, 0.000446736376034096, 0.000453076441772282, 0.000444394972873852, 0.000452362524811178, 0.000435815891250968, 0.000450935069238767, 0.00044320899178274 };
-  static const int16_t buff_info_Conv2D_4_weights_submask_0_0_0_6_24_1_3_3_96_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-  static const float buff_info_Conv2D_4_weights_submask_0_0_3_6_24_1_3_3_97_quant_scale[] = { 0.00045342615339905, 0.000440661824541166, 0.000454370427178219, 0.000439824390923604, 0.000450580904725939, 0.000450390129117295, 0.000413183297496289, 0.00044035300379619, 0.00045150812366046, 0.000450440973509103, 0.000454171997262165, 0.000451221421826631, 0.000450318242656067, 0.000453970715170726, 0.000450887222541496, 0.000431588559877127, 0.000439785770140588, 0.000446736376034096, 0.000453076441772282, 0.000444394972873852, 0.000452362524811178, 0.000435815891250968, 0.000450935069238767, 0.00044320899178274 };
-  static const int16_t buff_info_Conv2D_4_weights_submask_0_0_3_6_24_1_3_3_97_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  static const float buff_info_Conv2D_4_weights_submask_0_0_0_6_24_1_3_3_105_quant_scale[] = { 0.000532415113411844, 0.000672291789669544, 0.000643983890768141, 0.000584468012675643, 0.000772408267948776, 0.000845298985950649, 0.000646408763714135, 0.000815571343991905, 0.000721282092854381, 0.00063269108068198, 0.000702141667716205, 0.000545442628208548, 0.000653484195936471, 0.000625009357463568, 0.000811649777460843, 0.000728625513147563, 0.000533336249645799, 0.000602080312091857, 0.000613972428254783, 0.000552806362975389, 0.000778708490543067, 0.000621193554252386, 0.000620473816525191, 0.000535272003617138 };
+  static const int16_t buff_info_Conv2D_4_weights_submask_0_0_0_6_24_1_3_3_105_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  static const float buff_info_Conv2D_4_weights_submask_0_0_3_6_24_1_3_3_106_quant_scale[] = { 0.000532415113411844, 0.000672291789669544, 0.000643983890768141, 0.000584468012675643, 0.000772408267948776, 0.000845298985950649, 0.000646408763714135, 0.000815571343991905, 0.000721282092854381, 0.00063269108068198, 0.000702141667716205, 0.000545442628208548, 0.000653484195936471, 0.000625009357463568, 0.000811649777460843, 0.000728625513147563, 0.000533336249645799, 0.000602080312091857, 0.000613972428254783, 0.000552806362975389, 0.000778708490543067, 0.000621193554252386, 0.000620473816525191, 0.000535272003617138 };
+  static const int16_t buff_info_Conv2D_4_weights_submask_0_0_3_6_24_1_3_3_106_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   static const uint32_t buff_info__shape_24_1_2_6[] = { 24, 2, 6, 1 };
   static const uint32_t buff_info__mem_shape_F_24_1_2_6[] = { 24, 1, 2, 6 };
-  static const float buff_info_Conv2D_4_weights_submask_0_0_6_0_24_1_2_6_98_quant_scale[] = { 0.00045342615339905, 0.000440661824541166, 0.000454370427178219, 0.000439824390923604, 0.000450580904725939, 0.000450390129117295, 0.000413183297496289, 0.00044035300379619, 0.00045150812366046, 0.000450440973509103, 0.000454171997262165, 0.000451221421826631, 0.000450318242656067, 0.000453970715170726, 0.000450887222541496, 0.000431588559877127, 0.000439785770140588, 0.000446736376034096, 0.000453076441772282, 0.000444394972873852, 0.000452362524811178, 0.000435815891250968, 0.000450935069238767, 0.00044320899178274 };
-  static const int16_t buff_info_Conv2D_4_weights_submask_0_0_6_0_24_1_2_6_98_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  static const float buff_info_Conv2D_4_weights_submask_0_0_6_0_24_1_2_6_107_quant_scale[] = { 0.000532415113411844, 0.000672291789669544, 0.000643983890768141, 0.000584468012675643, 0.000772408267948776, 0.000845298985950649, 0.000646408763714135, 0.000815571343991905, 0.000721282092854381, 0.00063269108068198, 0.000702141667716205, 0.000545442628208548, 0.000653484195936471, 0.000625009357463568, 0.000811649777460843, 0.000728625513147563, 0.000533336249645799, 0.000602080312091857, 0.000613972428254783, 0.000552806362975389, 0.000778708490543067, 0.000621193554252386, 0.000620473816525191, 0.000535272003617138 };
+  static const int16_t buff_info_Conv2D_4_weights_submask_0_0_6_0_24_1_2_6_107_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   static const uint32_t buff_info__shape_24_1_2_3[] = { 24, 2, 3, 1 };
   static const uint32_t buff_info__mem_shape_F_24_1_2_3[] = { 24, 1, 2, 3 };
-  static const float buff_info_Conv2D_4_weights_submask_0_0_6_6_24_1_2_3_99_quant_scale[] = { 0.00045342615339905, 0.000440661824541166, 0.000454370427178219, 0.000439824390923604, 0.000450580904725939, 0.000450390129117295, 0.000413183297496289, 0.00044035300379619, 0.00045150812366046, 0.000450440973509103, 0.000454171997262165, 0.000451221421826631, 0.000450318242656067, 0.000453970715170726, 0.000450887222541496, 0.000431588559877127, 0.000439785770140588, 0.000446736376034096, 0.000453076441772282, 0.000444394972873852, 0.000452362524811178, 0.000435815891250968, 0.000450935069238767, 0.00044320899178274 };
-  static const int16_t buff_info_Conv2D_4_weights_submask_0_0_6_6_24_1_2_3_99_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+  static const float buff_info_Conv2D_4_weights_submask_0_0_6_6_24_1_2_3_108_quant_scale[] = { 0.000532415113411844, 0.000672291789669544, 0.000643983890768141, 0.000584468012675643, 0.000772408267948776, 0.000845298985950649, 0.000646408763714135, 0.000815571343991905, 0.000721282092854381, 0.00063269108068198, 0.000702141667716205, 0.000545442628208548, 0.000653484195936471, 0.000625009357463568, 0.000811649777460843, 0.000728625513147563, 0.000533336249645799, 0.000602080312091857, 0.000613972428254783, 0.000552806362975389, 0.000778708490543067, 0.000621193554252386, 0.000620473816525191, 0.000535272003617138 };
+  static const int16_t buff_info_Conv2D_4_weights_submask_0_0_6_6_24_1_2_3_108_quant_offset[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   static const uint32_t buff_info__shape_1_1_1_1[] = { 1, 1, 1, 1 };
   static const uint32_t buff_info__mem_shape_F_1_1_1_1[] = { 1, 1, 1, 1 };
 #endif // LL_ATON_DBG_BUFFER_INFO_EXCLUDED == 0
@@ -8829,58 +9450,16 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
     },
 #if LL_ATON_DBG_BUFFER_INFO_EXCLUDED == 0
     {
-      .name = "Conv2D_9_weights",
+      .name = "Conv2D_7_weights",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 0,
-      .offset_end = 16128,
-      .offset_limit = 16192,
-      .is_user_allocated = 0,
-      .is_param = 1,
-      .epoch = 0,
-      .batch = 24,
-      .mem_shape = buff_info__mem_shape_L_24_24_1_7,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
-      .Qm = 0,
-      .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_FLOAT,
-      .nbits = 32,
-      .ndims = 4,
-      .shape = buff_info__shape_24_24_1_7,
-    },
-    {
-      .name = "Conv2D_13_weights",
-      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 16128,
-      .offset_end = 32256,
-      .offset_limit = 32320,
-      .is_user_allocated = 0,
-      .is_param = 1,
-      .epoch = 0,
-      .batch = 24,
-      .mem_shape = buff_info__mem_shape_L_24_24_1_7,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
-      .Qm = 0,
-      .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_FLOAT,
-      .nbits = 32,
-      .ndims = 4,
-      .shape = buff_info__shape_24_24_1_7,
-    },
-    {
-      .name = "Conv2D_20_weights",
-      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 89088,
-      .offset_end = 94848,
-      .offset_limit = 94912,
+      .offset_start = 74752,
+      .offset_end = 77824,
+      .offset_limit = 77888,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
       .batch = 8,
-      .mem_shape = buff_info__mem_shape_M8_48_24_1_5,
+      .mem_shape = buff_info__mem_shape_M8_32_24_1_4,
       .mem_ndims = 5,
       .chpos = CHPos_Mixed,
       .Qm = 7,
@@ -8889,17 +9468,89 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .type = DataType_INT8,
       .nbits = 8,
       .ndims = 4,
-      .shape = buff_info__shape_48_24_1_5,
+      .shape = buff_info__shape_32_24_1_4,
       .per_channel = 1,
-      .scale = buff_info_Conv2D_20_weights_quant_scale,
-      .offset = buff_info_Conv2D_20_weights_quant_offset,
+      .scale = buff_info_Conv2D_7_weights_quant_scale,
+      .offset = buff_info_Conv2D_7_weights_quant_offset,
     },
     {
-      .name = "Conv2D_24_weights",
+      .name = "Conv2D_11_weights",
+      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
+      .offset_start = 64512,
+      .offset_end = 69632,
+      .offset_limit = 69696,
+      .is_user_allocated = 0,
+      .is_param = 1,
+      .epoch = 0,
+      .batch = 8,
+      .mem_shape = buff_info__mem_shape_M8_32_32_1_5,
+      .mem_ndims = 5,
+      .chpos = CHPos_Mixed,
+      .Qm = 7,
+      .Qn = 0,
+      .Qunsigned = 0,
+      .type = DataType_INT8,
+      .nbits = 8,
+      .ndims = 4,
+      .shape = buff_info__shape_32_32_1_5,
+      .per_channel = 1,
+      .scale = buff_info_Conv2D_11_weights_quant_scale,
+      .offset = buff_info_Conv2D_11_weights_quant_offset,
+    },
+    {
+      .name = "Conv2D_15_weights",
+      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
+      .offset_start = 69632,
+      .offset_end = 74752,
+      .offset_limit = 74816,
+      .is_user_allocated = 0,
+      .is_param = 1,
+      .epoch = 0,
+      .batch = 8,
+      .mem_shape = buff_info__mem_shape_M8_32_32_1_5,
+      .mem_ndims = 5,
+      .chpos = CHPos_Mixed,
+      .Qm = 7,
+      .Qn = 0,
+      .Qunsigned = 0,
+      .type = DataType_INT8,
+      .nbits = 8,
+      .ndims = 4,
+      .shape = buff_info__shape_32_32_1_5,
+      .per_channel = 1,
+      .scale = buff_info_Conv2D_15_weights_quant_scale,
+      .offset = buff_info_Conv2D_15_weights_quant_offset,
+    },
+    {
+      .name = "Conv2D_22_weights",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
       .offset_start = 56832,
-      .offset_end = 68352,
-      .offset_limit = 68416,
+      .offset_end = 64512,
+      .offset_limit = 64576,
+      .is_user_allocated = 0,
+      .is_param = 1,
+      .epoch = 0,
+      .batch = 8,
+      .mem_shape = buff_info__mem_shape_M8_48_32_1_5,
+      .mem_ndims = 5,
+      .chpos = CHPos_Mixed,
+      .Qm = 7,
+      .Qn = 0,
+      .Qunsigned = 0,
+      .type = DataType_INT8,
+      .nbits = 8,
+      .ndims = 4,
+      .shape = buff_info__shape_48_32_1_5,
+      .per_channel = 1,
+      .scale = buff_info_Conv2D_22_weights_quant_scale,
+      .offset = buff_info_Conv2D_22_weights_quant_offset,
+    },
+    {
+      .name = "Conv2D_26_weights",
+      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
+      .offset_start = 24576,
+      .offset_end = 36096,
+      .offset_limit = 36160,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -8915,15 +9566,15 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_48_48_1_5,
       .per_channel = 1,
-      .scale = buff_info_Conv2D_24_weights_quant_scale,
-      .offset = buff_info_Conv2D_24_weights_quant_offset,
+      .scale = buff_info_Conv2D_26_weights_quant_scale,
+      .offset = buff_info_Conv2D_26_weights_quant_offset,
     },
     {
-      .name = "Conv2D_28_weights",
+      .name = "Conv2D_30_weights",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 68352,
-      .offset_end = 79872,
-      .offset_limit = 79936,
+      .offset_start = 36096,
+      .offset_end = 47616,
+      .offset_limit = 47680,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -8939,15 +9590,15 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_48_48_1_5,
       .per_channel = 1,
-      .scale = buff_info_Conv2D_28_weights_quant_scale,
-      .offset = buff_info_Conv2D_28_weights_quant_offset,
+      .scale = buff_info_Conv2D_30_weights_quant_scale,
+      .offset = buff_info_Conv2D_30_weights_quant_offset,
     },
     {
-      .name = "Conv2D_35_weights",
+      .name = "Conv2D_37_weights",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 79872,
-      .offset_end = 89088,
-      .offset_limit = 89152,
+      .offset_start = 47616,
+      .offset_end = 56832,
+      .offset_limit = 56896,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -8963,15 +9614,15 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_64_48_1_3,
       .per_channel = 1,
-      .scale = buff_info_Conv2D_35_weights_quant_scale,
-      .offset = buff_info_Conv2D_35_weights_quant_offset,
+      .scale = buff_info_Conv2D_37_weights_quant_scale,
+      .offset = buff_info_Conv2D_37_weights_quant_offset,
     },
     {
-      .name = "Conv2D_39_weights",
+      .name = "Conv2D_41_weights",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 32256,
-      .offset_end = 44544,
-      .offset_limit = 44608,
+      .offset_start = 0,
+      .offset_end = 12288,
+      .offset_limit = 12352,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -8987,15 +9638,15 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_64_64_1_3,
       .per_channel = 1,
-      .scale = buff_info_Conv2D_39_weights_quant_scale,
-      .offset = buff_info_Conv2D_39_weights_quant_offset,
+      .scale = buff_info_Conv2D_41_weights_quant_scale,
+      .offset = buff_info_Conv2D_41_weights_quant_offset,
     },
     {
-      .name = "Conv2D_43_weights",
+      .name = "Conv2D_45_weights",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 44544,
-      .offset_end = 56832,
-      .offset_limit = 56896,
+      .offset_start = 12288,
+      .offset_end = 24576,
+      .offset_limit = 24640,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9011,15 +9662,15 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_64_64_1_3,
       .per_channel = 1,
-      .scale = buff_info_Conv2D_43_weights_quant_scale,
-      .offset = buff_info_Conv2D_43_weights_quant_offset,
+      .scale = buff_info_Conv2D_45_weights_quant_scale,
+      .offset = buff_info_Conv2D_45_weights_quant_offset,
     },
     {
-      .name = "Gemm_51_weights_transposed_3",
+      .name = "Gemm_53_weights_transposed_3",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 96000,
-      .offset_end = 96258,
-      .offset_limit = 96328,
+      .offset_start = 78976,
+      .offset_end = 79234,
+      .offset_limit = 79304,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9035,15 +9686,15 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_4_64_1_1,
       .per_channel = 1,
-      .scale = buff_info_Gemm_51_weights_transposed_3_quant_scale,
-      .offset = buff_info_Gemm_51_weights_transposed_3_quant_offset,
+      .scale = buff_info_Gemm_53_weights_transposed_3_quant_scale,
+      .offset = buff_info_Gemm_53_weights_transposed_3_quant_offset,
     },
     {
       .name = "Conv2D_4_mul_scale_6",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98304,
-      .offset_end = 98352,
-      .offset_limit = 98416,
+      .offset_start = 82432,
+      .offset_end = 82480,
+      .offset_limit = 82544,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9051,8 +9702,8 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .mem_shape = buff_info__mem_shape_M4_24_1_1,
       .mem_ndims = 4,
       .chpos = CHPos_Mixed,
-      .Qm = -20,
-      .Qn = 35,
+      .Qm = -17,
+      .Qn = 32,
       .Qunsigned = 0,
       .type = DataType_FXP,
       .nbits = 16,
@@ -9062,30 +9713,162 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
     {
       .name = "Conv2D_4_off_bias_11",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98208,
-      .offset_end = 98256,
-      .offset_limit = 98320,
+      .offset_start = 82512,
+      .offset_end = 82514,
+      .offset_limit = 82584,
+      .is_user_allocated = 0,
+      .is_param = 1,
+      .epoch = 0,
+      .batch = 1,
+      .mem_shape = buff_info__mem_shape_U_1,
+      .mem_ndims = 1,
+      .chpos = CHPos_UNDEFINED,
+      .Qm = 2,
+      .Qn = 13,
+      .Qunsigned = 0,
+      .type = DataType_FXP,
+      .nbits = 16,
+      .ndims = 4,
+      .shape = buff_info__shape_1,
+    },
+    {
+      .name = "Conv2D_7_zero_off_14",
+      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
+      .offset_start = 82528,
+      .offset_end = 82529,
+      .offset_limit = 82600,
+      .is_user_allocated = 0,
+      .is_param = 1,
+      .epoch = 0,
+      .batch = 1,
+      .mem_shape = buff_info__mem_shape_U_1,
+      .mem_ndims = 1,
+      .chpos = CHPos_UNDEFINED,
+      .Qm = 7,
+      .Qn = 0,
+      .Qunsigned = 0,
+      .type = DataType_INT8,
+      .nbits = 8,
+      .ndims = 4,
+      .shape = buff_info__shape_1,
+      .per_channel = 0,
+      .scale = buff_info_Conv2D_7_zero_off_14_quant_scale,
+      .offset = buff_info_Conv2D_7_zero_off_14_quant_offset,
+    },
+    {
+      .name = "Conv2D_7_mul_scale_15",
+      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
+      .offset_start = 82240,
+      .offset_end = 82304,
+      .offset_limit = 82368,
+      .is_user_allocated = 0,
+      .is_param = 1,
+      .epoch = 0,
+      .batch = 8,
+      .mem_shape = buff_info__mem_shape_M8_32_1_1,
+      .mem_ndims = 4,
+      .chpos = CHPos_Mixed,
+      .Qm = -17,
+      .Qn = 32,
+      .Qunsigned = 0,
+      .type = DataType_FXP,
+      .nbits = 16,
+      .ndims = 4,
+      .shape = buff_info__shape_32_1_1,
+    },
+    {
+      .name = "Conv2D_7_off_bias_20",
+      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
+      .offset_start = 81312,
+      .offset_end = 81440,
+      .offset_limit = 81504,
+      .is_user_allocated = 0,
+      .is_param = 1,
+      .epoch = 0,
+      .batch = 8,
+      .mem_shape = buff_info__mem_shape_M8_32_1_1,
+      .mem_ndims = 4,
+      .chpos = CHPos_Mixed,
+      .Qm = 11,
+      .Qn = 20,
+      .Qunsigned = 0,
+      .type = DataType_FXP,
+      .nbits = 32,
+      .ndims = 4,
+      .shape = buff_info__shape_32_1_1,
+    },
+    {
+      .name = "Conv2D_11_zero_off_23",
+      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
+      .offset_start = 82544,
+      .offset_end = 82545,
+      .offset_limit = 82616,
+      .is_user_allocated = 0,
+      .is_param = 1,
+      .epoch = 0,
+      .batch = 1,
+      .mem_shape = buff_info__mem_shape_U_1,
+      .mem_ndims = 1,
+      .chpos = CHPos_UNDEFINED,
+      .Qm = 7,
+      .Qn = 0,
+      .Qunsigned = 0,
+      .type = DataType_INT8,
+      .nbits = 8,
+      .ndims = 4,
+      .shape = buff_info__shape_1,
+      .per_channel = 0,
+      .scale = buff_info_Conv2D_11_zero_off_23_quant_scale,
+      .offset = buff_info_Conv2D_11_zero_off_23_quant_offset,
+    },
+    {
+      .name = "Conv2D_11_mul_scale_24",
+      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
+      .offset_start = 82304,
+      .offset_end = 82368,
+      .offset_limit = 82432,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
       .batch = 4,
-      .mem_shape = buff_info__mem_shape_M4_24_1_1,
+      .mem_shape = buff_info__mem_shape_M4_32_1_1,
       .mem_ndims = 4,
       .chpos = CHPos_Mixed,
-      .Qm = 0,
-      .Qn = 15,
+      .Qm = -16,
+      .Qn = 31,
       .Qunsigned = 0,
       .type = DataType_FXP,
       .nbits = 16,
       .ndims = 4,
-      .shape = buff_info__shape_24_1_1,
+      .shape = buff_info__shape_32_1_1,
     },
     {
-      .name = "Conv2D_9_zero_off_14",
+      .name = "Conv2D_11_off_bias_29",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98608,
-      .offset_end = 98609,
-      .offset_limit = 98680,
+      .offset_start = 81440,
+      .offset_end = 81568,
+      .offset_limit = 81632,
+      .is_user_allocated = 0,
+      .is_param = 1,
+      .epoch = 0,
+      .batch = 4,
+      .mem_shape = buff_info__mem_shape_M4_32_1_1,
+      .mem_ndims = 4,
+      .chpos = CHPos_Mixed,
+      .Qm = 11,
+      .Qn = 20,
+      .Qunsigned = 0,
+      .type = DataType_FXP,
+      .nbits = 32,
+      .ndims = 4,
+      .shape = buff_info__shape_32_1_1,
+    },
+    {
+      .name = "Conv2D_15_zero_off_32",
+      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
+      .offset_start = 82560,
+      .offset_end = 82561,
+      .offset_limit = 82632,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9101,57 +9884,57 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_1,
       .per_channel = 0,
-      .scale = buff_info_Conv2D_9_zero_off_14_quant_scale,
-      .offset = buff_info_Conv2D_9_zero_off_14_quant_offset,
+      .scale = buff_info_Conv2D_15_zero_off_32_quant_scale,
+      .offset = buff_info_Conv2D_15_zero_off_32_quant_offset,
     },
     {
-      .name = "Conv2D_9_mul_scale_15",
+      .name = "Conv2D_15_mul_scale_33",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98352,
-      .offset_end = 98400,
-      .offset_limit = 98464,
+      .offset_start = 82368,
+      .offset_end = 82432,
+      .offset_limit = 82496,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
-      .batch = 24,
-      .mem_shape = buff_info__mem_shape_F_24_1_1,
-      .mem_ndims = 3,
-      .chpos = CHPos_First,
-      .Qm = -21,
-      .Qn = 36,
+      .batch = 4,
+      .mem_shape = buff_info__mem_shape_M4_32_1_1,
+      .mem_ndims = 4,
+      .chpos = CHPos_Mixed,
+      .Qm = -16,
+      .Qn = 31,
       .Qunsigned = 0,
       .type = DataType_FXP,
       .nbits = 16,
       .ndims = 4,
-      .shape = buff_info__shape_24_1_1,
+      .shape = buff_info__shape_32_1_1,
     },
     {
-      .name = "Conv2D_9_off_bias_20",
+      .name = "Conv2D_15_off_bias_38",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98400,
-      .offset_end = 98448,
-      .offset_limit = 98512,
+      .offset_start = 81184,
+      .offset_end = 81312,
+      .offset_limit = 81376,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
-      .batch = 24,
-      .mem_shape = buff_info__mem_shape_F_24_1_1,
-      .mem_ndims = 3,
-      .chpos = CHPos_First,
-      .Qm = 0,
-      .Qn = 15,
+      .batch = 4,
+      .mem_shape = buff_info__mem_shape_M4_32_1_1,
+      .mem_ndims = 4,
+      .chpos = CHPos_Mixed,
+      .Qm = 11,
+      .Qn = 20,
       .Qunsigned = 0,
       .type = DataType_FXP,
-      .nbits = 16,
+      .nbits = 32,
       .ndims = 4,
-      .shape = buff_info__shape_24_1_1,
+      .shape = buff_info__shape_32_1_1,
     },
     {
-      .name = "Conv2D_13_zero_off_23",
+      .name = "Conv2D_22_zero_off_41",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98624,
-      .offset_end = 98625,
-      .offset_limit = 98696,
+      .offset_start = 82576,
+      .offset_end = 82577,
+      .offset_limit = 82648,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9167,81 +9950,15 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_1,
       .per_channel = 0,
-      .scale = buff_info_Conv2D_13_zero_off_23_quant_scale,
-      .offset = buff_info_Conv2D_13_zero_off_23_quant_offset,
+      .scale = buff_info_Conv2D_22_zero_off_41_quant_scale,
+      .offset = buff_info_Conv2D_22_zero_off_41_quant_offset,
     },
     {
-      .name = "Conv2D_13_mul_scale_24",
+      .name = "Conv2D_22_mul_scale_42",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98448,
-      .offset_end = 98496,
-      .offset_limit = 98560,
-      .is_user_allocated = 0,
-      .is_param = 1,
-      .epoch = 0,
-      .batch = 24,
-      .mem_shape = buff_info__mem_shape_F_24_1_1,
-      .mem_ndims = 3,
-      .chpos = CHPos_First,
-      .Qm = -21,
-      .Qn = 36,
-      .Qunsigned = 0,
-      .type = DataType_FXP,
-      .nbits = 16,
-      .ndims = 4,
-      .shape = buff_info__shape_24_1_1,
-    },
-    {
-      .name = "Conv2D_13_off_bias_29",
-      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98256,
-      .offset_end = 98304,
-      .offset_limit = 98368,
-      .is_user_allocated = 0,
-      .is_param = 1,
-      .epoch = 0,
-      .batch = 24,
-      .mem_shape = buff_info__mem_shape_F_24_1_1,
-      .mem_ndims = 3,
-      .chpos = CHPos_First,
-      .Qm = 0,
-      .Qn = 15,
-      .Qunsigned = 0,
-      .type = DataType_FXP,
-      .nbits = 16,
-      .ndims = 4,
-      .shape = buff_info__shape_24_1_1,
-    },
-    {
-      .name = "Conv2D_20_zero_off_32",
-      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98640,
-      .offset_end = 98641,
-      .offset_limit = 98712,
-      .is_user_allocated = 0,
-      .is_param = 1,
-      .epoch = 0,
-      .batch = 1,
-      .mem_shape = buff_info__mem_shape_U_1,
-      .mem_ndims = 1,
-      .chpos = CHPos_UNDEFINED,
-      .Qm = 7,
-      .Qn = 0,
-      .Qunsigned = 0,
-      .type = DataType_INT8,
-      .nbits = 8,
-      .ndims = 4,
-      .shape = buff_info__shape_1,
-      .per_channel = 0,
-      .scale = buff_info_Conv2D_20_zero_off_32_quant_scale,
-      .offset = buff_info_Conv2D_20_zero_off_32_quant_offset,
-    },
-    {
-      .name = "Conv2D_20_mul_scale_33",
-      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 97824,
-      .offset_end = 97920,
-      .offset_limit = 97984,
+      .offset_start = 81952,
+      .offset_end = 82048,
+      .offset_limit = 82112,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9249,8 +9966,8 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .mem_shape = buff_info__mem_shape_M12_48_1_1,
       .mem_ndims = 4,
       .chpos = CHPos_Mixed,
-      .Qm = -20,
-      .Qn = 35,
+      .Qm = -15,
+      .Qn = 30,
       .Qunsigned = 0,
       .type = DataType_FXP,
       .nbits = 16,
@@ -9258,11 +9975,11 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .shape = buff_info__shape_48_1_1,
     },
     {
-      .name = "Conv2D_20_off_bias_38",
+      .name = "Conv2D_22_off_bias_47",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 97728,
-      .offset_end = 97824,
-      .offset_limit = 97888,
+      .offset_start = 80656,
+      .offset_end = 80848,
+      .offset_limit = 80912,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9270,20 +9987,20 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .mem_shape = buff_info__mem_shape_M12_48_1_1,
       .mem_ndims = 4,
       .chpos = CHPos_Mixed,
-      .Qm = 0,
-      .Qn = 15,
+      .Qm = 11,
+      .Qn = 20,
       .Qunsigned = 0,
       .type = DataType_FXP,
-      .nbits = 16,
+      .nbits = 32,
       .ndims = 4,
       .shape = buff_info__shape_48_1_1,
     },
     {
-      .name = "Conv2D_24_zero_off_41",
+      .name = "Conv2D_26_zero_off_50",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98656,
-      .offset_end = 98657,
-      .offset_limit = 98728,
+      .offset_start = 82592,
+      .offset_end = 82593,
+      .offset_limit = 82664,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9299,15 +10016,15 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_1,
       .per_channel = 0,
-      .scale = buff_info_Conv2D_24_zero_off_41_quant_scale,
-      .offset = buff_info_Conv2D_24_zero_off_41_quant_offset,
+      .scale = buff_info_Conv2D_26_zero_off_50_quant_scale,
+      .offset = buff_info_Conv2D_26_zero_off_50_quant_offset,
     },
     {
-      .name = "Conv2D_24_mul_scale_42",
+      .name = "Conv2D_26_mul_scale_51",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 97920,
-      .offset_end = 98016,
-      .offset_limit = 98080,
+      .offset_start = 82048,
+      .offset_end = 82144,
+      .offset_limit = 82208,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9315,8 +10032,8 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .mem_shape = buff_info__mem_shape_M6_48_1_1,
       .mem_ndims = 4,
       .chpos = CHPos_Mixed,
-      .Qm = -21,
-      .Qn = 36,
+      .Qm = -14,
+      .Qn = 29,
       .Qunsigned = 0,
       .type = DataType_FXP,
       .nbits = 16,
@@ -9324,11 +10041,11 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .shape = buff_info__shape_48_1_1,
     },
     {
-      .name = "Conv2D_24_off_bias_47",
+      .name = "Conv2D_26_off_bias_56",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98016,
-      .offset_end = 98112,
-      .offset_limit = 98176,
+      .offset_start = 80848,
+      .offset_end = 81040,
+      .offset_limit = 81104,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9336,20 +10053,20 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .mem_shape = buff_info__mem_shape_M6_48_1_1,
       .mem_ndims = 4,
       .chpos = CHPos_Mixed,
-      .Qm = 0,
-      .Qn = 15,
+      .Qm = 11,
+      .Qn = 20,
       .Qunsigned = 0,
       .type = DataType_FXP,
-      .nbits = 16,
+      .nbits = 32,
       .ndims = 4,
       .shape = buff_info__shape_48_1_1,
     },
     {
-      .name = "Conv2D_28_zero_off_50",
+      .name = "Conv2D_30_zero_off_59",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98672,
-      .offset_end = 98673,
-      .offset_limit = 98744,
+      .offset_start = 82608,
+      .offset_end = 82609,
+      .offset_limit = 82680,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9365,15 +10082,15 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_1,
       .per_channel = 0,
-      .scale = buff_info_Conv2D_28_zero_off_50_quant_scale,
-      .offset = buff_info_Conv2D_28_zero_off_50_quant_offset,
+      .scale = buff_info_Conv2D_30_zero_off_59_quant_scale,
+      .offset = buff_info_Conv2D_30_zero_off_59_quant_offset,
     },
     {
-      .name = "Conv2D_28_mul_scale_51",
+      .name = "Conv2D_30_mul_scale_60",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98112,
-      .offset_end = 98208,
-      .offset_limit = 98272,
+      .offset_start = 82144,
+      .offset_end = 82240,
+      .offset_limit = 82304,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9381,8 +10098,8 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .mem_shape = buff_info__mem_shape_M6_48_1_1,
       .mem_ndims = 4,
       .chpos = CHPos_Mixed,
-      .Qm = -22,
-      .Qn = 37,
+      .Qm = -14,
+      .Qn = 29,
       .Qunsigned = 0,
       .type = DataType_FXP,
       .nbits = 16,
@@ -9390,11 +10107,11 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .shape = buff_info__shape_48_1_1,
     },
     {
-      .name = "Conv2D_28_off_bias_56",
+      .name = "Conv2D_30_off_bias_65",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 97632,
-      .offset_end = 97728,
-      .offset_limit = 97792,
+      .offset_start = 80464,
+      .offset_end = 80656,
+      .offset_limit = 80720,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9402,20 +10119,20 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .mem_shape = buff_info__mem_shape_M6_48_1_1,
       .mem_ndims = 4,
       .chpos = CHPos_Mixed,
-      .Qm = 0,
-      .Qn = 15,
+      .Qm = 11,
+      .Qn = 20,
       .Qunsigned = 0,
       .type = DataType_FXP,
-      .nbits = 16,
+      .nbits = 32,
       .ndims = 4,
       .shape = buff_info__shape_48_1_1,
     },
     {
-      .name = "Conv2D_35_zero_off_59",
+      .name = "Conv2D_37_zero_off_68",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98688,
-      .offset_end = 98689,
-      .offset_limit = 98760,
+      .offset_start = 82624,
+      .offset_end = 82625,
+      .offset_limit = 82696,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9431,15 +10148,15 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_1,
       .per_channel = 0,
-      .scale = buff_info_Conv2D_35_zero_off_59_quant_scale,
-      .offset = buff_info_Conv2D_35_zero_off_59_quant_offset,
+      .scale = buff_info_Conv2D_37_zero_off_68_quant_scale,
+      .offset = buff_info_Conv2D_37_zero_off_68_quant_offset,
     },
     {
-      .name = "Conv2D_35_mul_scale_60",
+      .name = "Conv2D_37_mul_scale_69",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 97120,
-      .offset_end = 97248,
-      .offset_limit = 97312,
+      .offset_start = 81568,
+      .offset_end = 81696,
+      .offset_limit = 81760,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9447,8 +10164,8 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .mem_shape = buff_info__mem_shape_M8_64_1_1,
       .mem_ndims = 4,
       .chpos = CHPos_Mixed,
-      .Qm = -20,
-      .Qn = 35,
+      .Qm = -12,
+      .Qn = 27,
       .Qunsigned = 0,
       .type = DataType_FXP,
       .nbits = 16,
@@ -9456,11 +10173,11 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .shape = buff_info__shape_64_1_1,
     },
     {
-      .name = "Conv2D_35_off_bias_65",
+      .name = "Conv2D_37_off_bias_74",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 96992,
-      .offset_end = 97120,
-      .offset_limit = 97184,
+      .offset_start = 79504,
+      .offset_end = 79760,
+      .offset_limit = 79824,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9468,20 +10185,20 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .mem_shape = buff_info__mem_shape_M8_64_1_1,
       .mem_ndims = 4,
       .chpos = CHPos_Mixed,
-      .Qm = 0,
-      .Qn = 15,
+      .Qm = 11,
+      .Qn = 20,
       .Qunsigned = 0,
       .type = DataType_FXP,
-      .nbits = 16,
+      .nbits = 32,
       .ndims = 4,
       .shape = buff_info__shape_64_1_1,
     },
     {
-      .name = "Conv2D_39_zero_off_68",
+      .name = "Conv2D_41_zero_off_77",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98704,
-      .offset_end = 98705,
-      .offset_limit = 98776,
+      .offset_start = 82640,
+      .offset_end = 82641,
+      .offset_limit = 82712,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9497,15 +10214,15 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_1,
       .per_channel = 0,
-      .scale = buff_info_Conv2D_39_zero_off_68_quant_scale,
-      .offset = buff_info_Conv2D_39_zero_off_68_quant_offset,
+      .scale = buff_info_Conv2D_41_zero_off_77_quant_scale,
+      .offset = buff_info_Conv2D_41_zero_off_77_quant_offset,
     },
     {
-      .name = "Conv2D_39_mul_scale_69",
+      .name = "Conv2D_41_mul_scale_78",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 97248,
-      .offset_end = 97376,
-      .offset_limit = 97440,
+      .offset_start = 81696,
+      .offset_end = 81824,
+      .offset_limit = 81888,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9513,8 +10230,8 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .mem_shape = buff_info__mem_shape_M8_64_1_1,
       .mem_ndims = 4,
       .chpos = CHPos_Mixed,
-      .Qm = -21,
-      .Qn = 36,
+      .Qm = -11,
+      .Qn = 26,
       .Qunsigned = 0,
       .type = DataType_FXP,
       .nbits = 16,
@@ -9522,11 +10239,11 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .shape = buff_info__shape_64_1_1,
     },
     {
-      .name = "Conv2D_39_off_bias_74",
+      .name = "Conv2D_41_off_bias_83",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 97376,
-      .offset_end = 97504,
-      .offset_limit = 97568,
+      .offset_start = 79760,
+      .offset_end = 80016,
+      .offset_limit = 80080,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9534,20 +10251,20 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .mem_shape = buff_info__mem_shape_M8_64_1_1,
       .mem_ndims = 4,
       .chpos = CHPos_Mixed,
-      .Qm = 0,
-      .Qn = 15,
+      .Qm = 11,
+      .Qn = 20,
       .Qunsigned = 0,
       .type = DataType_FXP,
-      .nbits = 16,
+      .nbits = 32,
       .ndims = 4,
       .shape = buff_info__shape_64_1_1,
     },
     {
-      .name = "Conv2D_43_zero_off_77",
+      .name = "Conv2D_45_zero_off_86",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98720,
-      .offset_end = 98721,
-      .offset_limit = 98792,
+      .offset_start = 82656,
+      .offset_end = 82657,
+      .offset_limit = 82728,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9563,15 +10280,15 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_1,
       .per_channel = 0,
-      .scale = buff_info_Conv2D_43_zero_off_77_quant_scale,
-      .offset = buff_info_Conv2D_43_zero_off_77_quant_offset,
+      .scale = buff_info_Conv2D_45_zero_off_86_quant_scale,
+      .offset = buff_info_Conv2D_45_zero_off_86_quant_offset,
     },
     {
-      .name = "Conv2D_43_mul_scale_78",
+      .name = "Conv2D_45_mul_scale_87",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 97504,
-      .offset_end = 97632,
-      .offset_limit = 97696,
+      .offset_start = 81824,
+      .offset_end = 81952,
+      .offset_limit = 82016,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9579,8 +10296,8 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .mem_shape = buff_info__mem_shape_M8_64_1_1,
       .mem_ndims = 4,
       .chpos = CHPos_Mixed,
-      .Qm = -21,
-      .Qn = 36,
+      .Qm = -11,
+      .Qn = 26,
       .Qunsigned = 0,
       .type = DataType_FXP,
       .nbits = 16,
@@ -9588,11 +10305,11 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .shape = buff_info__shape_64_1_1,
     },
     {
-      .name = "Conv2D_43_off_bias_83",
+      .name = "Conv2D_45_off_bias_92",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 96864,
-      .offset_end = 96992,
-      .offset_limit = 97056,
+      .offset_start = 79248,
+      .offset_end = 79504,
+      .offset_limit = 79568,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9600,20 +10317,20 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .mem_shape = buff_info__mem_shape_M8_64_1_1,
       .mem_ndims = 4,
       .chpos = CHPos_Mixed,
-      .Qm = 0,
-      .Qn = 15,
+      .Qm = 11,
+      .Qn = 20,
       .Qunsigned = 0,
       .type = DataType_FXP,
-      .nbits = 16,
+      .nbits = 32,
       .ndims = 4,
       .shape = buff_info__shape_64_1_1,
     },
     {
-      .name = "Gemm_51_conv_4_zero_off_86",
+      .name = "Gemm_53_conv_4_zero_off_95",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98736,
-      .offset_end = 98737,
-      .offset_limit = 98808,
+      .offset_start = 82672,
+      .offset_end = 82673,
+      .offset_limit = 82744,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9629,15 +10346,15 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_1,
       .per_channel = 0,
-      .scale = buff_info_Gemm_51_conv_4_zero_off_86_quant_scale,
-      .offset = buff_info_Gemm_51_conv_4_zero_off_86_quant_offset,
+      .scale = buff_info_Gemm_53_conv_4_zero_off_95_quant_scale,
+      .offset = buff_info_Gemm_53_conv_4_zero_off_95_quant_offset,
     },
     {
-      .name = "Gemm_51_conv_4_mul_scale_87",
+      .name = "Gemm_53_conv_4_mul_scale_96",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98496,
-      .offset_end = 98504,
-      .offset_limit = 98568,
+      .offset_start = 82496,
+      .offset_end = 82504,
+      .offset_limit = 82568,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9645,8 +10362,8 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .mem_shape = buff_info__mem_shape_F_4_1_1,
       .mem_ndims = 3,
       .chpos = CHPos_First,
-      .Qm = -21,
-      .Qn = 36,
+      .Qm = -12,
+      .Qn = 27,
       .Qunsigned = 0,
       .type = DataType_FXP,
       .nbits = 16,
@@ -9654,11 +10371,11 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .shape = buff_info__shape_4_1_1,
     },
     {
-      .name = "Gemm_51_conv_4_off_bias_92",
+      .name = "Gemm_53_conv_4_off_bias_101",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98512,
-      .offset_end = 98520,
-      .offset_limit = 98584,
+      .offset_start = 82480,
+      .offset_end = 82496,
+      .offset_limit = 82560,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9666,20 +10383,20 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .mem_shape = buff_info__mem_shape_F_4_1_1,
       .mem_ndims = 3,
       .chpos = CHPos_First,
-      .Qm = 0,
-      .Qn = 15,
+      .Qm = 11,
+      .Qn = 20,
       .Qunsigned = 0,
       .type = DataType_FXP,
-      .nbits = 16,
+      .nbits = 32,
       .ndims = 4,
       .shape = buff_info__shape_4_1_1,
     },
     {
-      .name = "Conv2D_4_weights_submask_0_0_0_0_24_1_3_6_94",
+      .name = "Conv2D_4_weights_submask_0_0_0_0_24_1_3_6_103",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 94848,
-      .offset_end = 95280,
-      .offset_limit = 95344,
+      .offset_start = 78256,
+      .offset_end = 78688,
+      .offset_limit = 78752,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9695,15 +10412,15 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_24_1_3_6,
       .per_channel = 1,
-      .scale = buff_info_Conv2D_4_weights_submask_0_0_0_0_24_1_3_6_94_quant_scale,
-      .offset = buff_info_Conv2D_4_weights_submask_0_0_0_0_24_1_3_6_94_quant_offset,
+      .scale = buff_info_Conv2D_4_weights_submask_0_0_0_0_24_1_3_6_103_quant_scale,
+      .offset = buff_info_Conv2D_4_weights_submask_0_0_0_0_24_1_3_6_103_quant_offset,
     },
     {
-      .name = "Conv2D_4_weights_submask_0_0_3_0_24_1_3_6_95",
+      .name = "Conv2D_4_weights_submask_0_0_3_0_24_1_3_6_104",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 95280,
-      .offset_end = 95712,
-      .offset_limit = 95776,
+      .offset_start = 77824,
+      .offset_end = 78256,
+      .offset_limit = 78320,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9719,15 +10436,15 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_24_1_3_6,
       .per_channel = 1,
-      .scale = buff_info_Conv2D_4_weights_submask_0_0_3_0_24_1_3_6_95_quant_scale,
-      .offset = buff_info_Conv2D_4_weights_submask_0_0_3_0_24_1_3_6_95_quant_offset,
+      .scale = buff_info_Conv2D_4_weights_submask_0_0_3_0_24_1_3_6_104_quant_scale,
+      .offset = buff_info_Conv2D_4_weights_submask_0_0_3_0_24_1_3_6_104_quant_offset,
     },
     {
-      .name = "Conv2D_4_weights_submask_0_0_0_6_24_1_3_3_96",
+      .name = "Conv2D_4_weights_submask_0_0_0_6_24_1_3_3_105",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 96496,
-      .offset_end = 96712,
-      .offset_limit = 96776,
+      .offset_start = 80240,
+      .offset_end = 80456,
+      .offset_limit = 80520,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9743,15 +10460,15 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_24_1_3_3,
       .per_channel = 1,
-      .scale = buff_info_Conv2D_4_weights_submask_0_0_0_6_24_1_3_3_96_quant_scale,
-      .offset = buff_info_Conv2D_4_weights_submask_0_0_0_6_24_1_3_3_96_quant_offset,
+      .scale = buff_info_Conv2D_4_weights_submask_0_0_0_6_24_1_3_3_105_quant_scale,
+      .offset = buff_info_Conv2D_4_weights_submask_0_0_0_6_24_1_3_3_105_quant_offset,
     },
     {
-      .name = "Conv2D_4_weights_submask_0_0_3_6_24_1_3_3_97",
+      .name = "Conv2D_4_weights_submask_0_0_3_6_24_1_3_3_106",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 96272,
-      .offset_end = 96488,
-      .offset_limit = 96552,
+      .offset_start = 80016,
+      .offset_end = 80232,
+      .offset_limit = 80296,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9767,15 +10484,15 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_24_1_3_3,
       .per_channel = 1,
-      .scale = buff_info_Conv2D_4_weights_submask_0_0_3_6_24_1_3_3_97_quant_scale,
-      .offset = buff_info_Conv2D_4_weights_submask_0_0_3_6_24_1_3_3_97_quant_offset,
+      .scale = buff_info_Conv2D_4_weights_submask_0_0_3_6_24_1_3_3_106_quant_scale,
+      .offset = buff_info_Conv2D_4_weights_submask_0_0_3_6_24_1_3_3_106_quant_offset,
     },
     {
-      .name = "Conv2D_4_weights_submask_0_0_6_0_24_1_2_6_98",
+      .name = "Conv2D_4_weights_submask_0_0_6_0_24_1_2_6_107",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 95712,
-      .offset_end = 96000,
-      .offset_limit = 96064,
+      .offset_start = 78688,
+      .offset_end = 78976,
+      .offset_limit = 79040,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9791,15 +10508,15 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_24_1_2_6,
       .per_channel = 1,
-      .scale = buff_info_Conv2D_4_weights_submask_0_0_6_0_24_1_2_6_98_quant_scale,
-      .offset = buff_info_Conv2D_4_weights_submask_0_0_6_0_24_1_2_6_98_quant_offset,
+      .scale = buff_info_Conv2D_4_weights_submask_0_0_6_0_24_1_2_6_107_quant_scale,
+      .offset = buff_info_Conv2D_4_weights_submask_0_0_6_0_24_1_2_6_107_quant_offset,
     },
     {
-      .name = "Conv2D_4_weights_submask_0_0_6_6_24_1_2_3_99",
+      .name = "Conv2D_4_weights_submask_0_0_6_6_24_1_2_3_108",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 96720,
-      .offset_end = 96864,
-      .offset_limit = 96928,
+      .offset_start = 81040,
+      .offset_end = 81184,
+      .offset_limit = 81248,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9815,15 +10532,15 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_24_1_2_3,
       .per_channel = 1,
-      .scale = buff_info_Conv2D_4_weights_submask_0_0_6_6_24_1_2_3_99_quant_scale,
-      .offset = buff_info_Conv2D_4_weights_submask_0_0_6_6_24_1_2_3_99_quant_offset,
+      .scale = buff_info_Conv2D_4_weights_submask_0_0_6_6_24_1_2_3_108_quant_scale,
+      .offset = buff_info_Conv2D_4_weights_submask_0_0_6_6_24_1_2_3_108_quant_offset,
     },
     {
-      .name = "RequantizeLinear_inserted_id219_220_requantize_zero",
+      .name = "RequantizeLinear_inserted_id234_235_requantize_zero",
       .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98752,
-      .offset_end = 98753,
-      .offset_limit = 98824,
+      .offset_start = 82688,
+      .offset_end = 82689,
+      .offset_limit = 82760,
       .is_user_allocated = 0,
       .is_param = 1,
       .epoch = 0,
@@ -9839,216 +10556,6 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Input_Buffers_Info_tiny_temporal_mixer_8ch_
       .ndims = 4,
       .shape = buff_info__shape_1_1_1_1,
     },
-    {
-      .name = "Conv2D_4_off_bias_9_221_atonn_internal_scale",
-      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98528,
-      .offset_end = 98532,
-      .offset_limit = 98600,
-      .is_user_allocated = 0,
-      .is_param = 1,
-      .epoch = 0,
-      .batch = 1,
-      .mem_shape = buff_info__mem_shape_U_1,
-      .mem_ndims = 1,
-      .chpos = CHPos_UNDEFINED,
-      .Qm = 0,
-      .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_FLOAT,
-      .nbits = 32,
-      .ndims = 4,
-      .shape = buff_info__shape_1,
-    },
-    {
-      .name = "Conv2D_4_off_bias_9_221_atonn_internal_offset",
-      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98768,
-      .offset_end = 98769,
-      .offset_limit = 98840,
-      .is_user_allocated = 0,
-      .is_param = 1,
-      .epoch = 0,
-      .batch = 1,
-      .mem_shape = buff_info__mem_shape_U_1,
-      .mem_ndims = 1,
-      .chpos = CHPos_UNDEFINED,
-      .Qm = 7,
-      .Qn = 0,
-      .Qunsigned = 0,
-      .type = DataType_FXP,
-      .nbits = 8,
-      .ndims = 4,
-      .shape = buff_info__shape_1,
-    },
-    {
-      .name = "QuantizeLinear_inserted_id209_223_atonn_internal_scale",
-      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98592,
-      .offset_end = 98596,
-      .offset_limit = 98664,
-      .is_user_allocated = 0,
-      .is_param = 1,
-      .epoch = 0,
-      .batch = 1,
-      .mem_shape = buff_info__mem_shape_U_1,
-      .mem_ndims = 1,
-      .chpos = CHPos_UNDEFINED,
-      .Qm = 0,
-      .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_FLOAT,
-      .nbits = 32,
-      .ndims = 4,
-      .shape = buff_info__shape_1,
-    },
-    {
-      .name = "QuantizeLinear_inserted_id209_223_atonn_internal_offset",
-      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98832,
-      .offset_end = 98833,
-      .offset_limit = 98904,
-      .is_user_allocated = 0,
-      .is_param = 1,
-      .epoch = 0,
-      .batch = 1,
-      .mem_shape = buff_info__mem_shape_U_1,
-      .mem_ndims = 1,
-      .chpos = CHPos_UNDEFINED,
-      .Qm = 7,
-      .Qn = 0,
-      .Qunsigned = 0,
-      .type = DataType_FXP,
-      .nbits = 8,
-      .ndims = 4,
-      .shape = buff_info__shape_1,
-    },
-    {
-      .name = "QuantizeLinear_inserted_id204_225_atonn_internal_scale",
-      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98576,
-      .offset_end = 98580,
-      .offset_limit = 98648,
-      .is_user_allocated = 0,
-      .is_param = 1,
-      .epoch = 0,
-      .batch = 1,
-      .mem_shape = buff_info__mem_shape_U_1,
-      .mem_ndims = 1,
-      .chpos = CHPos_UNDEFINED,
-      .Qm = 0,
-      .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_FLOAT,
-      .nbits = 32,
-      .ndims = 4,
-      .shape = buff_info__shape_1,
-    },
-    {
-      .name = "QuantizeLinear_inserted_id204_225_atonn_internal_offset",
-      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98816,
-      .offset_end = 98817,
-      .offset_limit = 98888,
-      .is_user_allocated = 0,
-      .is_param = 1,
-      .epoch = 0,
-      .batch = 1,
-      .mem_shape = buff_info__mem_shape_U_1,
-      .mem_ndims = 1,
-      .chpos = CHPos_UNDEFINED,
-      .Qm = 7,
-      .Qn = 0,
-      .Qunsigned = 0,
-      .type = DataType_FXP,
-      .nbits = 8,
-      .ndims = 4,
-      .shape = buff_info__shape_1,
-    },
-    {
-      .name = "Conv2D_9_suboff_12_227_atonn_internal_scale",
-      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98544,
-      .offset_end = 98548,
-      .offset_limit = 98616,
-      .is_user_allocated = 0,
-      .is_param = 1,
-      .epoch = 0,
-      .batch = 1,
-      .mem_shape = buff_info__mem_shape_U_1,
-      .mem_ndims = 1,
-      .chpos = CHPos_UNDEFINED,
-      .Qm = 0,
-      .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_FLOAT,
-      .nbits = 32,
-      .ndims = 4,
-      .shape = buff_info__shape_1,
-    },
-    {
-      .name = "Conv2D_9_suboff_12_227_atonn_internal_offset",
-      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98784,
-      .offset_end = 98785,
-      .offset_limit = 98856,
-      .is_user_allocated = 0,
-      .is_param = 1,
-      .epoch = 0,
-      .batch = 1,
-      .mem_shape = buff_info__mem_shape_U_1,
-      .mem_ndims = 1,
-      .chpos = CHPos_UNDEFINED,
-      .Qm = 8,
-      .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_FXP,
-      .nbits = 8,
-      .ndims = 4,
-      .shape = buff_info__shape_1,
-    },
-    {
-      .name = "Conv2D_13_suboff_21_229_atonn_internal_scale",
-      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98560,
-      .offset_end = 98564,
-      .offset_limit = 98632,
-      .is_user_allocated = 0,
-      .is_param = 1,
-      .epoch = 0,
-      .batch = 1,
-      .mem_shape = buff_info__mem_shape_U_1,
-      .mem_ndims = 1,
-      .chpos = CHPos_UNDEFINED,
-      .Qm = 0,
-      .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_FLOAT,
-      .nbits = 32,
-      .ndims = 4,
-      .shape = buff_info__shape_1,
-    },
-    {
-      .name = "Conv2D_13_suboff_21_229_atonn_internal_offset",
-      .addr_base = {(unsigned char *)(0x71000000UL) /* Equivalent hex address = 0x71000000UL */},
-      .offset_start = 98800,
-      .offset_end = 98801,
-      .offset_limit = 98872,
-      .is_user_allocated = 0,
-      .is_param = 1,
-      .epoch = 0,
-      .batch = 1,
-      .mem_shape = buff_info__mem_shape_U_1,
-      .mem_ndims = 1,
-      .chpos = CHPos_UNDEFINED,
-      .Qm = 8,
-      .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_FXP,
-      .nbits = 8,
-      .ndims = 4,
-      .shape = buff_info__shape_1,
-    },
 #endif // LL_ATON_DBG_BUFFER_INFO_EXCLUDED == 0
     {
       .name = NULL,
@@ -10062,18 +10569,18 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Output_Buffers_Info_tiny_temporal_mixer_8ch
 {
   static const uint32_t buff_info__shape_1_4[] = { 1, 1, 4, 1 };
   static const uint32_t buff_info__mem_shape_U_1_4[] = { 1, 4 };
-  static const float buff_info_Quantize_52_out_0_quant_scale[] = { 0.000134044836158864 };
-  static const int16_t buff_info_Quantize_52_out_0_quant_offset[] = { -128 };
+  static const float buff_info_Quantize_54_out_0_quant_scale[] = { 0.105798900127411 };
+  static const int16_t buff_info_Quantize_54_out_0_quant_offset[] = { 18 };
   static const LL_Buffer_InfoTypeDef buff_info[] = {
     {
-      .name = "Quantize_52_out_0",
+      .name = "Quantize_54_out_0",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
       .offset_start = 0,
       .offset_end = 4,
       .offset_limit = 72,
       .is_user_allocated = 0,
       .is_param = 0,
-      .epoch = 30,
+      .epoch = 21,
       .batch = 1,
       .mem_shape = buff_info__mem_shape_U_1_4,
       .mem_ndims = 2,
@@ -10086,8 +10593,8 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Output_Buffers_Info_tiny_temporal_mixer_8ch
       .ndims = 4,
       .shape = buff_info__shape_1_4,
       .per_channel = 0,
-      .scale = buff_info_Quantize_52_out_0_quant_scale,
-      .offset = buff_info_Quantize_52_out_0_quant_offset,
+      .scale = buff_info_Quantize_54_out_0_quant_scale,
+      .offset = buff_info_Quantize_54_out_0_quant_offset,
     },
     {
       .name = NULL,
@@ -10101,70 +10608,68 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
 {
   static const uint32_t buff_info__shape_1_24_1_1024[] = { 1, 1, 1024, 24 };
   static const uint32_t buff_info__mem_shape_L_1_24_1_1024[] = { 1, 1, 1024, 24 };
-  static const uint32_t buff_info__mem_shape_M8_1_24_1_1024[] = { 1, 3, 1, 1024, 8 };
   static const uint32_t buff_info__mem_shape_M4_1_24_1_1024[] = { 1, 6, 1, 1024, 4 };
-  static const float buff_info_Conv2D_4_off_bias_out_10_quant_scale[] = { 0.000426385173341259 };
-  static const int16_t buff_info_Conv2D_4_off_bias_out_10_quant_offset[] = { -128 };
-  static const uint32_t buff_info__shape_1_24_1_256[] = { 1, 1, 256, 24 };
-  static const uint32_t buff_info__mem_shape_L_1_24_1_256[] = { 1, 1, 256, 24 };
-  static const float buff_info_AveragePool_7_out_0_inserted_out209_quant_scale[] = { 0.000426385173341259 };
-  static const int16_t buff_info_AveragePool_7_out_0_inserted_out209_quant_offset[] = { -128 };
-  static const float buff_info_AveragePool_7_out_0_inserted_out204_quant_scale[] = { 0.000426385173341259 };
-  static const int16_t buff_info_AveragePool_7_out_0_inserted_out204_quant_offset[] = { -128 };
-  static const float buff_info_Conv2D_9_zero_off_out_13_quant_scale[] = { 0.000426385173341259 };
-  static const int16_t buff_info_Conv2D_9_zero_off_out_13_quant_offset[] = { 0 };
-  static const float buff_info_Conv2D_13_zero_off_out_22_quant_scale[] = { 0.000387348554795608 };
-  static const int16_t buff_info_Conv2D_13_zero_off_out_22_quant_offset[] = { 0 };
-  static const float buff_info_Conv2D_13_off_bias_out_28_quant_scale[] = { 0.000614668359048665 };
-  static const int16_t buff_info_Conv2D_13_off_bias_out_28_quant_offset[] = { -7 };
-  static const uint32_t buff_info__mem_shape_M8_1_24_1_256[] = { 1, 3, 1, 256, 8 };
-  static const float buff_info_Conv2D_20_zero_off_out_31_quant_scale[] = { 0.000538957538083196 };
-  static const int16_t buff_info_Conv2D_20_zero_off_out_31_quant_offset[] = { 0 };
+  static const uint32_t buff_info__mem_shape_M8_1_24_1_1024[] = { 1, 3, 1, 1024, 8 };
+  static const float buff_info_Conv2D_7_zero_off_out_13_quant_scale[] = { 0.00421814760193229 };
+  static const int16_t buff_info_Conv2D_7_zero_off_out_13_quant_offset[] = { 0 };
+  static const uint32_t buff_info__shape_1_32_1_256[] = { 1, 1, 256, 32 };
+  static const uint32_t buff_info__mem_shape_M8_1_32_1_256[] = { 1, 4, 1, 256, 8 };
+  static const float buff_info_Conv2D_7_off_bias_out_19_quant_scale[] = { 0.00812493823468685 };
+  static const int16_t buff_info_Conv2D_7_off_bias_out_19_quant_offset[] = { -128 };
+  static const float buff_info_Conv2D_11_zero_off_out_22_quant_scale[] = { 0.00812493823468685 };
+  static const int16_t buff_info_Conv2D_11_zero_off_out_22_quant_offset[] = { 0 };
+  static const uint32_t buff_info__mem_shape_L_1_32_1_256[] = { 1, 1, 256, 32 };
+  static const float buff_info_Conv2D_15_zero_off_out_31_quant_scale[] = { 0.00639741774648428 };
+  static const int16_t buff_info_Conv2D_15_zero_off_out_31_quant_offset[] = { 0 };
+  static const float buff_info_Conv2D_15_off_bias_out_37_quant_scale[] = { 0.0152783719822764 };
+  static const int16_t buff_info_Conv2D_15_off_bias_out_37_quant_offset[] = { -39 };
+  static const float buff_info_Conv2D_22_zero_off_out_40_quant_scale[] = { 0.0134714720770717 };
+  static const int16_t buff_info_Conv2D_22_zero_off_out_40_quant_offset[] = { 0 };
   static const uint32_t buff_info__shape_1_48_1_128[] = { 1, 1, 128, 48 };
   static const uint32_t buff_info__mem_shape_M12_1_48_1_128[] = { 1, 4, 1, 128, 12 };
-  static const float buff_info_Conv2D_20_off_bias_out_37_quant_scale[] = { 0.000443359749624506 };
-  static const int16_t buff_info_Conv2D_20_off_bias_out_37_quant_offset[] = { -128 };
+  static const float buff_info_Conv2D_22_off_bias_out_46_quant_scale[] = { 0.015791742131114 };
+  static const int16_t buff_info_Conv2D_22_off_bias_out_46_quant_offset[] = { -128 };
   static const uint32_t buff_info__mem_shape_L_1_48_1_128[] = { 1, 1, 128, 48 };
-  static const float buff_info_Conv2D_24_zero_off_out_40_quant_scale[] = { 0.000443359749624506 };
-  static const int16_t buff_info_Conv2D_24_zero_off_out_40_quant_offset[] = { 0 };
+  static const float buff_info_Conv2D_26_zero_off_out_49_quant_scale[] = { 0.015791742131114 };
+  static const int16_t buff_info_Conv2D_26_zero_off_out_49_quant_offset[] = { 0 };
   static const uint32_t buff_info__mem_shape_M6_1_48_1_128[] = { 1, 8, 1, 128, 6 };
-  static const float buff_info_Conv2D_28_zero_off_out_49_quant_scale[] = { 0.000250703858910128 };
-  static const int16_t buff_info_Conv2D_28_zero_off_out_49_quant_offset[] = { 0 };
-  static const float buff_info_Conv2D_28_off_bias_out_55_quant_scale[] = { 0.000336102122673765 };
-  static const int16_t buff_info_Conv2D_28_off_bias_out_55_quant_offset[] = { 6 };
-  static const float buff_info_Conv2D_35_zero_off_out_58_quant_scale[] = { 0.000579750980250537 };
-  static const int16_t buff_info_Conv2D_35_zero_off_out_58_quant_offset[] = { 0 };
+  static const float buff_info_Conv2D_30_zero_off_out_58_quant_scale[] = { 0.0197359435260296 };
+  static const int16_t buff_info_Conv2D_30_zero_off_out_58_quant_offset[] = { 0 };
+  static const float buff_info_Conv2D_30_off_bias_out_64_quant_scale[] = { 0.0781106576323509 };
+  static const int16_t buff_info_Conv2D_30_off_bias_out_64_quant_offset[] = { -15 };
+  static const float buff_info_Conv2D_37_zero_off_out_67_quant_scale[] = { 0.0549873374402523 };
+  static const int16_t buff_info_Conv2D_37_zero_off_out_67_quant_offset[] = { 0 };
   static const uint32_t buff_info__shape_1_64_1_64[] = { 1, 1, 64, 64 };
   static const uint32_t buff_info__mem_shape_M8_1_64_1_64[] = { 1, 8, 1, 64, 8 };
-  static const float buff_info_Conv2D_35_off_bias_out_64_quant_scale[] = { 0.000437898241216317 };
-  static const int16_t buff_info_Conv2D_35_off_bias_out_64_quant_offset[] = { -128 };
+  static const float buff_info_Conv2D_37_off_bias_out_73_quant_scale[] = { 0.0938091725111008 };
+  static const int16_t buff_info_Conv2D_37_off_bias_out_73_quant_offset[] = { -128 };
   static const uint32_t buff_info__mem_shape_L_1_64_1_64[] = { 1, 1, 64, 64 };
-  static const float buff_info_Conv2D_39_zero_off_out_67_quant_scale[] = { 0.000437898241216317 };
-  static const int16_t buff_info_Conv2D_39_zero_off_out_67_quant_offset[] = { 0 };
+  static const float buff_info_Conv2D_41_zero_off_out_76_quant_scale[] = { 0.0938091725111008 };
+  static const int16_t buff_info_Conv2D_41_zero_off_out_76_quant_offset[] = { 0 };
   static const uint32_t buff_info__mem_shape_M16_1_64_1_64[] = { 1, 4, 1, 64, 16 };
-  static const float buff_info_Conv2D_39_zero_off_out_67_cp_in_35_quant_scale[] = { 0.000437898241216317 };
-  static const int16_t buff_info_Conv2D_39_zero_off_out_67_cp_in_35_quant_offset[] = { 0 };
-  static const float buff_info_Conv2D_43_zero_off_out_76_quant_scale[] = { 0.000303293141769245 };
-  static const int16_t buff_info_Conv2D_43_zero_off_out_76_quant_offset[] = { 0 };
-  static const float buff_info_Conv2D_43_zero_off_out_76_cp_in_36_quant_scale[] = { 0.000303293141769245 };
-  static const int16_t buff_info_Conv2D_43_zero_off_out_76_cp_in_36_quant_offset[] = { 0 };
-  static const float buff_info_Conv2D_43_off_bias_out_82_quant_scale[] = { 0.000311206997139379 };
-  static const int16_t buff_info_Conv2D_43_off_bias_out_82_quant_offset[] = { 14 };
+  static const float buff_info_Conv2D_41_zero_off_out_76_cp_in_62_quant_scale[] = { 0.0938091725111008 };
+  static const int16_t buff_info_Conv2D_41_zero_off_out_76_cp_in_62_quant_offset[] = { 0 };
+  static const float buff_info_Conv2D_45_zero_off_out_85_quant_scale[] = { 0.180956557393074 };
+  static const int16_t buff_info_Conv2D_45_zero_off_out_85_quant_offset[] = { 0 };
+  static const float buff_info_Conv2D_45_zero_off_out_85_cp_in_63_quant_scale[] = { 0.180956557393074 };
+  static const int16_t buff_info_Conv2D_45_zero_off_out_85_cp_in_63_quant_offset[] = { 0 };
+  static const float buff_info_Conv2D_45_off_bias_out_91_quant_scale[] = { 0.496273905038834 };
+  static const int16_t buff_info_Conv2D_45_off_bias_out_91_quant_offset[] = { 7 };
   static const uint32_t buff_info__shape_1_64_1_1[] = { 1, 1, 1, 64 };
   static const uint32_t buff_info__mem_shape_F_1_64_1_1[] = { 1, 64, 1, 1 };
-  static const float buff_info_Gemm_51_conv_4_zero_off_out_85_quant_scale[] = { 0.000145257043186575 };
-  static const int16_t buff_info_Gemm_51_conv_4_zero_off_out_85_quant_offset[] = { 0 };
+  static const float buff_info_Gemm_53_conv_4_zero_off_out_94_quant_scale[] = { 0.0586150586605072 };
+  static const int16_t buff_info_Gemm_53_conv_4_zero_off_out_94_quant_offset[] = { 0 };
   static const uint32_t buff_info__shape_1_4_1_1[] = { 1, 1, 1, 4 };
   static const uint32_t buff_info__mem_shape_F_1_4_1_1[] = { 1, 4, 1, 1 };
-  static const float buff_info_Gemm_51_conv_4_off_bias_out_91_quant_scale[] = { 0.000134044836158864 };
-  static const int16_t buff_info_Gemm_51_conv_4_off_bias_out_91_quant_offset[] = { -128 };
+  static const float buff_info_Gemm_53_conv_4_off_bias_out_100_quant_scale[] = { 0.105798900127411 };
+  static const int16_t buff_info_Gemm_53_conv_4_off_bias_out_100_quant_offset[] = { 18 };
   static const LL_Buffer_InfoTypeDef buff_info[] = {
     {
-      .name = "____234",
+      .name = "____247",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 155648,
-      .offset_end = 204800,
-      .offset_limit = 204864,
+      .offset_start = 204800,
+      .offset_end = 253952,
+      .offset_limit = 254016,
       .is_user_allocated = 0,
       .is_param = 0,
       .epoch = 1,
@@ -10172,8 +10677,8 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .mem_shape = buff_info__mem_shape_L_1_24_1_1024,
       .mem_ndims = 4,
       .chpos = CHPos_Last,
-      .Qm = 19,
-      .Qn = -4,
+      .Qm = 20,
+      .Qn = -5,
       .Qunsigned = 0,
       .type = DataType_FXP,
       .nbits = 16,
@@ -10181,20 +10686,20 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .shape = buff_info__shape_1_24_1_1024,
     },
     {
-      .name = "____225",
+      .name = "____244",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 8192,
-      .offset_end = 57344,
-      .offset_limit = 57408,
+      .offset_start = 155648,
+      .offset_end = 204800,
+      .offset_limit = 204864,
       .is_user_allocated = 0,
       .is_param = 0,
       .epoch = 1,
-      .batch = 8,
-      .mem_shape = buff_info__mem_shape_M8_1_24_1_1024,
+      .batch = 4,
+      .mem_shape = buff_info__mem_shape_M4_1_24_1_1024,
       .mem_ndims = 5,
       .chpos = CHPos_Mixed,
-      .Qm = 19,
-      .Qn = -4,
+      .Qm = 20,
+      .Qn = -5,
       .Qunsigned = 0,
       .type = DataType_FXP,
       .nbits = 16,
@@ -10202,7 +10707,7 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .shape = buff_info__shape_1_24_1_1024,
     },
     {
-      .name = "____222",
+      .name = "____232",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
       .offset_start = 106496,
       .offset_end = 155648,
@@ -10214,8 +10719,8 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .mem_shape = buff_info__mem_shape_M4_1_24_1_1024,
       .mem_ndims = 5,
       .chpos = CHPos_Mixed,
-      .Qm = 19,
-      .Qn = -4,
+      .Qm = 20,
+      .Qn = -5,
       .Qunsigned = 0,
       .type = DataType_FXP,
       .nbits = 16,
@@ -10223,11 +10728,11 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .shape = buff_info__shape_1_24_1_1024,
     },
     {
-      .name = "____219",
+      .name = "____252",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 204800,
-      .offset_end = 253952,
-      .offset_limit = 254016,
+      .offset_start = 303104,
+      .offset_end = 352256,
+      .offset_limit = 352320,
       .is_user_allocated = 0,
       .is_param = 0,
       .epoch = 2,
@@ -10235,8 +10740,8 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .mem_shape = buff_info__mem_shape_M4_1_24_1_1024,
       .mem_ndims = 5,
       .chpos = CHPos_Mixed,
-      .Qm = 19,
-      .Qn = -4,
+      .Qm = 20,
+      .Qn = -5,
       .Qunsigned = 0,
       .type = DataType_FXP,
       .nbits = 16,
@@ -10244,28 +10749,7 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .shape = buff_info__shape_1_24_1_1024,
     },
     {
-      .name = "____228",
-      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 57344,
-      .offset_end = 106496,
-      .offset_limit = 106560,
-      .is_user_allocated = 0,
-      .is_param = 0,
-      .epoch = 2,
-      .batch = 8,
-      .mem_shape = buff_info__mem_shape_M8_1_24_1_1024,
-      .mem_ndims = 5,
-      .chpos = CHPos_Mixed,
-      .Qm = 19,
-      .Qn = -4,
-      .Qunsigned = 0,
-      .type = DataType_FXP,
-      .nbits = 16,
-      .ndims = 4,
-      .shape = buff_info__shape_1_24_1_1024,
-    },
-    {
-      .name = "____239",
+      .name = "____235",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
       .offset_start = 253952,
       .offset_end = 303104,
@@ -10277,8 +10761,8 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .mem_shape = buff_info__mem_shape_M4_1_24_1_1024,
       .mem_ndims = 5,
       .chpos = CHPos_Mixed,
-      .Qm = 19,
-      .Qn = -4,
+      .Qm = 20,
+      .Qn = -5,
       .Qunsigned = 0,
       .type = DataType_FXP,
       .nbits = 16,
@@ -10286,7 +10770,28 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .shape = buff_info__shape_1_24_1_1024,
     },
     {
-      .name = "____237",
+      .name = "____238",
+      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
+      .offset_start = 8192,
+      .offset_end = 57344,
+      .offset_limit = 57408,
+      .is_user_allocated = 0,
+      .is_param = 0,
+      .epoch = 2,
+      .batch = 8,
+      .mem_shape = buff_info__mem_shape_M8_1_24_1_1024,
+      .mem_ndims = 5,
+      .chpos = CHPos_Mixed,
+      .Qm = 20,
+      .Qn = -5,
+      .Qunsigned = 0,
+      .type = DataType_FXP,
+      .nbits = 16,
+      .ndims = 4,
+      .shape = buff_info__shape_1_24_1_1024,
+    },
+    {
+      .name = "____250",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
       .offset_start = 155648,
       .offset_end = 204800,
@@ -10298,8 +10803,8 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .mem_shape = buff_info__mem_shape_M4_1_24_1_1024,
       .mem_ndims = 5,
       .chpos = CHPos_Mixed,
-      .Qm = 19,
-      .Qn = -4,
+      .Qm = 20,
+      .Qn = -5,
       .Qunsigned = 0,
       .type = DataType_FXP,
       .nbits = 16,
@@ -10307,20 +10812,41 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .shape = buff_info__shape_1_24_1_1024,
     },
     {
-      .name = "____238",
+      .name = "____241",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 303104,
-      .offset_end = 352256,
-      .offset_limit = 352320,
+      .offset_start = 57344,
+      .offset_end = 106496,
+      .offset_limit = 106560,
       .is_user_allocated = 0,
       .is_param = 0,
       .epoch = 3,
+      .batch = 8,
+      .mem_shape = buff_info__mem_shape_M8_1_24_1_1024,
+      .mem_ndims = 5,
+      .chpos = CHPos_Mixed,
+      .Qm = 20,
+      .Qn = -5,
+      .Qunsigned = 0,
+      .type = DataType_FXP,
+      .nbits = 16,
+      .ndims = 4,
+      .shape = buff_info__shape_1_24_1_1024,
+    },
+    {
+      .name = "____251",
+      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
+      .offset_start = 106496,
+      .offset_end = 155648,
+      .offset_limit = 155712,
+      .is_user_allocated = 0,
+      .is_param = 0,
+      .epoch = 4,
       .batch = 24,
       .mem_shape = buff_info__mem_shape_L_1_24_1_1024,
       .mem_ndims = 4,
       .chpos = CHPos_Last,
-      .Qm = 19,
-      .Qn = -4,
+      .Qm = 20,
+      .Qn = -5,
       .Qunsigned = 0,
       .type = DataType_FXP,
       .nbits = 16,
@@ -10328,20 +10854,20 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .shape = buff_info__shape_1_24_1_1024,
     },
     {
-      .name = "____240",
+      .name = "____253",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
       .offset_start = 204800,
       .offset_end = 253952,
       .offset_limit = 254016,
       .is_user_allocated = 0,
       .is_param = 0,
-      .epoch = 4,
+      .epoch = 5,
       .batch = 4,
       .mem_shape = buff_info__mem_shape_M4_1_24_1_1024,
       .mem_ndims = 5,
       .chpos = CHPos_Mixed,
-      .Qm = 19,
-      .Qn = -4,
+      .Qm = 20,
+      .Qn = -5,
       .Qunsigned = 0,
       .type = DataType_FXP,
       .nbits = 16,
@@ -10349,35 +10875,11 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .shape = buff_info__shape_1_24_1_1024,
     },
     {
-      .name = "Conv2D_4_off_bias_out_10",
+      .name = "Conv2D_7_zero_off_out_13",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 303104,
-      .offset_end = 327680,
-      .offset_limit = 327744,
-      .is_user_allocated = 0,
-      .is_param = 0,
-      .epoch = 5,
-      .batch = 24,
-      .mem_shape = buff_info__mem_shape_L_1_24_1_1024,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
-      .Qm = 7,
-      .Qn = 0,
-      .Qunsigned = 0,
-      .type = DataType_INT8,
-      .nbits = 8,
-      .ndims = 4,
-      .shape = buff_info__shape_1_24_1_1024,
-      .per_channel = 0,
-      .scale = buff_info_Conv2D_4_off_bias_out_10_quant_scale,
-      .offset = buff_info_Conv2D_4_off_bias_out_10_quant_offset,
-    },
-    {
-      .name = "Conv2D_4_off_bias_out_10_inserted_out203",
-      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 0,
-      .offset_end = 98304,
-      .offset_limit = 98368,
+      .offset_start = 253952,
+      .offset_end = 278528,
+      .offset_limit = 278592,
       .is_user_allocated = 0,
       .is_param = 0,
       .epoch = 6,
@@ -10385,70 +10887,100 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .mem_shape = buff_info__mem_shape_L_1_24_1_1024,
       .mem_ndims = 4,
       .chpos = CHPos_Last,
-      .Qm = 0,
+      .Qm = 8,
       .Qn = 0,
       .Qunsigned = 1,
-      .type = DataType_FLOAT,
-      .nbits = 32,
+      .type = DataType_UINT8,
+      .nbits = 8,
       .ndims = 4,
       .shape = buff_info__shape_1_24_1_1024,
+      .per_channel = 0,
+      .scale = buff_info_Conv2D_7_zero_off_out_13_quant_scale,
+      .offset = buff_info_Conv2D_7_zero_off_out_13_quant_offset,
     },
     {
-      .name = "AveragePool_7_out_0",
+      .name = "Conv2D_7_off_bias_out_19",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 98304,
-      .offset_end = 122880,
-      .offset_limit = 122944,
+      .offset_start = 278528,
+      .offset_end = 286720,
+      .offset_limit = 286784,
       .is_user_allocated = 0,
       .is_param = 0,
       .epoch = 7,
-      .batch = 24,
-      .mem_shape = buff_info__mem_shape_L_1_24_1_256,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
-      .Qm = 0,
+      .batch = 8,
+      .mem_shape = buff_info__mem_shape_M8_1_32_1_256,
+      .mem_ndims = 5,
+      .chpos = CHPos_Mixed,
+      .Qm = 7,
       .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_FLOAT,
-      .nbits = 32,
+      .Qunsigned = 0,
+      .type = DataType_INT8,
+      .nbits = 8,
       .ndims = 4,
-      .shape = buff_info__shape_1_24_1_256,
+      .shape = buff_info__shape_1_32_1_256,
+      .per_channel = 0,
+      .scale = buff_info_Conv2D_7_off_bias_out_19_quant_scale,
+      .offset = buff_info_Conv2D_7_off_bias_out_19_quant_offset,
     },
     {
-      .name = "AveragePool_7_out_0_inserted_out209",
+      .name = "Conv2D_11_zero_off_out_22",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 49152,
-      .offset_end = 55296,
-      .offset_limit = 55360,
+      .offset_start = 286720,
+      .offset_end = 294912,
+      .offset_limit = 294976,
+      .is_user_allocated = 0,
+      .is_param = 0,
+      .epoch = 7,
+      .batch = 8,
+      .mem_shape = buff_info__mem_shape_M8_1_32_1_256,
+      .mem_ndims = 5,
+      .chpos = CHPos_Mixed,
+      .Qm = 8,
+      .Qn = 0,
+      .Qunsigned = 1,
+      .type = DataType_UINT8,
+      .nbits = 8,
+      .ndims = 4,
+      .shape = buff_info__shape_1_32_1_256,
+      .per_channel = 0,
+      .scale = buff_info_Conv2D_11_zero_off_out_22_quant_scale,
+      .offset = buff_info_Conv2D_11_zero_off_out_22_quant_offset,
+    },
+    {
+      .name = "Conv2D_15_zero_off_out_31",
+      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
+      .offset_start = 294912,
+      .offset_end = 303104,
+      .offset_limit = 303168,
       .is_user_allocated = 0,
       .is_param = 0,
       .epoch = 8,
-      .batch = 24,
-      .mem_shape = buff_info__mem_shape_L_1_24_1_256,
+      .batch = 32,
+      .mem_shape = buff_info__mem_shape_L_1_32_1_256,
       .mem_ndims = 4,
       .chpos = CHPos_Last,
-      .Qm = 7,
+      .Qm = 8,
       .Qn = 0,
-      .Qunsigned = 0,
-      .type = DataType_INT8,
+      .Qunsigned = 1,
+      .type = DataType_UINT8,
       .nbits = 8,
       .ndims = 4,
-      .shape = buff_info__shape_1_24_1_256,
+      .shape = buff_info__shape_1_32_1_256,
       .per_channel = 0,
-      .scale = buff_info_AveragePool_7_out_0_inserted_out209_quant_scale,
-      .offset = buff_info_AveragePool_7_out_0_inserted_out209_quant_offset,
+      .scale = buff_info_Conv2D_15_zero_off_out_31_quant_scale,
+      .offset = buff_info_Conv2D_15_zero_off_out_31_quant_offset,
     },
     {
-      .name = "AveragePool_7_out_0_inserted_out204",
+      .name = "Conv2D_15_off_bias_out_37",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 61440,
-      .offset_end = 67584,
-      .offset_limit = 67648,
+      .offset_start = 286720,
+      .offset_end = 294912,
+      .offset_limit = 294976,
       .is_user_allocated = 0,
       .is_param = 0,
       .epoch = 9,
-      .batch = 24,
-      .mem_shape = buff_info__mem_shape_L_1_24_1_256,
+      .batch = 32,
+      .mem_shape = buff_info__mem_shape_L_1_32_1_256,
       .mem_ndims = 4,
       .chpos = CHPos_Last,
       .Qm = 7,
@@ -10457,404 +10989,206 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .type = DataType_INT8,
       .nbits = 8,
       .ndims = 4,
-      .shape = buff_info__shape_1_24_1_256,
+      .shape = buff_info__shape_1_32_1_256,
       .per_channel = 0,
-      .scale = buff_info_AveragePool_7_out_0_inserted_out204_quant_scale,
-      .offset = buff_info_AveragePool_7_out_0_inserted_out204_quant_offset,
+      .scale = buff_info_Conv2D_15_off_bias_out_37_quant_scale,
+      .offset = buff_info_Conv2D_15_off_bias_out_37_quant_offset,
     },
     {
-      .name = "Conv2D_9_zero_off_out_13",
+      .name = "Conv2D_22_zero_off_out_40",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 24576,
-      .offset_end = 30720,
-      .offset_limit = 30784,
+      .offset_start = 294912,
+      .offset_end = 303104,
+      .offset_limit = 303168,
       .is_user_allocated = 0,
       .is_param = 0,
       .epoch = 10,
-      .batch = 24,
-      .mem_shape = buff_info__mem_shape_L_1_24_1_256,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
+      .batch = 8,
+      .mem_shape = buff_info__mem_shape_M8_1_32_1_256,
+      .mem_ndims = 5,
+      .chpos = CHPos_Mixed,
       .Qm = 8,
       .Qn = 0,
       .Qunsigned = 1,
       .type = DataType_UINT8,
       .nbits = 8,
       .ndims = 4,
-      .shape = buff_info__shape_1_24_1_256,
+      .shape = buff_info__shape_1_32_1_256,
       .per_channel = 0,
-      .scale = buff_info_Conv2D_9_zero_off_out_13_quant_scale,
-      .offset = buff_info_Conv2D_9_zero_off_out_13_quant_offset,
+      .scale = buff_info_Conv2D_22_zero_off_out_40_quant_scale,
+      .offset = buff_info_Conv2D_22_zero_off_out_40_quant_offset,
     },
     {
-      .name = "Conv2D_9_zero_off_out_13_inserted_out205",
+      .name = "Conv2D_22_off_bias_out_46",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 0,
-      .offset_end = 24576,
-      .offset_limit = 24640,
+      .offset_start = 303104,
+      .offset_end = 309248,
+      .offset_limit = 309312,
       .is_user_allocated = 0,
       .is_param = 0,
       .epoch = 11,
-      .batch = 24,
-      .mem_shape = buff_info__mem_shape_L_1_24_1_256,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
-      .Qm = 0,
+      .batch = 12,
+      .mem_shape = buff_info__mem_shape_M12_1_48_1_128,
+      .mem_ndims = 5,
+      .chpos = CHPos_Mixed,
+      .Qm = 7,
       .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_FLOAT,
-      .nbits = 32,
+      .Qunsigned = 0,
+      .type = DataType_INT8,
+      .nbits = 8,
       .ndims = 4,
-      .shape = buff_info__shape_1_24_1_256,
+      .shape = buff_info__shape_1_48_1_128,
+      .per_channel = 0,
+      .scale = buff_info_Conv2D_22_off_bias_out_46_quant_scale,
+      .offset = buff_info_Conv2D_22_off_bias_out_46_quant_offset,
     },
     {
-      .name = "Conv2D_9_out_0",
+      .name = "Conv2D_26_zero_off_out_49",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 24576,
-      .offset_end = 49152,
-      .offset_limit = 49216,
+      .offset_start = 309248,
+      .offset_end = 315392,
+      .offset_limit = 315456,
+      .is_user_allocated = 0,
+      .is_param = 0,
+      .epoch = 11,
+      .batch = 48,
+      .mem_shape = buff_info__mem_shape_L_1_48_1_128,
+      .mem_ndims = 4,
+      .chpos = CHPos_Last,
+      .Qm = 8,
+      .Qn = 0,
+      .Qunsigned = 1,
+      .type = DataType_UINT8,
+      .nbits = 8,
+      .ndims = 4,
+      .shape = buff_info__shape_1_48_1_128,
+      .per_channel = 0,
+      .scale = buff_info_Conv2D_26_zero_off_out_49_quant_scale,
+      .offset = buff_info_Conv2D_26_zero_off_out_49_quant_offset,
+    },
+    {
+      .name = "Conv2D_26_out_0_cp_in_54_cp_in_55",
+      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
+      .offset_start = 327680,
+      .offset_end = 329216,
+      .offset_limit = 329280,
       .is_user_allocated = 0,
       .is_param = 0,
       .epoch = 12,
-      .batch = 24,
-      .mem_shape = buff_info__mem_shape_L_1_24_1_256,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
-      .Qm = 0,
-      .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_FLOAT,
-      .nbits = 32,
+      .batch = 6,
+      .mem_shape = buff_info__mem_shape_M6_1_48_1_128,
+      .mem_ndims = 5,
+      .chpos = CHPos_Mixed,
+      .Qm = 21,
+      .Qn = -6,
+      .Qunsigned = 0,
+      .type = DataType_FXP,
+      .nbits = 16,
       .ndims = 4,
-      .shape = buff_info__shape_1_24_1_256,
+      .shape = buff_info__shape_1_48_1_128,
     },
     {
-      .name = "Conv2D_9_out_0_inserted_out206",
+      .name = "Conv2D_30_zero_off_out_58",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 24576,
-      .offset_end = 36864,
-      .offset_limit = 36928,
+      .offset_start = 315392,
+      .offset_end = 321536,
+      .offset_limit = 321600,
+      .is_user_allocated = 0,
+      .is_param = 0,
+      .epoch = 12,
+      .batch = 48,
+      .mem_shape = buff_info__mem_shape_L_1_48_1_128,
+      .mem_ndims = 4,
+      .chpos = CHPos_Last,
+      .Qm = 8,
+      .Qn = 0,
+      .Qunsigned = 1,
+      .type = DataType_UINT8,
+      .nbits = 8,
+      .ndims = 4,
+      .shape = buff_info__shape_1_48_1_128,
+      .per_channel = 0,
+      .scale = buff_info_Conv2D_30_zero_off_out_58_quant_scale,
+      .offset = buff_info_Conv2D_30_zero_off_out_58_quant_offset,
+    },
+    {
+      .name = "Conv2D_30_out_0_cp_in_56_cp_in_57",
+      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
+      .offset_start = 329216,
+      .offset_end = 330752,
+      .offset_limit = 330816,
       .is_user_allocated = 0,
       .is_param = 0,
       .epoch = 13,
-      .batch = 24,
-      .mem_shape = buff_info__mem_shape_L_1_24_1_256,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
-      .Qm = 19,
-      .Qn = -4,
+      .batch = 6,
+      .mem_shape = buff_info__mem_shape_M6_1_48_1_128,
+      .mem_ndims = 5,
+      .chpos = CHPos_Mixed,
+      .Qm = 21,
+      .Qn = -6,
       .Qunsigned = 0,
       .type = DataType_FXP,
       .nbits = 16,
       .ndims = 4,
-      .shape = buff_info__shape_1_24_1_256,
+      .shape = buff_info__shape_1_48_1_128,
     },
     {
-      .name = "Conv2D_13_zero_off_out_22",
+      .name = "Conv2D_30_off_bias_out_64",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 61440,
-      .offset_end = 67584,
-      .offset_limit = 67648,
+      .offset_start = 321536,
+      .offset_end = 327680,
+      .offset_limit = 327744,
+      .is_user_allocated = 0,
+      .is_param = 0,
+      .epoch = 13,
+      .batch = 48,
+      .mem_shape = buff_info__mem_shape_L_1_48_1_128,
+      .mem_ndims = 4,
+      .chpos = CHPos_Last,
+      .Qm = 7,
+      .Qn = 0,
+      .Qunsigned = 0,
+      .type = DataType_INT8,
+      .nbits = 8,
+      .ndims = 4,
+      .shape = buff_info__shape_1_48_1_128,
+      .per_channel = 0,
+      .scale = buff_info_Conv2D_30_off_bias_out_64_quant_scale,
+      .offset = buff_info_Conv2D_30_off_bias_out_64_quant_offset,
+    },
+    {
+      .name = "Conv2D_37_zero_off_out_67",
+      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
+      .offset_start = 309248,
+      .offset_end = 315392,
+      .offset_limit = 315456,
       .is_user_allocated = 0,
       .is_param = 0,
       .epoch = 14,
-      .batch = 24,
-      .mem_shape = buff_info__mem_shape_L_1_24_1_256,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
+      .batch = 12,
+      .mem_shape = buff_info__mem_shape_M12_1_48_1_128,
+      .mem_ndims = 5,
+      .chpos = CHPos_Mixed,
       .Qm = 8,
       .Qn = 0,
       .Qunsigned = 1,
       .type = DataType_UINT8,
       .nbits = 8,
       .ndims = 4,
-      .shape = buff_info__shape_1_24_1_256,
+      .shape = buff_info__shape_1_48_1_128,
       .per_channel = 0,
-      .scale = buff_info_Conv2D_13_zero_off_out_22_quant_scale,
-      .offset = buff_info_Conv2D_13_zero_off_out_22_quant_offset,
+      .scale = buff_info_Conv2D_37_zero_off_out_67_quant_scale,
+      .offset = buff_info_Conv2D_37_zero_off_out_67_quant_offset,
     },
     {
-      .name = "Conv2D_13_zero_off_out_22_inserted_out207",
+      .name = "Conv2D_37_out_0_cp_in_58",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 0,
-      .offset_end = 24576,
-      .offset_limit = 24640,
+      .offset_start = 319488,
+      .offset_end = 320512,
+      .offset_limit = 320576,
       .is_user_allocated = 0,
       .is_param = 0,
       .epoch = 15,
-      .batch = 24,
-      .mem_shape = buff_info__mem_shape_L_1_24_1_256,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
-      .Qm = 0,
-      .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_FLOAT,
-      .nbits = 32,
-      .ndims = 4,
-      .shape = buff_info__shape_1_24_1_256,
-    },
-    {
-      .name = "Conv2D_13_out_0",
-      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 24576,
-      .offset_end = 49152,
-      .offset_limit = 49216,
-      .is_user_allocated = 0,
-      .is_param = 0,
-      .epoch = 16,
-      .batch = 24,
-      .mem_shape = buff_info__mem_shape_L_1_24_1_256,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
-      .Qm = 0,
-      .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_FLOAT,
-      .nbits = 32,
-      .ndims = 4,
-      .shape = buff_info__shape_1_24_1_256,
-    },
-    {
-      .name = "Conv2D_13_out_0_inserted_out208",
-      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 24576,
-      .offset_end = 36864,
-      .offset_limit = 36928,
-      .is_user_allocated = 0,
-      .is_param = 0,
-      .epoch = 17,
-      .batch = 24,
-      .mem_shape = buff_info__mem_shape_L_1_24_1_256,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
-      .Qm = 20,
-      .Qn = -5,
-      .Qunsigned = 0,
-      .type = DataType_FXP,
-      .nbits = 16,
-      .ndims = 4,
-      .shape = buff_info__shape_1_24_1_256,
-    },
-    {
-      .name = "Conv2D_13_off_bias_out_28",
-      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 55296,
-      .offset_end = 61440,
-      .offset_limit = 61504,
-      .is_user_allocated = 0,
-      .is_param = 0,
-      .epoch = 18,
-      .batch = 24,
-      .mem_shape = buff_info__mem_shape_L_1_24_1_256,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
-      .Qm = 7,
-      .Qn = 0,
-      .Qunsigned = 0,
-      .type = DataType_INT8,
-      .nbits = 8,
-      .ndims = 4,
-      .shape = buff_info__shape_1_24_1_256,
-      .per_channel = 0,
-      .scale = buff_info_Conv2D_13_off_bias_out_28_quant_scale,
-      .offset = buff_info_Conv2D_13_off_bias_out_28_quant_offset,
-    },
-    {
-      .name = "Conv2D_20_zero_off_out_31",
-      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 12288,
-      .offset_end = 18432,
-      .offset_limit = 18496,
-      .is_user_allocated = 0,
-      .is_param = 0,
-      .epoch = 19,
-      .batch = 8,
-      .mem_shape = buff_info__mem_shape_M8_1_24_1_256,
-      .mem_ndims = 5,
-      .chpos = CHPos_Mixed,
-      .Qm = 8,
-      .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_UINT8,
-      .nbits = 8,
-      .ndims = 4,
-      .shape = buff_info__shape_1_24_1_256,
-      .per_channel = 0,
-      .scale = buff_info_Conv2D_20_zero_off_out_31_quant_scale,
-      .offset = buff_info_Conv2D_20_zero_off_out_31_quant_offset,
-    },
-    {
-      .name = "Conv2D_20_off_bias_out_37",
-      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 0,
-      .offset_end = 6144,
-      .offset_limit = 6208,
-      .is_user_allocated = 0,
-      .is_param = 0,
-      .epoch = 20,
-      .batch = 12,
-      .mem_shape = buff_info__mem_shape_M12_1_48_1_128,
-      .mem_ndims = 5,
-      .chpos = CHPos_Mixed,
-      .Qm = 7,
-      .Qn = 0,
-      .Qunsigned = 0,
-      .type = DataType_INT8,
-      .nbits = 8,
-      .ndims = 4,
-      .shape = buff_info__shape_1_48_1_128,
-      .per_channel = 0,
-      .scale = buff_info_Conv2D_20_off_bias_out_37_quant_scale,
-      .offset = buff_info_Conv2D_20_off_bias_out_37_quant_offset,
-    },
-    {
-      .name = "Conv2D_24_zero_off_out_40",
-      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 6144,
-      .offset_end = 12288,
-      .offset_limit = 12352,
-      .is_user_allocated = 0,
-      .is_param = 0,
-      .epoch = 20,
-      .batch = 48,
-      .mem_shape = buff_info__mem_shape_L_1_48_1_128,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
-      .Qm = 8,
-      .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_UINT8,
-      .nbits = 8,
-      .ndims = 4,
-      .shape = buff_info__shape_1_48_1_128,
-      .per_channel = 0,
-      .scale = buff_info_Conv2D_24_zero_off_out_40_quant_scale,
-      .offset = buff_info_Conv2D_24_zero_off_out_40_quant_offset,
-    },
-    {
-      .name = "Conv2D_24_out_0_cp_in_27_cp_in_28",
-      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 24576,
-      .offset_end = 26112,
-      .offset_limit = 26176,
-      .is_user_allocated = 0,
-      .is_param = 0,
-      .epoch = 21,
-      .batch = 6,
-      .mem_shape = buff_info__mem_shape_M6_1_48_1_128,
-      .mem_ndims = 5,
-      .chpos = CHPos_Mixed,
-      .Qm = 20,
-      .Qn = -5,
-      .Qunsigned = 0,
-      .type = DataType_FXP,
-      .nbits = 16,
-      .ndims = 4,
-      .shape = buff_info__shape_1_48_1_128,
-    },
-    {
-      .name = "Conv2D_28_zero_off_out_49",
-      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 12288,
-      .offset_end = 18432,
-      .offset_limit = 18496,
-      .is_user_allocated = 0,
-      .is_param = 0,
-      .epoch = 21,
-      .batch = 48,
-      .mem_shape = buff_info__mem_shape_L_1_48_1_128,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
-      .Qm = 8,
-      .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_UINT8,
-      .nbits = 8,
-      .ndims = 4,
-      .shape = buff_info__shape_1_48_1_128,
-      .per_channel = 0,
-      .scale = buff_info_Conv2D_28_zero_off_out_49_quant_scale,
-      .offset = buff_info_Conv2D_28_zero_off_out_49_quant_offset,
-    },
-    {
-      .name = "Conv2D_28_out_0_cp_in_29_cp_in_30",
-      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 6144,
-      .offset_end = 7680,
-      .offset_limit = 7744,
-      .is_user_allocated = 0,
-      .is_param = 0,
-      .epoch = 22,
-      .batch = 6,
-      .mem_shape = buff_info__mem_shape_M6_1_48_1_128,
-      .mem_ndims = 5,
-      .chpos = CHPos_Mixed,
-      .Qm = 20,
-      .Qn = -5,
-      .Qunsigned = 0,
-      .type = DataType_FXP,
-      .nbits = 16,
-      .ndims = 4,
-      .shape = buff_info__shape_1_48_1_128,
-    },
-    {
-      .name = "Conv2D_28_off_bias_out_55",
-      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 18432,
-      .offset_end = 24576,
-      .offset_limit = 24640,
-      .is_user_allocated = 0,
-      .is_param = 0,
-      .epoch = 22,
-      .batch = 48,
-      .mem_shape = buff_info__mem_shape_L_1_48_1_128,
-      .mem_ndims = 4,
-      .chpos = CHPos_Last,
-      .Qm = 7,
-      .Qn = 0,
-      .Qunsigned = 0,
-      .type = DataType_INT8,
-      .nbits = 8,
-      .ndims = 4,
-      .shape = buff_info__shape_1_48_1_128,
-      .per_channel = 0,
-      .scale = buff_info_Conv2D_28_off_bias_out_55_quant_scale,
-      .offset = buff_info_Conv2D_28_off_bias_out_55_quant_offset,
-    },
-    {
-      .name = "Conv2D_35_zero_off_out_58",
-      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 8192,
-      .offset_end = 14336,
-      .offset_limit = 14400,
-      .is_user_allocated = 0,
-      .is_param = 0,
-      .epoch = 23,
-      .batch = 12,
-      .mem_shape = buff_info__mem_shape_M12_1_48_1_128,
-      .mem_ndims = 5,
-      .chpos = CHPos_Mixed,
-      .Qm = 8,
-      .Qn = 0,
-      .Qunsigned = 1,
-      .type = DataType_UINT8,
-      .nbits = 8,
-      .ndims = 4,
-      .shape = buff_info__shape_1_48_1_128,
-      .per_channel = 0,
-      .scale = buff_info_Conv2D_35_zero_off_out_58_quant_scale,
-      .offset = buff_info_Conv2D_35_zero_off_out_58_quant_offset,
-    },
-    {
-      .name = "Conv2D_35_out_0_cp_in_31",
-      .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 18432,
-      .offset_end = 19456,
-      .offset_limit = 19520,
-      .is_user_allocated = 0,
-      .is_param = 0,
-      .epoch = 24,
       .batch = 8,
       .mem_shape = buff_info__mem_shape_M8_1_64_1_64,
       .mem_ndims = 5,
@@ -10868,14 +11202,14 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .shape = buff_info__shape_1_64_1_64,
     },
     {
-      .name = "Conv2D_35_off_bias_out_64",
+      .name = "Conv2D_37_off_bias_out_73",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
       .offset_start = 0,
       .offset_end = 4096,
       .offset_limit = 4160,
       .is_user_allocated = 0,
       .is_param = 0,
-      .epoch = 24,
+      .epoch = 15,
       .batch = 8,
       .mem_shape = buff_info__mem_shape_M8_1_64_1_64,
       .mem_ndims = 5,
@@ -10888,18 +11222,18 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .ndims = 4,
       .shape = buff_info__shape_1_64_1_64,
       .per_channel = 0,
-      .scale = buff_info_Conv2D_35_off_bias_out_64_quant_scale,
-      .offset = buff_info_Conv2D_35_off_bias_out_64_quant_offset,
+      .scale = buff_info_Conv2D_37_off_bias_out_73_quant_scale,
+      .offset = buff_info_Conv2D_37_off_bias_out_73_quant_offset,
     },
     {
-      .name = "Conv2D_39_zero_off_out_67",
+      .name = "Conv2D_41_zero_off_out_76",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
-      .offset_start = 14336,
-      .offset_end = 18432,
-      .offset_limit = 18496,
+      .offset_start = 315392,
+      .offset_end = 319488,
+      .offset_limit = 319552,
       .is_user_allocated = 0,
       .is_param = 0,
-      .epoch = 24,
+      .epoch = 15,
       .batch = 64,
       .mem_shape = buff_info__mem_shape_L_1_64_1_64,
       .mem_ndims = 4,
@@ -10912,18 +11246,18 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .ndims = 4,
       .shape = buff_info__shape_1_64_1_64,
       .per_channel = 0,
-      .scale = buff_info_Conv2D_39_zero_off_out_67_quant_scale,
-      .offset = buff_info_Conv2D_39_zero_off_out_67_quant_offset,
+      .scale = buff_info_Conv2D_41_zero_off_out_76_quant_scale,
+      .offset = buff_info_Conv2D_41_zero_off_out_76_quant_offset,
     },
     {
-      .name = "Conv2D_39_zero_off_out_67_cp_in_35",
+      .name = "Conv2D_41_zero_off_out_76_cp_in_62",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
       .offset_start = 8192,
       .offset_end = 12288,
       .offset_limit = 12352,
       .is_user_allocated = 0,
       .is_param = 0,
-      .epoch = 25,
+      .epoch = 16,
       .batch = 16,
       .mem_shape = buff_info__mem_shape_M16_1_64_1_64,
       .mem_ndims = 5,
@@ -10936,18 +11270,18 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .ndims = 4,
       .shape = buff_info__shape_1_64_1_64,
       .per_channel = 0,
-      .scale = buff_info_Conv2D_39_zero_off_out_67_cp_in_35_quant_scale,
-      .offset = buff_info_Conv2D_39_zero_off_out_67_cp_in_35_quant_offset,
+      .scale = buff_info_Conv2D_41_zero_off_out_76_cp_in_62_quant_scale,
+      .offset = buff_info_Conv2D_41_zero_off_out_76_cp_in_62_quant_offset,
     },
     {
-      .name = "Conv2D_39_out_0_cp_in_32",
+      .name = "Conv2D_41_out_0_cp_in_59",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
       .offset_start = 16384,
       .offset_end = 17408,
       .offset_limit = 17472,
       .is_user_allocated = 0,
       .is_param = 0,
-      .epoch = 26,
+      .epoch = 17,
       .batch = 8,
       .mem_shape = buff_info__mem_shape_M8_1_64_1_64,
       .mem_ndims = 5,
@@ -10961,14 +11295,14 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .shape = buff_info__shape_1_64_1_64,
     },
     {
-      .name = "Conv2D_43_zero_off_out_76",
+      .name = "Conv2D_45_zero_off_out_85",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
       .offset_start = 12288,
       .offset_end = 16384,
       .offset_limit = 16448,
       .is_user_allocated = 0,
       .is_param = 0,
-      .epoch = 26,
+      .epoch = 17,
       .batch = 64,
       .mem_shape = buff_info__mem_shape_L_1_64_1_64,
       .mem_ndims = 4,
@@ -10981,18 +11315,18 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .ndims = 4,
       .shape = buff_info__shape_1_64_1_64,
       .per_channel = 0,
-      .scale = buff_info_Conv2D_43_zero_off_out_76_quant_scale,
-      .offset = buff_info_Conv2D_43_zero_off_out_76_quant_offset,
+      .scale = buff_info_Conv2D_45_zero_off_out_85_quant_scale,
+      .offset = buff_info_Conv2D_45_zero_off_out_85_quant_offset,
     },
     {
-      .name = "Conv2D_43_zero_off_out_76_cp_in_36",
+      .name = "Conv2D_45_zero_off_out_85_cp_in_63",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
       .offset_start = 8192,
       .offset_end = 12288,
       .offset_limit = 12352,
       .is_user_allocated = 0,
       .is_param = 0,
-      .epoch = 27,
+      .epoch = 18,
       .batch = 16,
       .mem_shape = buff_info__mem_shape_M16_1_64_1_64,
       .mem_ndims = 5,
@@ -11005,18 +11339,18 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .ndims = 4,
       .shape = buff_info__shape_1_64_1_64,
       .per_channel = 0,
-      .scale = buff_info_Conv2D_43_zero_off_out_76_cp_in_36_quant_scale,
-      .offset = buff_info_Conv2D_43_zero_off_out_76_cp_in_36_quant_offset,
+      .scale = buff_info_Conv2D_45_zero_off_out_85_cp_in_63_quant_scale,
+      .offset = buff_info_Conv2D_45_zero_off_out_85_cp_in_63_quant_offset,
     },
     {
-      .name = "Conv2D_43_out_0_cp_in_33",
+      .name = "Conv2D_45_out_0_cp_in_60",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
       .offset_start = 12288,
       .offset_end = 13312,
       .offset_limit = 13376,
       .is_user_allocated = 0,
       .is_param = 0,
-      .epoch = 28,
+      .epoch = 19,
       .batch = 8,
       .mem_shape = buff_info__mem_shape_M8_1_64_1_64,
       .mem_ndims = 5,
@@ -11030,14 +11364,14 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .shape = buff_info__shape_1_64_1_64,
     },
     {
-      .name = "Conv2D_43_off_bias_out_82",
+      .name = "Conv2D_45_off_bias_out_91",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
       .offset_start = 4096,
       .offset_end = 8192,
       .offset_limit = 8256,
       .is_user_allocated = 0,
       .is_param = 0,
-      .epoch = 28,
+      .epoch = 19,
       .batch = 8,
       .mem_shape = buff_info__mem_shape_M8_1_64_1_64,
       .mem_ndims = 5,
@@ -11050,18 +11384,18 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .ndims = 4,
       .shape = buff_info__shape_1_64_1_64,
       .per_channel = 0,
-      .scale = buff_info_Conv2D_43_off_bias_out_82_quant_scale,
-      .offset = buff_info_Conv2D_43_off_bias_out_82_quant_offset,
+      .scale = buff_info_Conv2D_45_off_bias_out_91_quant_scale,
+      .offset = buff_info_Conv2D_45_off_bias_out_91_quant_offset,
     },
     {
-      .name = "Gemm_51_conv_4_zero_off_out_85",
+      .name = "Gemm_53_conv_4_zero_off_out_94",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
       .offset_start = 8192,
       .offset_end = 8256,
       .offset_limit = 8320,
       .is_user_allocated = 0,
       .is_param = 0,
-      .epoch = 29,
+      .epoch = 20,
       .batch = 64,
       .mem_shape = buff_info__mem_shape_F_1_64_1_1,
       .mem_ndims = 4,
@@ -11074,18 +11408,18 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .ndims = 4,
       .shape = buff_info__shape_1_64_1_1,
       .per_channel = 0,
-      .scale = buff_info_Gemm_51_conv_4_zero_off_out_85_quant_scale,
-      .offset = buff_info_Gemm_51_conv_4_zero_off_out_85_quant_offset,
+      .scale = buff_info_Gemm_53_conv_4_zero_off_out_94_quant_scale,
+      .offset = buff_info_Gemm_53_conv_4_zero_off_out_94_quant_offset,
     },
     {
-      .name = "Gemm_51_conv_4_off_bias_out_91",
+      .name = "Gemm_53_conv_4_off_bias_out_100",
       .addr_base = {(unsigned char *)(0x342e0000UL) /* Equivalent hex address = 0x342e0000UL */},
       .offset_start = 0,
       .offset_end = 4,
       .offset_limit = 72,
       .is_user_allocated = 0,
       .is_param = 0,
-      .epoch = 30,
+      .epoch = 21,
       .batch = 4,
       .mem_shape = buff_info__mem_shape_F_1_4_1_1,
       .mem_ndims = 4,
@@ -11098,8 +11432,8 @@ const LL_Buffer_InfoTypeDef *LL_ATON_Internal_Buffers_Info_tiny_temporal_mixer_8
       .ndims = 4,
       .shape = buff_info__shape_1_4_1_1,
       .per_channel = 0,
-      .scale = buff_info_Gemm_51_conv_4_off_bias_out_91_quant_scale,
-      .offset = buff_info_Gemm_51_conv_4_off_bias_out_91_quant_offset,
+      .scale = buff_info_Gemm_53_conv_4_off_bias_out_100_quant_scale,
+      .offset = buff_info_Gemm_53_conv_4_off_bias_out_100_quant_offset,
     },
     {
       .name = NULL,
