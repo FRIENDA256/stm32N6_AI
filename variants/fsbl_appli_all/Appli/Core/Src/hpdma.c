@@ -1,9 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    gpdma.c
+  * @file    hpdma.c
   * @brief   This file provides code for the configuration
-  *          of the GPDMA instances.
+  *          of the HPDMA instances.
   ******************************************************************************
   * @attention
   *
@@ -18,39 +18,34 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include "gpdma.h"
+#include "hpdma.h"
 
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
 
-/* GPDMA1 init function */
-void MX_GPDMA1_Init(void)
+/* HPDMA1 init function */
+void MX_HPDMA1_Init(void)
 {
 
-  /* USER CODE BEGIN GPDMA1_Init 0 */
+  /* USER CODE BEGIN HPDMA1_Init 0 */
 
-  /* USER CODE END GPDMA1_Init 0 */
+  /* USER CODE END HPDMA1_Init 0 */
 
-  /* Peripheral clock enable */
-  __HAL_RCC_GPDMA1_CLK_ENABLE();
+  /* USER CODE BEGIN HPDMA1_Init 1 */
 
-  /* GPDMA1 interrupt Init */
-    HAL_NVIC_SetPriority(GPDMA1_Channel10_IRQn, 8, 0);
-    HAL_NVIC_EnableIRQ(GPDMA1_Channel10_IRQn);
-    HAL_NVIC_SetPriority(GPDMA1_Channel11_IRQn, 8, 0);
-    HAL_NVIC_EnableIRQ(GPDMA1_Channel11_IRQn);
+  /* USER CODE END HPDMA1_Init 1 */
+  /* USER CODE BEGIN HPDMA1_Init 2 */
+  __HAL_RCC_HPDMA1_CLK_ENABLE();
 
-  /* USER CODE BEGIN GPDMA1_Init 1 */
+  HAL_NVIC_SetPriority(HPDMA1_Channel0_IRQn, 8, 0);
+  HAL_NVIC_EnableIRQ(HPDMA1_Channel0_IRQn);
+  HAL_NVIC_SetPriority(HPDMA1_Channel1_IRQn, 8, 0);
+  HAL_NVIC_EnableIRQ(HPDMA1_Channel1_IRQn);
 
-  /* USER CODE END GPDMA1_Init 1 */
-  /* USER CODE BEGIN GPDMA1_Init 2 */
-
-  /* USER CODE END GPDMA1_Init 2 */
+  /* USER CODE END HPDMA1_Init 2 */
 
 }
-
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */
-

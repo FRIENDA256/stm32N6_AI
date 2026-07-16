@@ -26,8 +26,8 @@
 
 SPI_HandleTypeDef hspi3;
 SPI_HandleTypeDef hspi4;
-DMA_HandleTypeDef handle_GPDMA1_Channel9;
-DMA_HandleTypeDef handle_GPDMA1_Channel8;
+DMA_HandleTypeDef handle_HPDMA1_Channel1;
+DMA_HandleTypeDef handle_HPDMA1_Channel0;
 DMA_HandleTypeDef handle_GPDMA1_Channel11;
 DMA_HandleTypeDef handle_GPDMA1_Channel10;
 
@@ -49,7 +49,6 @@ void MX_SPI3_Init(void)
   hspi3.Init.CLKPolarity = SPI_POLARITY_HIGH;
   hspi3.Init.CLKPhase = SPI_PHASE_2EDGE;
   hspi3.Init.NSS = SPI_NSS_SOFT;
-  /* Keep margin for Tiny1C DMA transfers while the other data paths are active. */
   hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
   hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
@@ -121,6 +120,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
 {
 
   GPIO_InitTypeDef GPIO_InitStruct = {0};
+  DMA_IsolationConfigTypeDef IsolationConfiginput= {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
   if(spiHandle->Instance==SPI3)
   {
@@ -154,49 +154,63 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
     /* SPI3 DMA Init */
-    /* GPDMA1_REQUEST_SPI3_RX Init */
-    handle_GPDMA1_Channel9.Instance = GPDMA1_Channel9;
-    handle_GPDMA1_Channel9.Init.Request = GPDMA1_REQUEST_SPI3_RX;
-    handle_GPDMA1_Channel9.Init.BlkHWRequest = DMA_BREQ_SINGLE_BURST;
-    handle_GPDMA1_Channel9.Init.Direction = DMA_PERIPH_TO_MEMORY;
-    handle_GPDMA1_Channel9.Init.SrcInc = DMA_SINC_FIXED;
-    handle_GPDMA1_Channel9.Init.DestInc = DMA_DINC_INCREMENTED;
-    handle_GPDMA1_Channel9.Init.SrcDataWidth = DMA_SRC_DATAWIDTH_BYTE;
-    handle_GPDMA1_Channel9.Init.DestDataWidth = DMA_DEST_DATAWIDTH_BYTE;
-    handle_GPDMA1_Channel9.Init.Priority = DMA_LOW_PRIORITY_MID_WEIGHT;
-    handle_GPDMA1_Channel9.Init.SrcBurstLength = 1;
-    handle_GPDMA1_Channel9.Init.DestBurstLength = 1;
-    handle_GPDMA1_Channel9.Init.TransferAllocatedPort = DMA_SRC_ALLOCATED_PORT0|DMA_DEST_ALLOCATED_PORT0;
-    handle_GPDMA1_Channel9.Init.TransferEventMode = DMA_TCEM_BLOCK_TRANSFER;
-    handle_GPDMA1_Channel9.Init.Mode = DMA_NORMAL;
-    if (HAL_DMA_Init(&handle_GPDMA1_Channel9) != HAL_OK)
+    /* HPDMA1_REQUEST_SPI3_TX Init */
+    handle_HPDMA1_Channel1.Instance = HPDMA1_Channel1;
+    handle_HPDMA1_Channel1.Init.Request = HPDMA1_REQUEST_SPI3_TX;
+    handle_HPDMA1_Channel1.Init.BlkHWRequest = DMA_BREQ_SINGLE_BURST;
+    handle_HPDMA1_Channel1.Init.Direction = DMA_MEMORY_TO_PERIPH;
+    handle_HPDMA1_Channel1.Init.SrcInc = DMA_SINC_INCREMENTED;
+    handle_HPDMA1_Channel1.Init.DestInc = DMA_DINC_FIXED;
+    handle_HPDMA1_Channel1.Init.SrcDataWidth = DMA_SRC_DATAWIDTH_BYTE;
+    handle_HPDMA1_Channel1.Init.DestDataWidth = DMA_DEST_DATAWIDTH_BYTE;
+    handle_HPDMA1_Channel1.Init.Priority = DMA_LOW_PRIORITY_HIGH_WEIGHT;
+    handle_HPDMA1_Channel1.Init.SrcBurstLength = 1;
+    handle_HPDMA1_Channel1.Init.DestBurstLength = 1;
+    handle_HPDMA1_Channel1.Init.TransferAllocatedPort = DMA_SRC_ALLOCATED_PORT1|DMA_DEST_ALLOCATED_PORT0;
+    handle_HPDMA1_Channel1.Init.TransferEventMode = DMA_TCEM_BLOCK_TRANSFER;
+    handle_HPDMA1_Channel1.Init.Mode = DMA_NORMAL;
+    if (HAL_DMA_Init(&handle_HPDMA1_Channel1) != HAL_OK)
     {
       Error_Handler();
     }
 
-    __HAL_LINKDMA(spiHandle, hdmarx, handle_GPDMA1_Channel9);
+    __HAL_LINKDMA(spiHandle, hdmatx, handle_HPDMA1_Channel1);
 
-    /* GPDMA1_REQUEST_SPI3_TX Init */
-    handle_GPDMA1_Channel8.Instance = GPDMA1_Channel8;
-    handle_GPDMA1_Channel8.Init.Request = GPDMA1_REQUEST_SPI3_TX;
-    handle_GPDMA1_Channel8.Init.BlkHWRequest = DMA_BREQ_SINGLE_BURST;
-    handle_GPDMA1_Channel8.Init.Direction = DMA_MEMORY_TO_PERIPH;
-    handle_GPDMA1_Channel8.Init.SrcInc = DMA_SINC_INCREMENTED;
-    handle_GPDMA1_Channel8.Init.DestInc = DMA_DINC_FIXED;
-    handle_GPDMA1_Channel8.Init.SrcDataWidth = DMA_SRC_DATAWIDTH_BYTE;
-    handle_GPDMA1_Channel8.Init.DestDataWidth = DMA_DEST_DATAWIDTH_BYTE;
-    handle_GPDMA1_Channel8.Init.Priority = DMA_LOW_PRIORITY_MID_WEIGHT;
-    handle_GPDMA1_Channel8.Init.SrcBurstLength = 1;
-    handle_GPDMA1_Channel8.Init.DestBurstLength = 1;
-    handle_GPDMA1_Channel8.Init.TransferAllocatedPort = DMA_SRC_ALLOCATED_PORT0|DMA_DEST_ALLOCATED_PORT0;
-    handle_GPDMA1_Channel8.Init.TransferEventMode = DMA_TCEM_BLOCK_TRANSFER;
-    handle_GPDMA1_Channel8.Init.Mode = DMA_NORMAL;
-    if (HAL_DMA_Init(&handle_GPDMA1_Channel8) != HAL_OK)
+    IsolationConfiginput.CidFiltering = DMA_ISOLATION_OFF;
+    IsolationConfiginput.StaticCid = DMA_CHANNEL_STATIC_CID_0;
+    if (HAL_DMA_SetIsolationAttributes(&handle_HPDMA1_Channel1, &IsolationConfiginput) != HAL_OK)
     {
       Error_Handler();
     }
 
-    __HAL_LINKDMA(spiHandle, hdmatx, handle_GPDMA1_Channel8);
+    /* HPDMA1_REQUEST_SPI3_RX Init */
+    handle_HPDMA1_Channel0.Instance = HPDMA1_Channel0;
+    handle_HPDMA1_Channel0.Init.Request = HPDMA1_REQUEST_SPI3_RX;
+    handle_HPDMA1_Channel0.Init.BlkHWRequest = DMA_BREQ_SINGLE_BURST;
+    handle_HPDMA1_Channel0.Init.Direction = DMA_PERIPH_TO_MEMORY;
+    handle_HPDMA1_Channel0.Init.SrcInc = DMA_SINC_FIXED;
+    handle_HPDMA1_Channel0.Init.DestInc = DMA_DINC_INCREMENTED;
+    handle_HPDMA1_Channel0.Init.SrcDataWidth = DMA_SRC_DATAWIDTH_BYTE;
+    handle_HPDMA1_Channel0.Init.DestDataWidth = DMA_DEST_DATAWIDTH_BYTE;
+    handle_HPDMA1_Channel0.Init.Priority = DMA_LOW_PRIORITY_HIGH_WEIGHT;
+    handle_HPDMA1_Channel0.Init.SrcBurstLength = 1;
+    handle_HPDMA1_Channel0.Init.DestBurstLength = 1;
+    handle_HPDMA1_Channel0.Init.TransferAllocatedPort = DMA_SRC_ALLOCATED_PORT0|DMA_DEST_ALLOCATED_PORT1;
+    handle_HPDMA1_Channel0.Init.TransferEventMode = DMA_TCEM_BLOCK_TRANSFER;
+    handle_HPDMA1_Channel0.Init.Mode = DMA_NORMAL;
+    if (HAL_DMA_Init(&handle_HPDMA1_Channel0) != HAL_OK)
+    {
+      Error_Handler();
+    }
+
+    __HAL_LINKDMA(spiHandle, hdmarx, handle_HPDMA1_Channel0);
+
+    IsolationConfiginput.CidFiltering = DMA_ISOLATION_OFF;
+    IsolationConfiginput.StaticCid = DMA_CHANNEL_STATIC_CID_0;
+    if (HAL_DMA_SetIsolationAttributes(&handle_HPDMA1_Channel0, &IsolationConfiginput) != HAL_OK)
+    {
+      Error_Handler();
+    }
 
     /* SPI3 interrupt Init */
     HAL_NVIC_SetPriority(SPI3_IRQn, 9, 0);
@@ -317,8 +331,8 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* spiHandle)
     HAL_GPIO_DeInit(GPIOC, GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12);
 
     /* SPI3 DMA DeInit */
-    HAL_DMA_DeInit(spiHandle->hdmarx);
     HAL_DMA_DeInit(spiHandle->hdmatx);
+    HAL_DMA_DeInit(spiHandle->hdmarx);
 
     /* SPI3 interrupt Deinit */
     HAL_NVIC_DisableIRQ(SPI3_IRQn);

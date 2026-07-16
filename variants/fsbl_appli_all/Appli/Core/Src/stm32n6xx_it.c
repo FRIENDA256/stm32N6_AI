@@ -58,8 +58,8 @@
 /* External variables --------------------------------------------------------*/
 extern DCMIPP_HandleTypeDef hdcmipp;
 extern ETH_HandleTypeDef heth1;
-extern DMA_HandleTypeDef handle_GPDMA1_Channel9;
-extern DMA_HandleTypeDef handle_GPDMA1_Channel8;
+extern DMA_HandleTypeDef handle_HPDMA1_Channel1;
+extern DMA_HandleTypeDef handle_HPDMA1_Channel0;
 extern DMA_HandleTypeDef handle_GPDMA1_Channel11;
 extern DMA_HandleTypeDef handle_GPDMA1_Channel10;
 extern SPI_HandleTypeDef hspi3;
@@ -212,31 +212,31 @@ void DCMIPP_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles GPDMA1 Channel 8 global interrupt.
+  * @brief This function handles HPDMA1 Channel 0 global interrupt.
   */
-void GPDMA1_Channel8_IRQHandler(void)
+void HPDMA1_Channel0_IRQHandler(void)
 {
-  /* USER CODE BEGIN GPDMA1_Channel8_IRQn 0 */
+  /* USER CODE BEGIN HPDMA1_Channel0_IRQn 0 */
 
-  /* USER CODE END GPDMA1_Channel8_IRQn 0 */
-  HAL_DMA_IRQHandler(&handle_GPDMA1_Channel8);
-  /* USER CODE BEGIN GPDMA1_Channel8_IRQn 1 */
+  /* USER CODE END HPDMA1_Channel0_IRQn 0 */
+  HAL_DMA_IRQHandler(&handle_HPDMA1_Channel0);
+  /* USER CODE BEGIN HPDMA1_Channel0_IRQn 1 */
 
-  /* USER CODE END GPDMA1_Channel8_IRQn 1 */
+  /* USER CODE END HPDMA1_Channel0_IRQn 1 */
 }
 
 /**
-  * @brief This function handles GPDMA1 Channel 9 global interrupt.
+  * @brief This function handles HPDMA1 Channel 1 global interrupt.
   */
-void GPDMA1_Channel9_IRQHandler(void)
+void HPDMA1_Channel1_IRQHandler(void)
 {
-  /* USER CODE BEGIN GPDMA1_Channel9_IRQn 0 */
+  /* USER CODE BEGIN HPDMA1_Channel1_IRQn 0 */
 
-  /* USER CODE END GPDMA1_Channel9_IRQn 0 */
-  HAL_DMA_IRQHandler(&handle_GPDMA1_Channel9);
-  /* USER CODE BEGIN GPDMA1_Channel9_IRQn 1 */
+  /* USER CODE END HPDMA1_Channel1_IRQn 0 */
+  HAL_DMA_IRQHandler(&handle_HPDMA1_Channel1);
+  /* USER CODE BEGIN HPDMA1_Channel1_IRQn 1 */
 
-  /* USER CODE END GPDMA1_Channel9_IRQn 1 */
+  /* USER CODE END HPDMA1_Channel1_IRQn 1 */
 }
 
 /**

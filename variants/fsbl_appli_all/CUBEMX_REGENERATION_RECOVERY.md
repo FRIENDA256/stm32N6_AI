@@ -1,6 +1,6 @@
 # CubeMX 重新生成后的恢复清单
 
-更新日期：2026-07-14
+更新日期：2026-07-16
 
 ## 目的
 
@@ -11,9 +11,12 @@ Neural-ART 模型代码。CubeMX 只能保护部分 `USER CODE` 区域，重新�
 
 ## 当前必须保留的 CubeMX 配置
 
-- NPU 时钟：600 MHz。
-- NPU RAM 时钟：400 MHz。
+- NPU 时钟：800 MHz。
+- NPU RAM 时钟：800 MHz。
 - ETH1 kernel clock：100 MHz，来源为 PLL3/IC12。
+- SPI3：25 MHz，HPDMA1 Channel 0 用于 RX、Channel 1 用于 TX；PC10/PC11/PC12
+  GPIO speed 必须为 `Very High`。
+- HPDMA1 Channel 0/1：DMA priority 为 High，NVIC priority 为 8。
 - XSPI1 MemorySize：512 MB。
 - XSPI1 RISAF region 1：`0x00000000-0x03FFFFFF`。
 - AI 模型：`tiny_temporal_mixer_8ch_int8_qdq.onnx`，目标为 Neural-ART N6。
@@ -45,6 +48,9 @@ Neural-ART 模型代码。CubeMX 只能保护部分 `USER CODE` 区域，重新�
    - 在 `MACADDRESS` 用户区恢复本地 MAC `02:00:00:00:00:01`。
    - 在 `ETH1_MspInit 1` 中释放板上未连接的 PF5，并恢复经过验证的 RGMII pull
      和 speed 配置。
+   - CubeMX 可能把相同名称的 `MACADDRESS` 用户区复制到
+     `HAL_ETH_MspInit()`。该位置没有 `MACAddr` 变量，必须保持为空，否则会出现
+     `MACAddr undeclared` 编译错误。
 
 6. `Appli/Core/Src/main.c`
    - 在 `RIF_Init 1` 中恢复 ETH1 secure/non-privileged 属性。
@@ -56,6 +62,12 @@ Neural-ART 模型代码。CubeMX 只能保护部分 `USER CODE` 区域，重新�
      函数放入 `USER CODE 0`，否则下次生成可能把它们嵌入
      `MX_NetXDuo_Init()`，产生 `invalid storage class` 编译错误。
 
+8. `Appli/Core/Src/hpdma.c`
+   - `MX_HPDMA1_Init()` 的 USER CODE 区必须启用 HPDMA1 时钟。
+   - 必须设置并启用 HPDMA1 Channel 0/1 中断，NVIC priority 为 8。
+   - 当前 CubeMX 版本可能生成空的 `MX_HPDMA1_Init()`，即使 `.ioc` 已启用中断，
+     所以每次生成后都要检查实际 C 代码。
+
 ## 每次生成后必须手工检查的项目
 
 ### 1. Appli Makefile
@@ -66,7 +78,7 @@ Neural-ART 模型代码。CubeMX 只能保护部分 `USER CODE` 区域，重新�
 - `C_SOURCES` 必须包含：
   - `app_tcp_command.c`、`app_udp_echo.c`
   - `ad7606_spi_dma.c`、`app_ad7606.c`、`app_ai.c`
-  - `app_callbacks.c`、`app_camera_imx219.c`
+  - `app_ir_capture.c`、`app_callbacks.c`、`app_camera_imx219.c`
   - `app_console.c`、`app_timebase.c`
   - `tiny1c_debug_driver.c`、`tiny1c_port_stm32_hal.c`
   - `eth_diagnostics.c`
@@ -98,7 +110,20 @@ Neural-ART 模型代码。CubeMX 只能保护部分 `USER CODE` 区域，重新�
   初始化后必须调用 `rtl8211_enable_rxc_output()`。
 - 确认 EEE 已通过 Makefile 宏关闭。
 
-### 4. AI 模型与权重
+### 4. SPI3 HPDMA 迁移
+
+- `Appli/Core/Src/spi.c`：SPI3 TX 必须链接 HPDMA1 Channel 1，RX 必须链接
+  HPDMA1 Channel 0。
+- `fsbl_appli_all.ioc` 和 `Appli/Core/Src/spi.c`：PC10/PC11/PC12 必须保持
+  `GPIO_SPEED_FREQ_VERY_HIGH`，避免 25/50 MHz SPI 信号边沿过慢。
+- TX memory source 和 RX memory destination 必须使用 Port 1；外设侧使用 Port 0。
+- `Appli/Core/Src/hpdma.c`：确认 HPDMA1 时钟与 Channel 0/1 NVIC 已启用。
+- `Appli/Core/Src/stm32n6xx_it.c`：Channel 0/1 IRQ 必须分别调用对应句柄的
+  `HAL_DMA_IRQHandler()`。
+- `Appli/Core/Src/main.c`：Channel 0/1 必须配置 secure/privileged source 和
+  destination attributes。
+
+### 5. AI 模型与权重
 
 模型每次重新生成后必须同步替换以下三个部分：
 
@@ -195,3 +220,25 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\tcp_ir.ps1 -Command 
   Tiny1C SPI3 link.
 - Keep both generated code and CubeMX at `/8` (25 MHz). The SPI DMA semaphore
   optimization and 4096-byte protocol chunks remain enabled.
+
+## 2026-07-16 HPDMA1 迁移恢复结果
+
+- SPI3 RX/TX 已从 GPDMA1 Channel 9/8 迁移到 HPDMA1 Channel 0/1。
+- 补齐 CubeMX 未生成的 HPDMA1 时钟和 Channel 0/1 NVIC 初始化。
+- 恢复 Appli Makefile、自定义采集/网络源文件、IMX219、RTL8211 和 FSBL ExtMem
+  Manager 配置。
+- 修复 CubeMX 将本地 MAC 用户代码复制到 `HAL_ETH_MspInit()` 导致的
+  `MACAddr undeclared` 编译错误。
+- AI 模型权重保持 82689 字节，SHA-256 与权重探针未变化，无需重新烧录权重。
+- Appli 编译通过：`text=186012`、`data=332`、`bss=967108`。
+- FSBL 编译通过：`text=37540`、`data=184`、`bss=3192`。
+- 板级回归通过：25 MHz 后台采集连续运行约 59 分钟，Tiny1C 图像约
+  9.50 fps、温度约 4.94 fps，采集错误为 0。
+- 50 MHz HPDMA 测试在 AD7606 运行和暂停两种状态下均完成 100/100 帧，
+  DMA/HAL 错误为 0；AD7606 运行时仍可见极少量高幅跳点，因此正式运行继续
+  使用 25 MHz。
+- 网络回归通过：TCP no-fill 约 218 Mbps，UDP no-fill 约 279.5 Mbps，UDP
+  接收率 100%，无序号缺口和错误包。
+- AI 连续完成 82932 次推理，`run_err=0`、`resets=0`，平均推理约 6 ms。
+- Tiny1C 偶尔会在软重启后输出固定温度帧；完整断电可恢复真实温度数据，后续
+  应增加固定帧检测以及可控电源复位机制。

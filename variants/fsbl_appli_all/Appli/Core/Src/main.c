@@ -23,6 +23,7 @@
 #include "csi.h"
 #include "eth.h"
 #include "gpdma.h"
+#include "hpdma.h"
 #include "i2c.h"
 #include "spi.h"
 #include "usart.h"
@@ -53,8 +54,8 @@
 /* USER CODE BEGIN PM */
 
 /* USER CODE END PM */
-extern DMA_HandleTypeDef handle_GPDMA1_Channel8 ;
-extern DMA_HandleTypeDef handle_GPDMA1_Channel9 ;
+extern DMA_HandleTypeDef handle_HPDMA1_Channel0 ;
+extern DMA_HandleTypeDef handle_HPDMA1_Channel1 ;
 extern DMA_HandleTypeDef handle_GPDMA1_Channel10 ;
 extern DMA_HandleTypeDef handle_GPDMA1_Channel11 ;
 
@@ -104,6 +105,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_GPDMA1_Init();
+  MX_HPDMA1_Init();
   MX_USART3_UART_Init();
   MX_SPI4_Init();
   MX_ETH1_Init();
@@ -203,17 +205,19 @@ int main(void)
 
   /* RIF-Aware IPs Config */
 
+  /* set up HPDMA configuration */
+  /* set HPDMA1 channel 0 used by SPI3 */
+  if (HAL_DMA_ConfigChannelAttributes(&handle_HPDMA1_Channel0,DMA_CHANNEL_SEC|DMA_CHANNEL_PRIV|DMA_CHANNEL_SRC_SEC|DMA_CHANNEL_DEST_SEC)!= HAL_OK )
+  {
+    Error_Handler();
+  }
+  /* set HPDMA1 channel 1 used by SPI3 */
+  if (HAL_DMA_ConfigChannelAttributes(&handle_HPDMA1_Channel1,DMA_CHANNEL_SEC|DMA_CHANNEL_PRIV|DMA_CHANNEL_SRC_SEC|DMA_CHANNEL_DEST_SEC)!= HAL_OK )
+  {
+    Error_Handler();
+  }
+
   /* set up GPDMA configuration */
-  /* set GPDMA1 channel 8 used by SPI3 */
-  if (HAL_DMA_ConfigChannelAttributes(&handle_GPDMA1_Channel8,DMA_CHANNEL_SEC|DMA_CHANNEL_PRIV|DMA_CHANNEL_SRC_SEC|DMA_CHANNEL_DEST_SEC)!= HAL_OK )
-  {
-    Error_Handler();
-  }
-  /* set GPDMA1 channel 9 used by SPI3 */
-  if (HAL_DMA_ConfigChannelAttributes(&handle_GPDMA1_Channel9,DMA_CHANNEL_SEC|DMA_CHANNEL_PRIV|DMA_CHANNEL_SRC_SEC|DMA_CHANNEL_DEST_SEC)!= HAL_OK )
-  {
-    Error_Handler();
-  }
   /* set GPDMA1 channel 10 used by SPI4 */
   if (HAL_DMA_ConfigChannelAttributes(&handle_GPDMA1_Channel10,DMA_CHANNEL_SEC|DMA_CHANNEL_PRIV|DMA_CHANNEL_SRC_SEC|DMA_CHANNEL_DEST_SEC)!= HAL_OK )
   {
