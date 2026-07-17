@@ -35,6 +35,30 @@ typedef struct
   Tiny1C_STM32_SpiModeStats_t dma;
 } Tiny1C_STM32_SpiTestResult_t;
 
+typedef struct
+{
+  uint32_t transfer_count;
+  uint32_t dma_start_error_count;
+  uint32_t dma_wait_timeout_count;
+  uint32_t dma_callback_error_count;
+  uint32_t blocking_error_count;
+  uint32_t last_failure_reason;
+  uint32_t last_hal_status;
+  uint32_t last_hal_error;
+  uint32_t last_error_ms;
+  uint32_t last_transfer_len;
+  uint32_t last_spi_sr;
+  uint32_t last_spi_cr1;
+  uint32_t last_spi_cr2;
+  uint32_t last_spi_cfg1;
+  uint32_t last_spi_state;
+  uint32_t last_rx_remaining;
+  uint32_t last_tx_remaining;
+  uint32_t last_rx_dma_state;
+  uint32_t last_tx_dma_state;
+  uint32_t auto_suspend_resume_count;
+} Tiny1C_STM32_DmaDiagnostics_t;
+
 void Tiny1C_STM32_GpioInit(void);
 tiny1c_status_t Tiny1C_STM32_Init(void);
 tiny1c_status_t Tiny1C_STM32_ProcessCommand(uint8_t command);
@@ -50,8 +74,11 @@ tiny1c_status_t Tiny1C_STM32_GetLatestFrame(const uint8_t **data,
                                             uint32_t *len,
                                             uint8_t *frame_command,
                                             uint32_t *crc32);
+uint32_t Tiny1C_STM32_GetSpiClockHz(void);
+void Tiny1C_STM32_GetDmaDiagnostics(Tiny1C_STM32_DmaDiagnostics_t *diagnostics);
 void Tiny1C_STM32_TxRxCpltCallback(SPI_HandleTypeDef *hspi);
 void Tiny1C_STM32_ErrorCallback(SPI_HandleTypeDef *hspi);
+void Tiny1C_STM32_SuspendCallback(SPI_HandleTypeDef *hspi);
 void Tiny1C_STM32_PrintBootMessage(void);
 
 #ifdef __cplusplus

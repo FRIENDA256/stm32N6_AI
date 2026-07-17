@@ -38,6 +38,13 @@
 #define AD_SPI_RAW_DUMP_CHANNEL_INDEX    3U
 #define AD_SPI_RAW_DUMP_ROWS             8U
 #define AD_SPI_RAW_DUMP_CH_SAMPLE_COUNT  32U
+#define AD7606_SPI4_DMA_BUFFER_ALIGNMENT  0U
+#define AD7606_SPI4_DMA_CACHE_MAINTENANCE 0U
+
+#if ((AD7606_SPI4_DMA_CACHE_MAINTENANCE == 1U) && \
+     (AD7606_SPI4_DMA_BUFFER_ALIGNMENT != 1U))
+#error "AD7606 SPI4 DMA cache maintenance requires aligned buffers"
+#endif
 
 typedef enum
 {
@@ -107,6 +114,10 @@ static void SPI4_StatusLED_Task(uint32_t now_tick);
 static void SPI4_StatusLED_RecordFrame(uint8_t crc_ok);
 static void SPI4_StatusLED_RecordError(void);
 static void SPI4_StatusLED_Set(uint8_t on);
+#if (AD7606_SPI4_DMA_CACHE_MAINTENANCE == 1U)
+static void AD7606_SPI4_DmaPrepare(const uint8_t *tx, uint8_t *rx, uint32_t len);
+static void AD7606_SPI4_DmaComplete(uint8_t *rx, uint32_t len);
+#endif
 static void AD7606_SPI4_StartDmaRead(uint32_t irq_count_snapshot);
 static void AD7606_SPI4_ProcessDmaFrame(uint32_t irq_count_snapshot);
 static void AD7606_SPI4_ReportDmaError(uint32_t irq_count_snapshot, uint8_t error_code, uint32_t hal_error);
@@ -142,10 +153,18 @@ static uint32_t ad_spi_last_good_frame_tick;
 static uint32_t ad_spi_last_error_tick;
 static uint32_t ad_spi_led_tick;
 static uint8_t ad_spi_led_on;
+#if ((AD7606_SPI4_DMA_BUFFER_ALIGNMENT == 1U) || \
+     (AD7606_SPI4_DMA_CACHE_MAINTENANCE == 1U))
+__attribute__((aligned(32))) static uint8_t ad_spi_tx_dummy[AD_SPI_MAX_FRAME_SIZE];
+__attribute__((aligned(32))) static uint8_t ad_spi_rx_frame[AD_SPI_MAX_FRAME_SIZE];
+__attribute__((aligned(32))) static uint8_t ad_spi_latest_frame[AD_SPI_MAX_FRAME_SIZE];
+__attribute__((aligned(32))) static uint8_t ad_spi_latest_raw_window[AD7606_SPI4_AI_WINDOW_BYTES];
+#else
 static uint8_t ad_spi_tx_dummy[AD_SPI_MAX_FRAME_SIZE];
 static uint8_t ad_spi_rx_frame[AD_SPI_MAX_FRAME_SIZE];
 static uint8_t ad_spi_latest_frame[AD_SPI_MAX_FRAME_SIZE];
 static uint8_t ad_spi_latest_raw_window[AD7606_SPI4_AI_WINDOW_BYTES];
+#endif
 static AD7606_SPI4_FrameInfo_t ad_spi_latest_info;
 static AD7606_SPI4_RawInfo_t ad_spi_latest_raw_window_info;
 static volatile uint32_t ad_spi_latest_update_seq;
@@ -194,12 +213,21 @@ void AD7606_SPI4_Task(uint32_t now_tick)
   if (ad_dma_frame_ready != 0U)
   {
     uint32_t irq_count_snapshot;
+#if (AD7606_SPI4_DMA_CACHE_MAINTENANCE == 1U)
+    uint16_t total_len;
+#endif
 
     __disable_irq();
     ad_dma_frame_ready = 0U;
     irq_count_snapshot = ad_dma_irq_snapshot;
+#if (AD7606_SPI4_DMA_CACHE_MAINTENANCE == 1U)
+    total_len = ad_dma_total_len;
+#endif
     __enable_irq();
 
+#if (AD7606_SPI4_DMA_CACHE_MAINTENANCE == 1U)
+    AD7606_SPI4_DmaComplete(ad_spi_rx_frame, total_len);
+#endif
     AD7606_SPI4_ProcessDmaFrame(irq_count_snapshot);
 
     __disable_irq();
@@ -828,6 +856,31 @@ static void SPI4_StatusLED_Set(uint8_t on)
   ad_spi_led_on = (on != 0U) ? 1U : 0U;
 }
 
+#if (AD7606_SPI4_DMA_CACHE_MAINTENANCE == 1U)
+static void AD7606_SPI4_DmaPrepare(const uint8_t *tx, uint8_t *rx, uint32_t len)
+{
+  if (len == 0U)
+  {
+    return;
+  }
+
+  SCB_CleanDCache_by_Addr((uint32_t *)tx, (int32_t)len);
+  SCB_CleanInvalidateDCache_by_Addr((uint32_t *)rx, (int32_t)len);
+  __DSB();
+}
+
+static void AD7606_SPI4_DmaComplete(uint8_t *rx, uint32_t len)
+{
+  if (len == 0U)
+  {
+    return;
+  }
+
+  SCB_InvalidateDCache_by_Addr((void *)rx, (int32_t)len);
+  __DSB();
+}
+#endif
+
 static void AD7606_SPI4_StartDmaRead(uint32_t irq_count_snapshot)
 {
   HAL_StatusTypeDef status;
@@ -841,6 +894,11 @@ static void AD7606_SPI4_StartDmaRead(uint32_t irq_count_snapshot)
 #endif
 
   HAL_GPIO_WritePin(AD_CS_GPIO_Port, AD_CS_Pin, GPIO_PIN_RESET);
+#if (AD7606_SPI4_DMA_CACHE_MAINTENANCE == 1U)
+  /* Prepare the complete two-stage transfer in thread context. The header
+     completion ISR must not clean/invalidate the large payload buffer. */
+  AD7606_SPI4_DmaPrepare(ad_spi_tx_dummy, ad_spi_rx_frame, AD_SPI_MAX_FRAME_SIZE);
+#endif
   status = HAL_SPI_TransmitReceive_DMA(&hspi4, ad_spi_tx_dummy, ad_spi_rx_frame, AD_SPI_HEADER_SIZE);
   if (status != HAL_OK)
   {
@@ -1303,11 +1361,16 @@ void AD7606_SPI4_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 
   if (ad_spi_dma_state == AD_SPI_DMA_HEADER)
   {
-    uint16_t magic = ReadLE16(&ad_spi_rx_frame[0]);
-    uint16_t total_len = ReadLE16(&ad_spi_rx_frame[4]);
+    uint16_t magic;
+    uint16_t total_len;
     uint16_t remaining_len;
     HAL_StatusTypeDef status;
 
+#if (AD7606_SPI4_DMA_CACHE_MAINTENANCE == 1U)
+    AD7606_SPI4_DmaComplete(ad_spi_rx_frame, AD_SPI_HEADER_SIZE);
+#endif
+    magic = ReadLE16(&ad_spi_rx_frame[0]);
+    total_len = ReadLE16(&ad_spi_rx_frame[4]);
     if (magic != AD_FRAME_MAGIC)
     {
       HAL_GPIO_WritePin(AD_CS_GPIO_Port, AD_CS_Pin, GPIO_PIN_SET);

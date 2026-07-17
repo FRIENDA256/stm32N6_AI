@@ -49,7 +49,7 @@ void MX_SPI3_Init(void)
   hspi3.Init.CLKPolarity = SPI_POLARITY_HIGH;
   hspi3.Init.CLKPhase = SPI_PHASE_2EDGE;
   hspi3.Init.NSS = SPI_NSS_SOFT;
-  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
+  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
   hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -59,7 +59,8 @@ void MX_SPI3_Init(void)
   hspi3.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
   hspi3.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
   hspi3.Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
-  hspi3.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
+  /* Let the master pause SCK briefly if RX DMA cannot drain the FIFO. */
+  hspi3.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_ENABLE;
   hspi3.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE;
   hspi3.Init.IOSwap = SPI_IO_SWAP_DISABLE;
   hspi3.Init.ReadyMasterManagement = SPI_RDY_MASTER_MANAGEMENT_INTERNALLY;
@@ -163,7 +164,9 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
     handle_HPDMA1_Channel1.Init.DestInc = DMA_DINC_FIXED;
     handle_HPDMA1_Channel1.Init.SrcDataWidth = DMA_SRC_DATAWIDTH_BYTE;
     handle_HPDMA1_Channel1.Init.DestDataWidth = DMA_DEST_DATAWIDTH_BYTE;
-    handle_HPDMA1_Channel1.Init.Priority = DMA_LOW_PRIORITY_HIGH_WEIGHT;
+    /* Keep TX feeding the SPI clock at the same arbitration level as RX.
+       An RX-only boost avoids OVR but can stretch a 98 KiB frame past 40 ms. */
+    handle_HPDMA1_Channel1.Init.Priority = DMA_HIGH_PRIORITY;
     handle_HPDMA1_Channel1.Init.SrcBurstLength = 1;
     handle_HPDMA1_Channel1.Init.DestBurstLength = 1;
     handle_HPDMA1_Channel1.Init.TransferAllocatedPort = DMA_SRC_ALLOCATED_PORT1|DMA_DEST_ALLOCATED_PORT0;
@@ -192,7 +195,9 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
     handle_HPDMA1_Channel0.Init.DestInc = DMA_DINC_INCREMENTED;
     handle_HPDMA1_Channel0.Init.SrcDataWidth = DMA_SRC_DATAWIDTH_BYTE;
     handle_HPDMA1_Channel0.Init.DestDataWidth = DMA_DEST_DATAWIDTH_BYTE;
-    handle_HPDMA1_Channel0.Init.Priority = DMA_LOW_PRIORITY_HIGH_WEIGHT;
+    /* RX must drain the SPI FIFO before TX and other HPDMA traffic can
+       consume the available bus slots; rare starvation presents as OVR. */
+    handle_HPDMA1_Channel0.Init.Priority = DMA_HIGH_PRIORITY;
     handle_HPDMA1_Channel0.Init.SrcBurstLength = 1;
     handle_HPDMA1_Channel0.Init.DestBurstLength = 1;
     handle_HPDMA1_Channel0.Init.TransferAllocatedPort = DMA_SRC_ALLOCATED_PORT0|DMA_DEST_ALLOCATED_PORT1;

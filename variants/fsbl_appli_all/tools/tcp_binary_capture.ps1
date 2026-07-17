@@ -14,6 +14,8 @@ param(
   [string]$Rgb565Endian = "le",
   [ValidateSet("row-auto", "le", "be")]
   [string]$TempEndian = "row-auto",
+  [ValidateRange(1, 255)]
+  [int]$ImageSpeckleThreshold = 48,
   [ValidateSet("none", "despeckle", "median3")]
   [string]$TempFilter = "despeckle",
   [int]$TempDespikeThreshold = 512,
@@ -535,6 +537,105 @@ function Convert-ImageFrameToGray8 {
   return $gray
 }
 
+function Measure-ImageSpatialNoise {
+  param(
+    [byte[]]$Gray,
+    [int]$Width,
+    [int]$Height,
+    [int]$Threshold
+  )
+
+  [uint32]$horizontal = 0
+  [uint32]$vertical = 0
+  [uint32]$maxDelta = 0
+  [uint32]$dark = 0
+  [uint32]$bright = 0
+  [uint32]$darkMax = 0
+  [uint32]$brightMax = 0
+  [uint32]$minValue = 255
+  [uint32]$maxValue = 0
+  $darkX = -1
+  $darkY = -1
+  $brightX = -1
+  $brightY = -1
+
+  if ($Gray.Length -ne ($Width * $Height)) {
+    return @{
+      Horizontal = 0; Vertical = 0; Total = 0; MaxDelta = 0
+      Dark = 0; Bright = 0; DarkMax = 0; BrightMax = 0
+      DarkX = -1; DarkY = -1; BrightX = -1; BrightY = -1
+      Min = 0; Max = 0
+    }
+  }
+
+  for ($y = 0; $y -lt $Height; $y++) {
+    for ($x = 0; $x -lt $Width; $x++) {
+      $idx = ($y * $Width) + $x
+      $center = [int]$Gray[$idx]
+      if ($center -lt $minValue) { $minValue = [uint32]$center }
+      if ($center -gt $maxValue) { $maxValue = [uint32]$center }
+
+      if ($x -lt ($Width - 1)) {
+        $delta = [uint32][Math]::Abs($center - [int]$Gray[$idx + 1])
+        if ($delta -gt $Threshold) { $horizontal++ }
+        if ($delta -gt $maxDelta) { $maxDelta = $delta }
+      }
+      if ($y -lt ($Height - 1)) {
+        $delta = [uint32][Math]::Abs($center - [int]$Gray[$idx + $Width])
+        if ($delta -gt $Threshold) { $vertical++ }
+        if ($delta -gt $maxDelta) { $maxDelta = $delta }
+      }
+
+      if (($x -eq 0) -or ($x -eq ($Width - 1)) -or ($y -eq 0) -or ($y -eq ($Height - 1))) {
+        continue
+      }
+
+      $neighbors = [int[]]@(
+        $Gray[$idx - $Width - 1], $Gray[$idx - $Width], $Gray[$idx - $Width + 1],
+        $Gray[$idx - 1],                                  $Gray[$idx + 1],
+        $Gray[$idx + $Width - 1], $Gray[$idx + $Width], $Gray[$idx + $Width + 1]
+      )
+      $median = Get-IntMedian -Values $neighbors
+      $darkDelta = $median - $center
+      $brightDelta = $center - $median
+
+      if ($darkDelta -gt $Threshold) {
+        $dark++
+        if ($darkDelta -gt $darkMax) {
+          $darkMax = [uint32]$darkDelta
+          $darkX = $x
+          $darkY = $y
+        }
+      }
+      if ($brightDelta -gt $Threshold) {
+        $bright++
+        if ($brightDelta -gt $brightMax) {
+          $brightMax = [uint32]$brightDelta
+          $brightX = $x
+          $brightY = $y
+        }
+      }
+    }
+  }
+
+  return @{
+    Horizontal = $horizontal
+    Vertical = $vertical
+    Total = $horizontal + $vertical
+    MaxDelta = $maxDelta
+    Dark = $dark
+    Bright = $bright
+    DarkMax = $darkMax
+    BrightMax = $brightMax
+    DarkX = $darkX
+    DarkY = $darkY
+    BrightX = $brightX
+    BrightY = $brightY
+    Min = $minValue
+    Max = $maxValue
+  }
+}
+
 function Write-BmpGray8Palette {
   param(
     [string]$Path,
@@ -709,6 +810,7 @@ function Save-Tiny1CVisual {
     [hashtable]$Fields,
     [string]$BasePath,
     [string]$ImageLane,
+    [int]$ImageSpeckleThreshold,
     [string]$TempEndian,
     [string]$TempFilter,
     [int]$TempDespikeThreshold,
@@ -728,6 +830,7 @@ function Save-Tiny1CVisual {
 
   if ($kind -eq "image") {
     $gray = Convert-ImageFrameToGray8 -Frame $Frame -Width $width -Height $height -Lane $ImageLane
+    $noiseInfo = Measure-ImageSpatialNoise -Gray $gray -Width $width -Height $height -Threshold $ImageSpeckleThreshold
     if ($Invert) {
       for ($i = 0; $i -lt $gray.Length; $i++) {
         $gray[$i] = [byte](255 - $gray[$i])
@@ -736,6 +839,8 @@ function Save-Tiny1CVisual {
     Write-BmpGray8Palette -Path $bmpPath -Gray $gray -Width $width -Height $height
     Write-Host "Saved bmp : $bmpPath"
     Write-Host "Display mode: image y-only, lane=$ImageLane"
+    Write-Host "Image raw stats: min=$($noiseInfo.Min) max=$($noiseInfo.Max)"
+    Write-Host "Image spatial noise: threshold=$ImageSpeckleThreshold horizontal=$($noiseInfo.Horizontal) vertical=$($noiseInfo.Vertical) total=$($noiseInfo.Total) max_delta=$($noiseInfo.MaxDelta) dark=$($noiseInfo.Dark) bright=$($noiseInfo.Bright) dark_max=$($noiseInfo.DarkMax) dark_xy=$($noiseInfo.DarkX),$($noiseInfo.DarkY) bright_max=$($noiseInfo.BrightMax) bright_xy=$($noiseInfo.BrightX),$($noiseInfo.BrightY)"
     return
   }
 
@@ -883,7 +988,7 @@ if (-not [string]::IsNullOrWhiteSpace($InputRaw)) {
   }
   $stamp = Get-Date -Format "yyyyMMdd_HHmmss_fff"
   $basePath = Join-Path $OutputDir ("tiny1c_${kind}_${stamp}_offline")
-  Save-Tiny1CVisual -Frame $payload -Fields $fields -BasePath $basePath -ImageLane $ImageLane -TempEndian $TempEndian -TempFilter $TempFilter -TempDespikeThreshold $TempDespikeThreshold -Invert:$Invert
+  Save-Tiny1CVisual -Frame $payload -Fields $fields -BasePath $basePath -ImageLane $ImageLane -ImageSpeckleThreshold $ImageSpeckleThreshold -TempEndian $TempEndian -TempFilter $TempFilter -TempDespikeThreshold $TempDespikeThreshold -Invert:$Invert
   Write-Host "Offline raw : $rawPath"
   return
 }
@@ -1005,7 +1110,7 @@ try {
   Write-Host "Saved hdr : $headerPath"
 
   if ($source -eq "tiny1c") {
-    Save-Tiny1CVisual -Frame $payload -Fields $fields -BasePath $basePath -ImageLane $ImageLane -TempEndian $TempEndian -TempFilter $TempFilter -TempDespikeThreshold $TempDespikeThreshold -Invert:$Invert
+    Save-Tiny1CVisual -Frame $payload -Fields $fields -BasePath $basePath -ImageLane $ImageLane -ImageSpeckleThreshold $ImageSpeckleThreshold -TempEndian $TempEndian -TempFilter $TempFilter -TempDespikeThreshold $TempDespikeThreshold -Invert:$Invert
   }
   elseif ($source -eq "ad7606") {
     Show-Ad7606Summary -Frame $payload -CsvPath ($basePath + "_samples.csv")

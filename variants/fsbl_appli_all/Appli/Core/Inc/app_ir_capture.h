@@ -19,8 +19,8 @@ extern "C" {
 
 #include <stdint.h>
 
-#define APP_IR_CAPTURE_IMAGE_FPS 10U
-#define APP_IR_CAPTURE_TEMP_FPS  5U
+#define APP_IR_CAPTURE_IMAGE_FPS 0U
+#define APP_IR_CAPTURE_TEMP_FPS  20U
 
 typedef struct
 {
@@ -30,6 +30,9 @@ typedef struct
   uint32_t active;
   uint32_t image_count;
   uint32_t temp_count;
+  uint32_t image_capture_total_ms;
+  uint32_t temp_capture_total_ms;
+  uint32_t capture_total_ms;
   uint32_t capture_error_count;
   uint32_t deadline_miss_count;
   uint32_t image_sequence;
@@ -39,6 +42,9 @@ typedef struct
   uint32_t last_capture_ms;
   uint32_t max_capture_ms;
   uint32_t schedule_elapsed_ms;
+  uint32_t target_image_fps;
+  uint32_t target_temp_fps;
+  uint32_t spi_clock_hz;
   uint8_t last_command;
 } App_IRCapture_Status_t;
 

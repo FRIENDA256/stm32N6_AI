@@ -13,13 +13,37 @@
 #include "main.h"
 #include "tiny1c_port_stm32_hal.h"
 
+#include <stdio.h>
 #include <string.h>
 
 #define APP_IR_CAPTURE_THREAD_STACK_SIZE  4096U
-#define APP_IR_CAPTURE_THREAD_PRIORITY    15U
+/* Match the proven TCP-command capture priority. The thread blocks on every
+   DMA chunk, so NetX core/echo threads still preempt it while AD7606 can run
+   between HPDMA completions. */
+#define APP_IR_CAPTURE_THREAD_PRIORITY    13U
+
+#if (APP_IR_CAPTURE_IMAGE_FPS > 0U)
 #define APP_IR_CAPTURE_IMAGE_PERIOD_MS    (1000U / APP_IR_CAPTURE_IMAGE_FPS)
+#endif
+#if (APP_IR_CAPTURE_TEMP_FPS > 0U)
 #define APP_IR_CAPTURE_TEMP_PERIOD_MS     (1000U / APP_IR_CAPTURE_TEMP_FPS)
+#endif
+#if ((APP_IR_CAPTURE_IMAGE_FPS > 0U) && (APP_IR_CAPTURE_TEMP_FPS > 0U))
 #define APP_IR_CAPTURE_TEMP_PHASE_MS      (APP_IR_CAPTURE_IMAGE_PERIOD_MS / 2U)
+#elif (APP_IR_CAPTURE_TEMP_FPS > 0U)
+#define APP_IR_CAPTURE_TEMP_PHASE_MS      APP_IR_CAPTURE_TEMP_PERIOD_MS
+#endif
+
+#if ((APP_IR_CAPTURE_IMAGE_FPS == 0U) && (APP_IR_CAPTURE_TEMP_FPS == 0U))
+#error "At least one Tiny1C capture stream must be enabled"
+#endif
+
+#if (APP_IR_CAPTURE_TEMP_FPS > 0U)
+#define APP_IR_CAPTURE_STARTUP_COMMAND TINY1C_CMD_TEMP
+#else
+#define APP_IR_CAPTURE_STARTUP_COMMAND TINY1C_CMD_IMAGE
+#endif
+
 typedef struct
 {
   uint32_t sequence;
@@ -116,6 +140,7 @@ static void AppIRCapture_Record(uint8_t command,
 
   AppIRCaptureStatus.last_command = command;
   AppIRCaptureStatus.last_capture_ms = capture_ms;
+  AppIRCaptureStatus.capture_total_ms += capture_ms;
   if (capture_ms > AppIRCaptureStatus.max_capture_ms)
   {
     AppIRCaptureStatus.max_capture_ms = capture_ms;
@@ -130,12 +155,14 @@ static void AppIRCapture_Record(uint8_t command,
     if (command == TINY1C_CMD_IMAGE)
     {
       AppIRCaptureStatus.image_count++;
+      AppIRCaptureStatus.image_capture_total_ms += capture_ms;
       AppIRCaptureStatus.image_sequence = AppIRImageSlot.sequence;
       AppIRCaptureStatus.last_image_ms = timestamp_ms;
     }
     else
     {
       AppIRCaptureStatus.temp_count++;
+      AppIRCaptureStatus.temp_capture_total_ms += capture_ms;
       AppIRCaptureStatus.temp_sequence = AppIRTempSlot.sequence;
       AppIRCaptureStatus.last_temp_ms = timestamp_ms;
     }
@@ -172,18 +199,29 @@ static tiny1c_status_t AppIRCapture_Capture(uint8_t command, uint8_t deadline_mi
 
 static VOID AppIRCapture_ThreadEntry(ULONG thread_input)
 {
+  char config_line[112];
+#if (APP_IR_CAPTURE_IMAGE_FPS > 0U)
   uint32_t next_image_ms;
+#endif
+#if (APP_IR_CAPTURE_TEMP_FPS > 0U)
   uint32_t next_temp_ms;
+#endif
   uint32_t now_ms;
   tiny1c_status_t startup_status;
 
   (void)thread_input;
-  App_Print("IR capture thread start target=image10fps,temp5fps\r\n");
+  (void)snprintf(config_line,
+                 sizeof(config_line),
+                 "IR capture thread start target=image%lufps,temp%lufps spi=%luHz\r\n",
+                 (unsigned long)APP_IR_CAPTURE_IMAGE_FPS,
+                 (unsigned long)APP_IR_CAPTURE_TEMP_FPS,
+                 (unsigned long)Tiny1C_STM32_GetSpiClockHz());
+  App_Print(config_line);
 
   /* The first read starts preview, waits for sensor warm-up and drains stale frames. */
   do
   {
-    startup_status = AppIRCapture_Capture(TINY1C_CMD_IMAGE, 0U);
+    startup_status = AppIRCapture_Capture(APP_IR_CAPTURE_STARTUP_COMMAND, 0U);
     if (startup_status == TINY1C_STATUS_UNSUPPORTED)
     {
       tx_thread_sleep(1U);
@@ -197,8 +235,12 @@ static VOID AppIRCapture_ThreadEntry(ULONG thread_input)
   while (startup_status != TINY1C_STATUS_OK);
 
   now_ms = HAL_GetTick();
+#if (APP_IR_CAPTURE_IMAGE_FPS > 0U)
   next_image_ms = now_ms + APP_IR_CAPTURE_IMAGE_PERIOD_MS;
+#endif
+#if (APP_IR_CAPTURE_TEMP_FPS > 0U)
   next_temp_ms = now_ms + APP_IR_CAPTURE_TEMP_PHASE_MS;
+#endif
 
   {
     uint32_t primask = AppIRCapture_Lock();
@@ -207,6 +249,9 @@ static VOID AppIRCapture_ThreadEntry(ULONG thread_input)
     AppIRCaptureStatus.running = 1U;
     AppIRCaptureStatus.image_count = 0U;
     AppIRCaptureStatus.temp_count = 0U;
+    AppIRCaptureStatus.image_capture_total_ms = 0U;
+    AppIRCaptureStatus.temp_capture_total_ms = 0U;
+    AppIRCaptureStatus.capture_total_ms = 0U;
     AppIRCaptureStatus.capture_error_count = 0U;
     AppIRCaptureStatus.deadline_miss_count = 0U;
     AppIRCaptureStatus.last_capture_ms = 0U;
@@ -214,7 +259,13 @@ static VOID AppIRCapture_ThreadEntry(ULONG thread_input)
     AppIRCaptureStatus.schedule_elapsed_ms = now_ms;
     AppIRCapture_Unlock(primask);
   }
-  App_Print("IR capture ready image=10fps temp=5fps\r\n");
+  (void)snprintf(config_line,
+                 sizeof(config_line),
+                 "IR capture ready image=%lufps temp=%lufps spi=%luHz\r\n",
+                 (unsigned long)APP_IR_CAPTURE_IMAGE_FPS,
+                 (unsigned long)APP_IR_CAPTURE_TEMP_FPS,
+                 (unsigned long)Tiny1C_STM32_GetSpiClockHz());
+  App_Print(config_line);
 
   for (;;)
   {
@@ -224,12 +275,15 @@ static VOID AppIRCapture_ThreadEntry(ULONG thread_input)
     uint32_t period_ms = 0U;
 
     now_ms = HAL_GetTick();
+#if (APP_IR_CAPTURE_IMAGE_FPS > 0U)
     if ((int32_t)(now_ms - next_image_ms) >= 0)
     {
       command = TINY1C_CMD_IMAGE;
       deadline_ms = next_image_ms;
       period_ms = APP_IR_CAPTURE_IMAGE_PERIOD_MS;
     }
+#endif
+#if (APP_IR_CAPTURE_TEMP_FPS > 0U)
     if (((int32_t)(now_ms - next_temp_ms) >= 0) &&
         ((command == 0U) || ((int32_t)(next_temp_ms - deadline_ms) < 0)))
     {
@@ -237,6 +291,7 @@ static VOID AppIRCapture_ThreadEntry(ULONG thread_input)
       deadline_ms = next_temp_ms;
       period_ms = APP_IR_CAPTURE_TEMP_PERIOD_MS;
     }
+#endif
 
     if (command == 0U)
     {
@@ -256,6 +311,7 @@ static VOID AppIRCapture_ThreadEntry(ULONG thread_input)
     }
 
     now_ms = HAL_GetTick();
+#if (APP_IR_CAPTURE_IMAGE_FPS > 0U)
     if (command == TINY1C_CMD_IMAGE)
     {
       next_image_ms += APP_IR_CAPTURE_IMAGE_PERIOD_MS;
@@ -264,7 +320,9 @@ static VOID AppIRCapture_ThreadEntry(ULONG thread_input)
         next_image_ms = now_ms + APP_IR_CAPTURE_IMAGE_PERIOD_MS;
       }
     }
-    else
+#endif
+#if (APP_IR_CAPTURE_TEMP_FPS > 0U)
+    if (command == TINY1C_CMD_TEMP)
     {
       next_temp_ms += APP_IR_CAPTURE_TEMP_PERIOD_MS;
       if ((int32_t)(now_ms - next_temp_ms) >= (int32_t)APP_IR_CAPTURE_TEMP_PERIOD_MS)
@@ -272,6 +330,7 @@ static VOID AppIRCapture_ThreadEntry(ULONG thread_input)
         next_temp_ms = now_ms + APP_IR_CAPTURE_TEMP_PERIOD_MS;
       }
     }
+#endif
   }
 }
 
@@ -358,6 +417,9 @@ void App_IRCapture_GetStatus(App_IRCapture_Status_t *status)
   primask = AppIRCapture_Lock();
   *status = AppIRCaptureStatus;
   AppIRCapture_Unlock(primask);
+  status->target_image_fps = APP_IR_CAPTURE_IMAGE_FPS;
+  status->target_temp_fps = APP_IR_CAPTURE_TEMP_FPS;
+  status->spi_clock_hz = Tiny1C_STM32_GetSpiClockHz();
   if ((status->running != 0U) && (status->schedule_elapsed_ms != 0U))
   {
     status->schedule_elapsed_ms = HAL_GetTick() - status->schedule_elapsed_ms;

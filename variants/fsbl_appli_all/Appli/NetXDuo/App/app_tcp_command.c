@@ -708,33 +708,52 @@ static UINT AppTcpCommand_SendAIStatus(void)
 static UINT AppTcpCommand_SendIRStatus(void)
 {
   App_IRCapture_Status_t status;
+  Tiny1C_STM32_DmaDiagnostics_t dma_diagnostics;
   uint32_t image_fps_x100 = 0U;
   uint32_t temp_fps_x100 = 0U;
-  char line[320];
+  uint32_t capture_load_x100 = 0U;
+  uint32_t image_average_ms = 0U;
+  uint32_t temp_average_ms = 0U;
+  char line[768];
   int len;
 
   App_IRCapture_GetStatus(&status);
+  Tiny1C_STM32_GetDmaDiagnostics(&dma_diagnostics);
   if (status.schedule_elapsed_ms != 0U)
   {
     image_fps_x100 = (uint32_t)(((uint64_t)status.image_count * 100000ULL) /
                                 status.schedule_elapsed_ms);
     temp_fps_x100 = (uint32_t)(((uint64_t)status.temp_count * 100000ULL) /
                                status.schedule_elapsed_ms);
+    capture_load_x100 = (uint32_t)(((uint64_t)status.capture_total_ms * 10000ULL) /
+                                   status.schedule_elapsed_ms);
   }
+  image_average_ms = (status.image_count != 0U) ?
+                     (status.image_capture_total_ms / status.image_count) : 0U;
+  temp_average_ms = (status.temp_count != 0U) ?
+                    (status.temp_capture_total_ms / status.temp_count) : 0U;
 
   len = snprintf(line,
                  sizeof(line),
-                 "OK IRSTAT init=%lu run=%lu pause=%lu active=%lu image=%lu temp=%lu img_fps=%lu.%02lu temp_fps=%lu.%02lu err=%lu late=%lu img_seq=%lu temp_seq=%lu last=0x%02X last_ms=%lu max_ms=%lu elapsed_ms=%lu\r\n",
+                 "OK IRSTAT init=%lu run=%lu pause=%lu active=%lu target=%lu/%lu sck=%lu masrx=%lu diag=3 image=%lu temp=%lu img_fps=%lu.%02lu temp_fps=%lu.%02lu img_ms=%lu temp_ms=%lu load=%lu.%02lu err=%lu late=%lu img_seq=%lu temp_seq=%lu last=0x%02X last_ms=%lu max_ms=%lu elapsed_ms=%lu dma_xfer=%lu susp=%lu dma_start=%lu dma_wait=%lu dma_irq=%lu blk=%lu reason=%lu hal=%lu spierr=0x%08lX err_at=%lu err_len=%lu sr=0x%08lX cr1=0x%08lX cr2=0x%08lX cfg1=0x%08lX spist=%lu rxrem=%lu txrem=%lu rxst=%lu txst=%lu\r\n",
                  (unsigned long)status.initialized,
                  (unsigned long)status.running,
                  (unsigned long)status.paused,
                  (unsigned long)status.active,
+                 (unsigned long)status.target_image_fps,
+                 (unsigned long)status.target_temp_fps,
+                 (unsigned long)status.spi_clock_hz,
+                 (unsigned long)((READ_BIT(hspi3.Instance->CR1, SPI_CR1_MASRX) != 0U) ? 1U : 0U),
                  (unsigned long)status.image_count,
                  (unsigned long)status.temp_count,
                  (unsigned long)(image_fps_x100 / 100U),
                  (unsigned long)(image_fps_x100 % 100U),
                  (unsigned long)(temp_fps_x100 / 100U),
                  (unsigned long)(temp_fps_x100 % 100U),
+                 (unsigned long)image_average_ms,
+                 (unsigned long)temp_average_ms,
+                 (unsigned long)(capture_load_x100 / 100U),
+                 (unsigned long)(capture_load_x100 % 100U),
                  (unsigned long)status.capture_error_count,
                  (unsigned long)status.deadline_miss_count,
                  (unsigned long)status.image_sequence,
@@ -742,7 +761,27 @@ static UINT AppTcpCommand_SendIRStatus(void)
                  (unsigned int)status.last_command,
                  (unsigned long)status.last_capture_ms,
                  (unsigned long)status.max_capture_ms,
-                 (unsigned long)status.schedule_elapsed_ms);
+                 (unsigned long)status.schedule_elapsed_ms,
+                 (unsigned long)dma_diagnostics.transfer_count,
+                 (unsigned long)dma_diagnostics.auto_suspend_resume_count,
+                 (unsigned long)dma_diagnostics.dma_start_error_count,
+                 (unsigned long)dma_diagnostics.dma_wait_timeout_count,
+                 (unsigned long)dma_diagnostics.dma_callback_error_count,
+                 (unsigned long)dma_diagnostics.blocking_error_count,
+                 (unsigned long)dma_diagnostics.last_failure_reason,
+                 (unsigned long)dma_diagnostics.last_hal_status,
+                 (unsigned long)dma_diagnostics.last_hal_error,
+                 (unsigned long)dma_diagnostics.last_error_ms,
+                 (unsigned long)dma_diagnostics.last_transfer_len,
+                 (unsigned long)dma_diagnostics.last_spi_sr,
+                 (unsigned long)dma_diagnostics.last_spi_cr1,
+                 (unsigned long)dma_diagnostics.last_spi_cr2,
+                 (unsigned long)dma_diagnostics.last_spi_cfg1,
+                 (unsigned long)dma_diagnostics.last_spi_state,
+                 (unsigned long)dma_diagnostics.last_rx_remaining,
+                 (unsigned long)dma_diagnostics.last_tx_remaining,
+                 (unsigned long)dma_diagnostics.last_rx_dma_state,
+                 (unsigned long)dma_diagnostics.last_tx_dma_state);
   if ((len <= 0) || ((uint32_t)len >= sizeof(line)))
   {
     return NX_NOT_SUCCESSFUL;

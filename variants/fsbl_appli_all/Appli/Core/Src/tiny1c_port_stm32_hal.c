@@ -17,12 +17,58 @@
 #define TINY1C_SPI_TEST_DELAY_MS 40U
 #define TINY1C_SPI_TEST_JUMP     512U
 #define TINY1C_SPI_TEST_MAX_RUNS 100U
+#define TINY1C_STM32_DMA_CACHE_MAINTENANCE 1U
+#define TINY1C_DMA_FAILURE_ARGUMENT       1U
+#define TINY1C_DMA_FAILURE_BUFFER         2U
+#define TINY1C_DMA_FAILURE_START          3U
+#define TINY1C_DMA_FAILURE_WAIT_TIMEOUT   4U
+#define TINY1C_DMA_FAILURE_CALLBACK       5U
+#define TINY1C_DMA_FAILURE_BLOCKING       6U
 
 extern volatile ULONG _tx_thread_system_state;
 
+typedef struct
+{
+  uint32_t transfer_count;
+  uint32_t dma_start_error_count;
+  uint32_t dma_wait_timeout_count;
+  uint32_t dma_callback_error_count;
+  uint32_t blocking_error_count;
+  uint32_t last_failure_reason;
+  uint32_t last_hal_status;
+  uint32_t last_hal_error;
+  uint32_t last_error_ms;
+  uint32_t last_transfer_len;
+} Tiny1C_STM32_DmaCounters_t;
+
+typedef struct
+{
+  uint32_t spi_sr;
+  uint32_t spi_cr1;
+  uint32_t spi_cr2;
+  uint32_t spi_cfg1;
+  uint32_t spi_state;
+  uint32_t rx_remaining;
+  uint32_t tx_remaining;
+  uint32_t rx_dma_state;
+  uint32_t tx_dma_state;
+  uint32_t auto_resume_count;
+} Tiny1C_STM32_TimeoutSnapshot_t;
+
+/* Keep the timeout snapshot before the large DMA buffers in source order.
+   GCC emits these local BSS sections in reverse order, so the snapshot lands
+   after the buffers and does not perturb their proven SRAM bank mapping. */
+static volatile Tiny1C_STM32_TimeoutSnapshot_t tiny1c_spi_timeout_snapshot;
+
+#if (TINY1C_STM32_DMA_CACHE_MAINTENANCE == 1U)
+__attribute__((aligned(32))) static uint8_t tiny1c_spi_tx[TINY1C_SPI3_CHUNK_LEN];
+__attribute__((aligned(32))) static uint8_t tiny1c_spi_rx[TINY1C_SPI3_CHUNK_LEN];
+__attribute__((aligned(32))) static uint8_t tiny1c_frame[TINY1C_DEFAULT_FRAME_LEN];
+#else
 static uint8_t tiny1c_spi_tx[TINY1C_SPI3_CHUNK_LEN];
 static uint8_t tiny1c_spi_rx[TINY1C_SPI3_CHUNK_LEN];
 static uint8_t tiny1c_frame[TINY1C_DEFAULT_FRAME_LEN];
+#endif
 static uint8_t tiny1c_initialized;
 static volatile uint8_t tiny1c_spi_dma_active;
 static volatile uint8_t tiny1c_spi_dma_done;
@@ -31,8 +77,78 @@ static volatile uint32_t tiny1c_spi_dma_hal_error;
 static TX_SEMAPHORE tiny1c_spi_dma_semaphore;
 static uint8_t tiny1c_spi_dma_semaphore_ready;
 static volatile uint8_t tiny1c_spi_use_dma = TINY1C_SPI3_USE_DMA;
+static volatile Tiny1C_STM32_DmaCounters_t tiny1c_spi_diagnostics;
 
 tiny1c_t g_tiny1c;
+
+static void Tiny1C_STM32_RecordSpiFailure(uint32_t reason,
+                                          uint32_t len,
+                                          HAL_StatusTypeDef hal_status)
+{
+  tiny1c_spi_diagnostics.last_failure_reason = reason;
+  tiny1c_spi_diagnostics.last_hal_status = (uint32_t)hal_status;
+  tiny1c_spi_diagnostics.last_hal_error = HAL_SPI_GetError(&hspi3) |
+                                           tiny1c_spi_dma_hal_error;
+  tiny1c_spi_diagnostics.last_error_ms = HAL_GetTick();
+  tiny1c_spi_diagnostics.last_transfer_len = len;
+  tiny1c_spi_timeout_snapshot.spi_sr = READ_REG(hspi3.Instance->SR);
+  tiny1c_spi_timeout_snapshot.spi_cr1 = READ_REG(hspi3.Instance->CR1);
+  tiny1c_spi_timeout_snapshot.spi_cr2 = READ_REG(hspi3.Instance->CR2);
+  tiny1c_spi_timeout_snapshot.spi_cfg1 = READ_REG(hspi3.Instance->CFG1);
+  tiny1c_spi_timeout_snapshot.spi_state = (uint32_t)HAL_SPI_GetState(&hspi3);
+  if (hspi3.hdmarx != NULL)
+  {
+    tiny1c_spi_timeout_snapshot.rx_remaining = __HAL_DMA_GET_COUNTER(hspi3.hdmarx);
+    tiny1c_spi_timeout_snapshot.rx_dma_state = (uint32_t)HAL_DMA_GetState(hspi3.hdmarx);
+  }
+  if (hspi3.hdmatx != NULL)
+  {
+    tiny1c_spi_timeout_snapshot.tx_remaining = __HAL_DMA_GET_COUNTER(hspi3.hdmatx);
+    tiny1c_spi_timeout_snapshot.tx_dma_state = (uint32_t)HAL_DMA_GetState(hspi3.hdmatx);
+  }
+
+  if (reason == TINY1C_DMA_FAILURE_START)
+  {
+    tiny1c_spi_diagnostics.dma_start_error_count++;
+  }
+  else if (reason == TINY1C_DMA_FAILURE_WAIT_TIMEOUT)
+  {
+    tiny1c_spi_diagnostics.dma_wait_timeout_count++;
+  }
+  else if (reason == TINY1C_DMA_FAILURE_CALLBACK)
+  {
+    tiny1c_spi_diagnostics.dma_callback_error_count++;
+  }
+  else if (reason == TINY1C_DMA_FAILURE_BLOCKING)
+  {
+    tiny1c_spi_diagnostics.blocking_error_count++;
+  }
+}
+
+#if (TINY1C_STM32_DMA_CACHE_MAINTENANCE == 1U)
+static void Tiny1C_STM32_DmaPrepare(const uint8_t *tx, uint8_t *rx, uint32_t len)
+{
+  if (len == 0U)
+  {
+    return;
+  }
+
+  SCB_CleanDCache_by_Addr((uint32_t *)tx, (int32_t)len);
+  SCB_CleanInvalidateDCache_by_Addr((uint32_t *)rx, (int32_t)len);
+  __DSB();
+}
+
+static void Tiny1C_STM32_DmaComplete(uint8_t *rx, uint32_t len)
+{
+  if (len == 0U)
+  {
+    return;
+  }
+
+  SCB_InvalidateDCache_by_Addr((void *)rx, (int32_t)len);
+  __DSB();
+}
+#endif
 
 static ULONG Tiny1C_STM32_MsToTicks(uint32_t ms)
 {
@@ -77,6 +193,11 @@ static uint32_t Tiny1C_STM32_SpiClockHz(void)
   }
 
   return HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SPI3) / divider;
+}
+
+uint32_t Tiny1C_STM32_GetSpiClockHz(void)
+{
+  return Tiny1C_STM32_SpiClockHz();
 }
 
 static HAL_StatusTypeDef Tiny1C_STM32_SpiReconfigure(uint32_t prescaler)
@@ -232,19 +353,39 @@ static int Tiny1C_STM32_SpiTxRx(void *ctx,
 #if (TINY1C_SPI3_USE_DMA == 1U)
   HAL_StatusTypeDef status;
   uint32_t start_tick;
+#if (TINY1C_STM32_DMA_CACHE_MAINTENANCE == 1U)
+  uint8_t *dma_rx;
+#endif
   UINT wait_status;
 #endif
+  HAL_StatusTypeDef blocking_status;
 
   (void)ctx;
 
   if ((tx == NULL) || (rx == NULL) || (len > 0xFFFFU))
   {
+    Tiny1C_STM32_RecordSpiFailure(TINY1C_DMA_FAILURE_ARGUMENT, len, HAL_ERROR);
     return -1;
   }
+
+  tiny1c_spi_diagnostics.transfer_count++;
 
 #if (TINY1C_SPI3_USE_DMA == 1U)
   if ((tiny1c_spi_use_dma != 0U) && (_tx_thread_system_state == 0U))
   {
+#if (TINY1C_STM32_DMA_CACHE_MAINTENANCE == 1U)
+    if (len > sizeof(tiny1c_spi_rx))
+    {
+      Tiny1C_STM32_RecordSpiFailure(TINY1C_DMA_FAILURE_BUFFER, len, HAL_ERROR);
+      return -1;
+    }
+
+    /* Direct-trim destinations are not cache-line aligned. Receive through
+       the aligned scratch buffer so cache maintenance cannot invalidate
+       neighboring frame bytes. */
+    dma_rx = (rx == tiny1c_spi_rx) ? rx : tiny1c_spi_rx;
+#endif
+
     if (tiny1c_spi_dma_semaphore_ready != 0U)
     {
       while (tx_semaphore_get(&tiny1c_spi_dma_semaphore, TX_NO_WAIT) == TX_SUCCESS)
@@ -257,12 +398,29 @@ static int Tiny1C_STM32_SpiTxRx(void *ctx,
     tiny1c_spi_dma_error = 0U;
     tiny1c_spi_dma_hal_error = 0U;
 
+#if (TINY1C_STM32_DMA_CACHE_MAINTENANCE == 1U)
+    Tiny1C_STM32_DmaPrepare(tx, dma_rx, len);
+#endif
+
     status = HAL_SPI_TransmitReceive_DMA(&hspi3,
                                          (uint8_t *)tx,
+#if (TINY1C_STM32_DMA_CACHE_MAINTENANCE == 1U)
+                                         dma_rx,
+#else
                                          rx,
+#endif
                                          (uint16_t)len);
     if (status == HAL_OK)
     {
+      /* With MASRX, SUSP is reported through the EOT interrupt. The stock DMA
+         path enables EOT only after RX DMA completes, which is too late for a
+         mid-transfer automatic suspend. Let HAL_SPI_IRQHandler clear SUSP and
+         resume CSTART while both DMA channels are still active. */
+      if (READ_BIT(hspi3.Instance->CR1, SPI_CR1_MASRX) != 0U)
+      {
+        __HAL_SPI_ENABLE_IT(&hspi3, SPI_IT_EOT);
+      }
+
       if (tiny1c_spi_dma_semaphore_ready != 0U)
       {
         wait_status = tx_semaphore_get(&tiny1c_spi_dma_semaphore,
@@ -270,6 +428,9 @@ static int Tiny1C_STM32_SpiTxRx(void *ctx,
                                        TX_WAIT_FOREVER : Tiny1C_STM32_MsToTicks(timeout_ms));
         if (wait_status != TX_SUCCESS)
         {
+          Tiny1C_STM32_RecordSpiFailure(TINY1C_DMA_FAILURE_WAIT_TIMEOUT,
+                                        len,
+                                        HAL_TIMEOUT);
           (void)HAL_SPI_Abort(&hspi3);
           tiny1c_spi_dma_active = 0U;
           return -1;
@@ -282,6 +443,9 @@ static int Tiny1C_STM32_SpiTxRx(void *ctx,
         {
           if ((timeout_ms != HAL_MAX_DELAY) && ((HAL_GetTick() - start_tick) >= timeout_ms))
           {
+            Tiny1C_STM32_RecordSpiFailure(TINY1C_DMA_FAILURE_WAIT_TIMEOUT,
+                                          len,
+                                          HAL_TIMEOUT);
             (void)HAL_SPI_Abort(&hspi3);
             tiny1c_spi_dma_active = 0U;
             return -1;
@@ -291,18 +455,37 @@ static int Tiny1C_STM32_SpiTxRx(void *ctx,
       }
 
       tiny1c_spi_dma_active = 0U;
+#if (TINY1C_STM32_DMA_CACHE_MAINTENANCE == 1U)
+      if ((tiny1c_spi_dma_done != 0U) && (tiny1c_spi_dma_error == 0U))
+      {
+        Tiny1C_STM32_DmaComplete(dma_rx, len);
+        if (dma_rx != rx)
+        {
+          memcpy(rx, dma_rx, len);
+        }
+      }
+#endif
       return ((tiny1c_spi_dma_done != 0U) && (tiny1c_spi_dma_error == 0U)) ? 0 : -1;
     }
 
     tiny1c_spi_dma_active = 0U;
+    Tiny1C_STM32_RecordSpiFailure(TINY1C_DMA_FAILURE_START, len, status);
   }
 #endif
 
-  return (HAL_SPI_TransmitReceive(&hspi3,
-                                  (uint8_t *)tx,
-                                  rx,
-                                  (uint16_t)len,
-                                  timeout_ms) == HAL_OK) ? 0 : -1;
+  blocking_status = HAL_SPI_TransmitReceive(&hspi3,
+                                             (uint8_t *)tx,
+                                             rx,
+                                             (uint16_t)len,
+                                             timeout_ms);
+  if (blocking_status != HAL_OK)
+  {
+    Tiny1C_STM32_RecordSpiFailure(TINY1C_DMA_FAILURE_BLOCKING,
+                                  len,
+                                  blocking_status);
+    return -1;
+  }
+  return 0;
 }
 
 void Tiny1C_STM32_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
@@ -328,9 +511,58 @@ void Tiny1C_STM32_ErrorCallback(SPI_HandleTypeDef *hspi)
 
   tiny1c_spi_dma_hal_error = HAL_SPI_GetError(hspi);
   tiny1c_spi_dma_error = 1U;
+  Tiny1C_STM32_RecordSpiFailure(TINY1C_DMA_FAILURE_CALLBACK,
+                                (uint32_t)hspi->TxXferSize,
+                                HAL_ERROR);
   if (tiny1c_spi_dma_semaphore_ready != 0U)
   {
     (void)tx_semaphore_put(&tiny1c_spi_dma_semaphore);
+  }
+}
+
+void Tiny1C_STM32_SuspendCallback(SPI_HandleTypeDef *hspi)
+{
+  if ((hspi != NULL) && (hspi->Instance == SPI3) && (tiny1c_spi_dma_active != 0U))
+  {
+    tiny1c_spi_timeout_snapshot.auto_resume_count++;
+  }
+}
+
+void Tiny1C_STM32_GetDmaDiagnostics(Tiny1C_STM32_DmaDiagnostics_t *diagnostics)
+{
+  uint32_t primask;
+
+  if (diagnostics == NULL)
+  {
+    return;
+  }
+
+  primask = __get_PRIMASK();
+  __disable_irq();
+  (void)memset(diagnostics, 0, sizeof(*diagnostics));
+  diagnostics->transfer_count = tiny1c_spi_diagnostics.transfer_count;
+  diagnostics->dma_start_error_count = tiny1c_spi_diagnostics.dma_start_error_count;
+  diagnostics->dma_wait_timeout_count = tiny1c_spi_diagnostics.dma_wait_timeout_count;
+  diagnostics->dma_callback_error_count = tiny1c_spi_diagnostics.dma_callback_error_count;
+  diagnostics->blocking_error_count = tiny1c_spi_diagnostics.blocking_error_count;
+  diagnostics->last_failure_reason = tiny1c_spi_diagnostics.last_failure_reason;
+  diagnostics->last_hal_status = tiny1c_spi_diagnostics.last_hal_status;
+  diagnostics->last_hal_error = tiny1c_spi_diagnostics.last_hal_error;
+  diagnostics->last_error_ms = tiny1c_spi_diagnostics.last_error_ms;
+  diagnostics->last_transfer_len = tiny1c_spi_diagnostics.last_transfer_len;
+  diagnostics->last_spi_sr = tiny1c_spi_timeout_snapshot.spi_sr;
+  diagnostics->last_spi_cr1 = tiny1c_spi_timeout_snapshot.spi_cr1;
+  diagnostics->last_spi_cr2 = tiny1c_spi_timeout_snapshot.spi_cr2;
+  diagnostics->last_spi_cfg1 = tiny1c_spi_timeout_snapshot.spi_cfg1;
+  diagnostics->last_spi_state = tiny1c_spi_timeout_snapshot.spi_state;
+  diagnostics->last_rx_remaining = tiny1c_spi_timeout_snapshot.rx_remaining;
+  diagnostics->last_tx_remaining = tiny1c_spi_timeout_snapshot.tx_remaining;
+  diagnostics->last_rx_dma_state = tiny1c_spi_timeout_snapshot.rx_dma_state;
+  diagnostics->last_tx_dma_state = tiny1c_spi_timeout_snapshot.tx_dma_state;
+  diagnostics->auto_suspend_resume_count = tiny1c_spi_timeout_snapshot.auto_resume_count;
+  if (primask == 0U)
+  {
+    __enable_irq();
   }
 }
 

@@ -22,6 +22,11 @@ void HAL_SPI_ErrorCallback(SPI_HandleTypeDef *hspi)
   Tiny1C_STM32_ErrorCallback(hspi);
 }
 
+void HAL_SPI_SuspendCallback(SPI_HandleTypeDef *hspi)
+{
+  Tiny1C_STM32_SuspendCallback(hspi);
+}
+
 void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin)
 {
   AD7606_SPI4_EXTI_RisingCallback(GPIO_Pin);
