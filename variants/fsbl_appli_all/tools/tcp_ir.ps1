@@ -23,5 +23,16 @@ try {
   }
 }
 finally {
-  $tcp.Close()
+  try {
+    if ($null -ne $tcp.Client) {
+      # Each invocation is one request. Abortive close wakes the NetX receive
+      # loop immediately instead of leaving the single command socket in FIN_WAIT.
+      $tcp.Client.LingerState = [System.Net.Sockets.LingerOption]::new($true, 0)
+    }
+  }
+  catch {
+    # The board may already have closed or reset the command connection.
+  }
+  $tcp.Dispose()
+  Start-Sleep -Milliseconds 100
 }

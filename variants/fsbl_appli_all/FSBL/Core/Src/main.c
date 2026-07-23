@@ -26,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "extmem.h"
+#include "psram_init.h"
 
 /* USER CODE END Includes */
 
@@ -93,6 +94,7 @@ int main(void)
   MX_XSPI1_Init();
   /* USER CODE BEGIN 2 */
   MX_EXTMEM_Init();
+  (void)FSBL_PSRAM_InitMemoryMapped();
 
   if (BOOT_OK != BOOT_Application())
   {

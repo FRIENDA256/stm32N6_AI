@@ -24,6 +24,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "app_console.h"
+#include "app_ir_stream.h"
+#include "app_stream_mode.h"
+#include "app_stream_telemetry.h"
 #include "app_tcp_command.h"
 #include "app_udp_echo.h"
 #include "main.h"
@@ -95,6 +98,9 @@ static VOID NetXDuo_LinkThreadEntry(ULONG thread_input);
 UINT MX_NetXDuo_Init(VOID *memory_ptr)
 {
   UINT ret = NX_SUCCESS;
+  UINT ir_stream_status;
+  UINT mode_status;
+  UINT telemetry_status;
   TX_BYTE_POOL *byte_pool = (TX_BYTE_POOL*)memory_ptr;
 
   /* USER CODE BEGIN MX_NetXDuo_MEM_POOL */
@@ -176,6 +182,26 @@ UINT MX_NetXDuo_Init(VOID *memory_ptr)
   {
     App_PrintHex32("TCP cmd start failed: ", ret);
     return ret;
+  }
+
+  telemetry_status = AppStreamTelemetry_Start(&NetXDuoIpInstance, byte_pool);
+  if (telemetry_status != NX_SUCCESS)
+  {
+    App_PrintHex32("Telemetry stream start failed, legacy services continue: ", telemetry_status);
+  }
+
+  ir_stream_status = AppIRStream_Start(&NetXDuoIpInstance,
+                                       &NetXDuoPacketPool,
+                                       byte_pool);
+  if (ir_stream_status != NX_SUCCESS)
+  {
+    App_PrintHex32("IR stream start failed, other services continue: ", ir_stream_status);
+  }
+
+  mode_status = App_StreamMode_Init();
+  if (mode_status != TX_SUCCESS)
+  {
+    App_PrintHex32("Stream mode init IR priority warning: ", mode_status);
   }
 
   ret = NetXDuo_ByteAllocate(byte_pool, &status_thread_stack, APP_NETX_STATUS_THREAD_STACK);

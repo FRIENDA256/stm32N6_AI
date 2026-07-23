@@ -5,10 +5,10 @@ param(
   [ValidateRange(0, 120)]
   [int]$WarmupSeconds = 10,
   [ValidateRange(1, 25)]
-  [int]$ExpectedTempFps = 20,
+  [int]$ExpectedTempFps = 25,
   [double]$MaxBackgroundImageFps = 0.1,
-  [double]$MinTempFps = 19.0,
-  [int]$MaxAverageCaptureMs = 48,
+  [double]$MinTempFps = 24.0,
+  [int]$MaxAverageCaptureMs = 40,
   [int]$MaxDeadlineMisses = 2,
   [switch]$RequireCleanBaseline
 )
@@ -128,10 +128,10 @@ if (-not $irStart.ReportsMasterRxAutoSuspend) {
   throw "Firmware does not report masrx; flash the auto-suspend diagnostic firmware before running this test"
 }
 if (-not $irStart.ReportsTimeoutSnapshot) {
-  throw "Firmware does not report the SPI timeout snapshot; flash fsbl_appli_all_Appli_tinytemp20fps_autosusp_irqresume_diag3_50mhz-trusted.bin before running this test"
+  throw "Firmware does not report the SPI timeout snapshot; flash the current Tiny1C diagnostic firmware before running this test"
 }
 if (-not $irStart.ReportsStableDiagnosticLayout) {
-  throw "Firmware does not include SUSP IRQ recovery; flash fsbl_appli_all_Appli_tinytemp20fps_autosusp_irqresume_diag3_50mhz-trusted.bin before running this test"
+  throw "Firmware does not include SUSP IRQ recovery; flash the current Tiny1C diagnostic firmware before running this test"
 }
 
 Start-Sleep -Seconds $DurationSeconds

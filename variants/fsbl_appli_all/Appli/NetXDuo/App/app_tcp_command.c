@@ -13,17 +13,23 @@
 #include "app_camera_imx219.h"
 #include "app_console.h"
 #include "app_ir_capture.h"
+#include "app_ir_stream.h"
+#include "app_media_buffer.h"
+#include "app_stream_mode.h"
+#include "app_stream_telemetry.h"
 #include "dcmipp.h"
 #include "tiny1c_port_stm32_hal.h"
 #include <stdio.h>
 #include <string.h>
 
-#define APP_TCP_COMMAND_THREAD_STACK_SIZE 2048U
+#define APP_TCP_COMMAND_THREAD_STACK_SIZE 4096U
 #define APP_TCP_COMMAND_THREAD_PRIORITY   13U
 #define APP_TCP_COMMAND_LISTEN_QUEUE      1U
 #define APP_TCP_COMMAND_WINDOW_SIZE       32768UL
 #define APP_TCP_COMMAND_RX_BUFFER_SIZE    128U
 #define APP_TCP_COMMAND_TX_CHUNK_SIZE     1400UL
+#define APP_TCP_COMMAND_TX_WAIT_TICKS \
+  ((TX_TIMER_TICKS_PER_SECOND + 4U) / 5U)
 #define APP_TCP_COMMAND_LOG_INTERVAL      8UL
 #define APP_TCP_COMMAND_AD_WAIT_MS        3000U
 #define APP_TCP_COMMAND_AD_POLL_MS        20U
@@ -417,7 +423,10 @@ static UINT AppTcpCommand_SendThroughputPacket(ULONG payload_size,
   }
 
   tick = tx_time_get();
-  status = nx_packet_allocate(TcpCommandPacketPool, &packet_ptr, NX_TCP_PACKET, NX_WAIT_FOREVER);
+  status = nx_packet_allocate(TcpCommandPacketPool,
+                              &packet_ptr,
+                              NX_TCP_PACKET,
+                              APP_TCP_COMMAND_TX_WAIT_TICKS);
   if (stats != NULL)
   {
     stats->alloc_ticks += tx_time_get() - tick;
@@ -438,7 +447,9 @@ static UINT AppTcpCommand_SendThroughputPacket(ULONG payload_size,
   if (status == NX_SUCCESS)
   {
     tick = tx_time_get();
-    status = nx_tcp_socket_send(&TcpCommandSocket, packet_ptr, NX_WAIT_FOREVER);
+    status = nx_tcp_socket_send(&TcpCommandSocket,
+                                packet_ptr,
+                                APP_TCP_COMMAND_TX_WAIT_TICKS);
     if (stats != NULL)
     {
       stats->send_ticks += tx_time_get() - tick;
@@ -545,7 +556,10 @@ static UINT AppTcpCommand_SendBytes(const uint8_t *data, uint32_t len)
       chunk = APP_TCP_COMMAND_TX_CHUNK_SIZE;
     }
 
-    status = nx_packet_allocate(TcpCommandPacketPool, &packet_ptr, NX_TCP_PACKET, NX_WAIT_FOREVER);
+    status = nx_packet_allocate(TcpCommandPacketPool,
+                                &packet_ptr,
+                                NX_TCP_PACKET,
+                                APP_TCP_COMMAND_TX_WAIT_TICKS);
     if (status != NX_SUCCESS)
     {
       return status;
@@ -554,7 +568,9 @@ static UINT AppTcpCommand_SendBytes(const uint8_t *data, uint32_t len)
     status = AppTcpCommand_CopyPacketPayload(packet_ptr, &data[offset], chunk);
     if (status == NX_SUCCESS)
     {
-      status = nx_tcp_socket_send(&TcpCommandSocket, packet_ptr, NX_WAIT_FOREVER);
+      status = nx_tcp_socket_send(&TcpCommandSocket,
+                                  packet_ptr,
+                                  APP_TCP_COMMAND_TX_WAIT_TICKS);
       if (status == NX_SUCCESS)
       {
         packet_ptr = NX_NULL;
@@ -658,10 +674,202 @@ static UINT AppTcpCommand_SendStatus(void)
   return AppTcpCommand_SendText(line);
 }
 
+static UINT AppTcpCommand_SendStreamList(void)
+{
+  return AppTcpCommand_SendText(
+    "OK STREAMS protocol=MMS2 version=2 telemetry=192.168.6.50:5100 "
+    "content=AD_AI_BLOCK_V2 raw=8x512xs16 ai_window=8x1024xs16 mode=paired-queue "
+    "ir=192.168.6.50:5101 content_ir=TINY1C_TEMP16_LE size=256x192 "
+    "mode_ir=latest\r\n");
+}
+
+static const char *AppTcpCommand_StreamModeName(App_StreamMode_t mode)
+{
+  if (mode == APP_STREAM_MODE_ADAI)
+  {
+    return "ADAI";
+  }
+  if (mode == APP_STREAM_MODE_IR)
+  {
+    return "IR";
+  }
+  return "SWITCHING";
+}
+
+static UINT AppTcpCommand_SendMode(const char *args)
+{
+  App_StreamMode_t mode;
+  UINT status;
+  char line[96];
+  int length;
+
+  args = AppTcpCommand_SkipSpaces(args);
+  if (*args != '\0')
+  {
+    if (AppTcpCommand_Equals(args, "ADAI") == NX_TRUE)
+    {
+      mode = APP_STREAM_MODE_ADAI;
+    }
+    else if (AppTcpCommand_Equals(args, "IR") == NX_TRUE)
+    {
+      mode = APP_STREAM_MODE_IR;
+    }
+    else
+    {
+      return AppTcpCommand_SendText("ERR MODE expected ADAI or IR\r\n");
+    }
+
+    status = App_StreamMode_Set(mode);
+    if (status != TX_SUCCESS)
+    {
+      length = snprintf(line, sizeof(line),
+                        "ERR MODE switch status=0x%02lX current=%s\r\n",
+                        (unsigned long)status,
+                        AppTcpCommand_StreamModeName(App_StreamMode_Get()));
+      if ((length <= 0) || ((uint32_t)length >= sizeof(line)))
+      {
+        return NX_NOT_SUCCESSFUL;
+      }
+      return AppTcpCommand_SendText(line);
+    }
+  }
+
+  length = snprintf(line, sizeof(line), "OK MODE=%s\r\n",
+                    AppTcpCommand_StreamModeName(App_StreamMode_Get()));
+  if ((length <= 0) || ((uint32_t)length >= sizeof(line)))
+  {
+    return NX_NOT_SUCCESSFUL;
+  }
+  return AppTcpCommand_SendText(line);
+}
+
+static UINT AppTcpCommand_SendStreamStatus(void)
+{
+  App_Stream_Telemetry_Status_t status;
+  char line[512];
+  int length;
+
+  AppStreamTelemetry_GetStatus(&status);
+  length = snprintf(line,
+                    sizeof(line),
+                    "OK STREAMSTAT init=%lu listen=%lu conn=%lu session=0x%08lX "
+                    "clients=%lu disconnects=%lu msg=%lu bundle=%lu "
+                    "payload=0x%08lX%08lX wire=0x%08lX%08lX alloc_err=%lu "
+                    "send_err=%lu copy_miss=%lu bundle_gap=%lu "
+                    "last_run=%lu last_ad=%lu pool=%lu/%lu min=%lu empty=%lu\r\n",
+                    (unsigned long)status.initialized,
+                    (unsigned long)status.listening,
+                    (unsigned long)status.connected,
+                    (unsigned long)status.boot_session_id,
+                    (unsigned long)status.client_count,
+                    (unsigned long)status.disconnect_count,
+                    (unsigned long)status.message_count,
+                    (unsigned long)status.bundle_message_count,
+                    (unsigned long)(status.payload_bytes >> 32),
+                    (unsigned long)status.payload_bytes,
+                    (unsigned long)(status.wire_bytes >> 32),
+                    (unsigned long)status.wire_bytes,
+                    (unsigned long)status.allocation_fail_count,
+                    (unsigned long)status.send_fail_count,
+                    (unsigned long)status.copy_miss_count,
+                    (unsigned long)status.bundle_source_gap_count,
+                    (unsigned long)status.last_bundle_run,
+                    (unsigned long)status.last_bundle_ad_sequence,
+                    (unsigned long)status.packet_pool_free,
+                    (unsigned long)status.packet_pool_total,
+                    (unsigned long)status.packet_pool_min_free,
+                    (unsigned long)status.packet_pool_empty_requests);
+  if ((length <= 0) || ((uint32_t)length >= sizeof(line)))
+  {
+    return NX_NOT_SUCCESSFUL;
+  }
+
+  return AppTcpCommand_SendText(line);
+}
+
+static UINT AppTcpCommand_SendIRStreamStatus(void)
+{
+  App_IRStream_Status_t status;
+  App_IRCapture_Status_t capture;
+  char line[896];
+  int length;
+
+  AppIRStream_GetStatus(&status);
+  App_IRCapture_GetStatus(&capture);
+  length = snprintf(line,
+                    sizeof(line),
+                    "OK IRSTREAMSTAT init=%lu listen=%lu conn=%lu session=0x%08lX "
+                    "clients=%lu disconnects=%lu msg=%lu gap=%lu "
+                    "payload=0x%08lX%08lX wire=0x%08lX%08lX alloc_err=%lu "
+                    "send_err=%lu last_seq=%lu last_ms=%lu pool=%lu/%lu "
+                    "min=%lu empty=%lu xram=%lu frame=0x%08lX capture=0x%08lX "
+                    "psram_magic=0x%08lX "
+                    "psram=%lu step=%lu err=%lu hal=0x%08lX "
+                    "pub=%lu pub_miss=%lu crc_ms=%lu send_ms=%lu max_send=%lu "
+                    "tcp=%lu txq=%lu txwin=%lu rxwin=%lu retr=%lu "
+                    "send_active=%lu send_seq=%lu send_stage=%lu send_age=%lu "
+                    "snap_hz=%lu copy=%lu copy_ms=%lu copy_max=%lu "
+                    "copy_total=%lu\r\n",
+                    (unsigned long)status.initialized,
+                    (unsigned long)status.listening,
+                    (unsigned long)status.connected,
+                    (unsigned long)status.boot_session_id,
+                    (unsigned long)status.client_count,
+                    (unsigned long)status.disconnect_count,
+                    (unsigned long)status.message_count,
+                    (unsigned long)status.source_gap_count,
+                    (unsigned long)(status.payload_bytes >> 32),
+                    (unsigned long)status.payload_bytes,
+                    (unsigned long)(status.wire_bytes >> 32),
+                    (unsigned long)status.wire_bytes,
+                    (unsigned long)status.allocation_fail_count,
+                    (unsigned long)status.send_fail_count,
+                    (unsigned long)status.last_sequence,
+                    (unsigned long)status.last_timestamp_ms,
+                    (unsigned long)status.packet_pool_free,
+                    (unsigned long)status.packet_pool_total,
+                    (unsigned long)status.packet_pool_min_free,
+                    (unsigned long)status.packet_pool_empty_requests,
+                    (unsigned long)capture.external_ram_ready,
+                    (unsigned long)(uintptr_t)AppMediaBuffer_GetTiny1CSlot(0U),
+                    (unsigned long)Tiny1C_STM32_GetFrameBufferAddress(),
+                    (unsigned long)capture.external_ram_magic,
+                    (unsigned long)capture.external_ram_status,
+                    (unsigned long)capture.external_ram_step,
+                    (unsigned long)capture.external_ram_error,
+                    (unsigned long)capture.external_ram_hal_error,
+                    (unsigned long)capture.snapshot_publish_count,
+                    (unsigned long)capture.snapshot_publish_miss_count,
+                    (unsigned long)status.last_crc_ms,
+                    (unsigned long)status.last_send_ms,
+                    (unsigned long)status.max_send_ms,
+                    (unsigned long)status.tcp_state,
+                    (unsigned long)status.tcp_tx_queue_depth,
+                    (unsigned long)status.tcp_tx_window,
+                    (unsigned long)status.tcp_rx_window,
+                    (unsigned long)status.tcp_retransmit_packets,
+                    (unsigned long)status.send_active,
+                    (unsigned long)status.send_sequence,
+                    (unsigned long)status.send_stage,
+                    (unsigned long)((status.send_active != 0U) ?
+                                    (HAL_GetTick() - status.send_start_ms) : 0U),
+                    (unsigned long)APP_IR_CAPTURE_SNAPSHOT_FPS,
+                    (unsigned long)capture.snapshot_copy_count,
+                    (unsigned long)capture.snapshot_copy_last_ms,
+                    (unsigned long)capture.snapshot_copy_max_ms,
+                    (unsigned long)capture.snapshot_copy_total_ms);
+  if ((length <= 0) || ((uint32_t)length >= sizeof(line)))
+  {
+    return NX_NOT_SUCCESSFUL;
+  }
+
+  return AppTcpCommand_SendText(line);
+}
+
 static UINT AppTcpCommand_SendAIStatus(void)
 {
   App_AI_Status_t status;
-  char line[448];
+  char line[768];
   int len;
   uint32_t average_inference_ms;
 
@@ -670,7 +878,7 @@ static UINT AppTcpCommand_SendAIStatus(void)
                          (status.inference_total_ms / status.run_count) : 0U;
   len = snprintf(line,
                  sizeof(line),
-                 "OK AISTAT init=%lu ready=%lu fault=%lu weights=%lu runs=%lu skips=%lu resets=%lu copy_err=%lu run_err=%lu late=%lu npu_hz=%lu nram_hz=%lu target_hz=%lu infer_ms=%lu avg_ms=%lu max_ms=%lu err_ms=%lu rt=%ld last_seq=%lu ts=%lu sample=%lu top=%u out=%d,%d,%d,%d prep=s16_qscale0p006754_window1024\r\n",
+                 "OK AISTAT init=%lu ready=%lu fault=%lu weights=%lu runs=%lu skips=%lu resets=%lu in=%lu warm=%lu src_gap=%lu inf_gap=%lu copy_err=%lu run_err=%lu late=%lu bundle_wait=%lu outq=%lu/%lu oqov=%lu npu_hz=%lu nram_hz=%lu target_hz=%lu infer_ms=%lu avg_ms=%lu max_ms=%lu err_ms=%lu rt=%ld last_seq=%lu ts=%lu sample=%lu top=%u out=%d,%d,%d,%d prep=s16_qscale0p006754_window1024\r\n",
                  (unsigned long)status.initialized,
                  (unsigned long)status.ready,
                  (unsigned long)status.fault,
@@ -678,9 +886,17 @@ static UINT AppTcpCommand_SendAIStatus(void)
                  (unsigned long)status.run_count,
                  (unsigned long)status.skip_count,
                  (unsigned long)status.window_reset_count,
+                 (unsigned long)status.input_frame_count,
+                 (unsigned long)status.warmup_count,
+                 (unsigned long)status.input_source_gap_count,
+                 (unsigned long)status.inference_gap_count,
                  (unsigned long)status.copy_error_count,
                  (unsigned long)status.run_error_count,
                  (unsigned long)status.deadline_miss_count,
+                 (unsigned long)status.bundle_wait_count,
+                 (unsigned long)status.output_queue_depth,
+                 (unsigned long)status.output_queue_high_water,
+                 (unsigned long)status.output_queue_overflow_count,
                  (unsigned long)status.npu_clock_hz,
                  (unsigned long)status.npuram_clock_hz,
                  (unsigned long)status.target_rate_hz,
@@ -1315,18 +1531,22 @@ static UINT AppTcpCommand_SendTiny1CCaptureDumpResult(const char *name, uint8_t 
 static UINT AppTcpCommand_SendADStatus(void)
 {
   AD7606_SPI4_FrameInfo_t info;
+  AD7606_SPI4_AIQueueStatus_t queue_status;
   uint32_t frame_len;
-  char line[256];
+  char line[512];
   int len;
 
   (void)memset(&info, 0, sizeof(info));
+  (void)memset(&queue_status, 0, sizeof(queue_status));
   frame_len = AD7606_SPI4_CopyLatestFrame(TcpCommandAdFrame,
                                           sizeof(TcpCommandAdFrame),
                                           &info);
+  AD7606_SPI4_GetAIQueueStatus(&queue_status);
   len = snprintf(line,
                  sizeof(line),
                  "OK ADSTAT paused=%u idle=%u latest=%u irq=%lu seq=%lu type=0x%02X "
-                 "bytes=%lu crc_ok=%u\r\n",
+                 "bytes=%lu crc_ok=%u raw=%lu enq=%lu deq=%lu q=%lu/%lu qov=%lu "
+                 "src_gap=%lu block_gap=%lu last_block=%llu..%llu\r\n",
                  (unsigned int)AD7606_SPI4_IsPaused(),
                  (unsigned int)AD7606_SPI4_IsIdle(),
                  (unsigned int)((frame_len != 0U) ? 1U : 0U),
@@ -1334,7 +1554,17 @@ static UINT AppTcpCommand_SendADStatus(void)
                  (unsigned long)info.frame_seq,
                  (unsigned int)info.frame_type,
                  (unsigned long)frame_len,
-                 (unsigned int)info.crc_ok);
+                 (unsigned int)info.crc_ok,
+                 (unsigned long)queue_status.raw_frame_count,
+                 (unsigned long)queue_status.queue_enqueued_count,
+                 (unsigned long)queue_status.queue_dequeued_count,
+                 (unsigned long)queue_status.queue_depth,
+                 (unsigned long)queue_status.queue_high_water,
+                 (unsigned long)queue_status.queue_overflow_count,
+                 (unsigned long)queue_status.source_seq_gap_count,
+                 (unsigned long)queue_status.source_block_gap_count,
+                 (unsigned long long)queue_status.last_block_start,
+                 (unsigned long long)queue_status.last_block_end);
   if ((len <= 0) || ((uint32_t)len >= sizeof(line)))
   {
     return NX_NOT_SUCCESSFUL;
@@ -1785,7 +2015,7 @@ static UINT AppTcpCommand_Process(char *request)
 
   if ((command[0] == '\0') || AppTcpCommand_Equals(command, "HELP") || AppTcpCommand_Equals(command, "?"))
   {
-    return AppTcpCommand_SendText("OK commands: PING INFO STAT AISTAT IRSTAT IRPAUSE IRRESUME IRRESTART IRSPI50 IRSPI50DMA ADSTAT ADPAUSE ADRESUME CAMINIT CAMPROBE CAMCFG CAMCFGDCMIPP CAMCFGSENSOR CAMSTART CAMSTOP CAMSTAT CAMGET CAMIRQON CAMIRQOFF TCPTHR TCPTHRZ UDPTHR UDPTHRZ ADRAW ADGET IRPROBE IRVSYNC IRIMG IRTEMP IRDUMP IRCAPIMG IRCAPTEMP IRGETIMG IRGETTEMP IRGETIMGBASE IRGETTEMPBASE IRFASTIMG IRFASTTEMP HELP QUIT\r\n");
+    return AppTcpCommand_SendText("OK commands: PING INFO STAT MODE [ADAI|IR] STREAM LIST STREAM STAT IRSTREAM STAT AISTAT IRSTAT IRPAUSE IRRESUME IRRESTART IRSPI50 IRSPI50DMA ADSTAT ADPAUSE ADRESUME CAMINIT CAMPROBE CAMCFG CAMCFGDCMIPP CAMCFGSENSOR CAMSTART CAMSTOP CAMSTAT CAMGET CAMIRQON CAMIRQOFF TCPTHR TCPTHRZ UDPTHR UDPTHRZ ADRAW ADGET IRPROBE IRVSYNC IRIMG IRTEMP IRDUMP IRCAPIMG IRCAPTEMP IRGETIMG IRGETTEMP IRGETIMGBASE IRGETTEMPBASE IRFASTIMG IRFASTTEMP HELP QUIT\r\n");
   }
 
   if (AppTcpCommand_Equals(command, "PING"))
@@ -1795,12 +2025,36 @@ static UINT AppTcpCommand_Process(char *request)
 
   if (AppTcpCommand_Equals(command, "INFO"))
   {
-    return AppTcpCommand_SendText("STM32N6 NetX command server\r\nIP=192.168.6.50\r\nUDP_ECHO=5005\r\nTCP_CMD=5000\r\nTCPTHR/TCPTHRZ=[MiB]\r\nUDPTHR/UDPTHRZ=<PC_IP> [port] [ms] [payload]\r\n");
+    return AppTcpCommand_SendText("STM32N6 NetX command server\r\nIP=192.168.6.50\r\nUDP_ECHO=5005\r\nTCP_CMD=5000\r\nMODE=ADAI|IR\r\nTELEMETRY_MMS2=5100/UDP\r\nIR_MMS2=5101/UDP\r\nTCPTHR/TCPTHRZ=[MiB]\r\nUDPTHR/UDPTHRZ=<PC_IP> [port] [ms] [payload]\r\n");
   }
 
   if (AppTcpCommand_Equals(command, "STAT"))
   {
     return AppTcpCommand_SendStatus();
+  }
+
+  if (AppTcpCommand_MatchCommand(command, "MODE", &args) == NX_TRUE)
+  {
+    return AppTcpCommand_SendMode(args);
+  }
+
+  if (AppTcpCommand_Equals(command, "STREAM") ||
+      AppTcpCommand_Equals(command, "STREAM LIST"))
+  {
+    return AppTcpCommand_SendStreamList();
+  }
+
+  if (AppTcpCommand_Equals(command, "STREAM STAT") ||
+      AppTcpCommand_Equals(command, "STREAM STATUS"))
+  {
+    return AppTcpCommand_SendStreamStatus();
+  }
+
+  if (AppTcpCommand_Equals(command, "IRSTREAM STAT") ||
+      AppTcpCommand_Equals(command, "IRSTREAM STATUS") ||
+      AppTcpCommand_Equals(command, "IR STREAM STAT"))
+  {
+    return AppTcpCommand_SendIRStreamStatus();
   }
 
   if (AppTcpCommand_Equals(command, "AISTAT") ||

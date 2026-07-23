@@ -15,11 +15,12 @@
 #include <string.h>
 
 #define APP_AD7606_THREAD_STACK_SIZE  4096U
-/* Keep acquisition below the NetX command/echo threads during bulk TX. */
-#define APP_AD7606_THREAD_PRIORITY    14U
-#define APP_AD7606_THREAD_SLEEP_TICKS 1U
+#define APP_AD7606_THREAD_PRIORITY    8U
+#define APP_AD7606_WAIT_TICKS         1U
 
 static TX_THREAD AppAd7606Thread;
+static TX_SEMAPHORE AppAd7606WorkSemaphore;
+static volatile uint8_t AppAd7606WorkSemaphoreReady;
 
 static UINT AppAD7606_ByteAllocate(TX_BYTE_POOL *byte_pool, UCHAR **memory, ULONG size)
 {
@@ -51,7 +52,7 @@ static VOID AppAD7606_ThreadEntry(ULONG thread_input)
   for (;;)
   {
     AD7606_SPI4_Task(HAL_GetTick());
-    tx_thread_sleep(APP_AD7606_THREAD_SLEEP_TICKS);
+    (void)tx_semaphore_get(&AppAd7606WorkSemaphore, APP_AD7606_WAIT_TICKS);
   }
 }
 
@@ -59,6 +60,15 @@ UINT App_AD7606_Start(TX_BYTE_POOL *byte_pool)
 {
   UCHAR *thread_stack;
   UINT status;
+
+  AppAd7606WorkSemaphoreReady = 0U;
+  status = tx_semaphore_create(&AppAd7606WorkSemaphore, "AD7606 work", 0U);
+  if (status != TX_SUCCESS)
+  {
+    App_PrintHex32("AD7606 semaphore create failed: ", status);
+    return status;
+  }
+  AppAd7606WorkSemaphoreReady = 1U;
 
   status = AppAD7606_ByteAllocate(byte_pool, &thread_stack, APP_AD7606_THREAD_STACK_SIZE);
   if (status != TX_SUCCESS)
@@ -84,4 +94,46 @@ UINT App_AD7606_Start(TX_BYTE_POOL *byte_pool)
 
   App_Print("AD7606 thread created\r\n");
   return TX_SUCCESS;
+}
+
+void App_AD7606_NotifyWorkFromISR(void)
+{
+  if (AppAd7606WorkSemaphoreReady != 0U)
+  {
+    (void)tx_semaphore_put(&AppAd7606WorkSemaphore);
+  }
+}
+
+UINT App_AD7606_SetActive(uint8_t active, ULONG wait_ticks)
+{
+  ULONG start_tick;
+
+  if (active != 0U)
+  {
+    AD7606_SPI4_SetPaused(0U);
+    App_AD7606_NotifyWorkFromISR();
+    return TX_SUCCESS;
+  }
+
+  AD7606_SPI4_SetPaused(1U);
+  App_AD7606_NotifyWorkFromISR();
+  if (AD7606_SPI4_IsIdle() != 0U)
+  {
+    return TX_SUCCESS;
+  }
+
+  start_tick = tx_time_get();
+  for (;;)
+  {
+    if (AD7606_SPI4_IsIdle() != 0U)
+    {
+      return TX_SUCCESS;
+    }
+    if ((wait_ticks != TX_WAIT_FOREVER) &&
+        ((tx_time_get() - start_tick) >= wait_ticks))
+    {
+      return TX_NOT_DONE;
+    }
+    tx_thread_sleep(1U);
+  }
 }

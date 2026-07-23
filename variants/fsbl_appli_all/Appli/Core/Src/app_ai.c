@@ -22,13 +22,15 @@
 LL_ATON_DECLARE_NAMED_NN_INSTANCE_AND_INTERFACE(tiny_temporal_mixer_8ch_int8);
 
 #define APP_AI_THREAD_STACK_SIZE       4096U
-#define APP_AI_THREAD_PRIORITY         16U
-#define APP_AI_THREAD_SLEEP_TICKS      2U
-#define APP_AI_RUN_PERIOD_TICKS        ((TX_TIMER_TICKS_PER_SECOND + APP_AI_TARGET_RATE_HZ - 1U) / APP_AI_TARGET_RATE_HZ)
+#define APP_AI_THREAD_PRIORITY         9U
+#define APP_AI_THREAD_SLEEP_TICKS      1U
 #define APP_AI_RUN_TIMEOUT_MS          5000U
+#define APP_AI_FRAME_BUDGET_MS         20U
 #define APP_AI_CACHE_LINE_BYTES        32U
 #define APP_AI_CHANNELS                8U
 #define APP_AI_WINDOW_SAMPLES         1024U
+#define APP_AI_FRAME_SAMPLES           AD7606_SPI4_AI_FRAME_POINTS
+#define APP_AI_FRAME_BYTES             AD7606_SPI4_AI_FRAME_BYTES
 #define APP_AI_RAW_SAMPLE_BYTES       AD7606_SPI4_AI_WINDOW_BYTES
 #define APP_AI_INPUT_BYTES             (APP_AI_CHANNELS * APP_AI_WINDOW_SAMPLES)
 #define APP_AI_OUTPUT_BYTES            4U
@@ -42,9 +44,19 @@ LL_ATON_DECLARE_NAMED_NN_INSTANCE_AND_INTERFACE(tiny_temporal_mixer_8ch_int8);
 #define APP_AI_WEIGHT_PROBE_BYTES      256U
 #define APP_AI_WEIGHT_PROBE_SUM        0x00007BB1UL
 #define APP_AI_NPU_IRQ_PRIORITY        7U
+#define APP_AI_BUNDLE_QUEUE_DEPTH      8U
+#define APP_AI_MAX_BURST_FRAMES        8U
 
 #if (APP_AI_INPUT_BYTES != LL_ATON_TINY_TEMPORAL_MIXER_8CH_INT8_IN_1_SIZE_BYTES)
 #error "AD7606 preprocessing window does not match the generated model input"
+#endif
+
+#if (APP_AI_INPUT_WINDOW_BYTES != APP_AI_RAW_SAMPLE_BYTES)
+#error "Published AD+AI bundle window does not match the AD7606 raw window"
+#endif
+
+#if ((APP_AI_FRAME_BYTES * 2U) != APP_AI_RAW_SAMPLE_BYTES)
+#error "AD7606 frame geometry does not form the required 1024-point AI window"
 #endif
 
 #if (APP_AI_OUTPUT_BYTES != LL_ATON_TINY_TEMPORAL_MIXER_8CH_INT8_OUT_1_SIZE_BYTES)
@@ -53,7 +65,24 @@ LL_ATON_DECLARE_NAMED_NN_INSTANCE_AND_INTERFACE(tiny_temporal_mixer_8ch_int8);
 
 static TX_THREAD AppAIThread;
 static volatile App_AI_Status_t AppAIStatus;
+static volatile uint8_t AppAIBundleConsumerActive;
 __attribute__((aligned(32))) static uint8_t AppAIRawSamples[APP_AI_RAW_SAMPLE_BYTES];
+
+typedef struct
+{
+  App_AI_Bundle_Info_t bundle_info;
+  uint8_t raw_frame[APP_AI_SOURCE_FRAME_BYTES];
+} AppAI_BundleSlot_t;
+
+__attribute__((aligned(32), section(".ad7606_ai_queue")))
+static AppAI_BundleSlot_t AppAIBundleQueue[APP_AI_BUNDLE_QUEUE_DEPTH];
+static volatile uint32_t AppAIBundleQueueHead;
+static volatile uint32_t AppAIBundleQueueTail;
+static volatile uint32_t AppAIBundleQueueCount;
+static uint32_t AppAILastInferenceFrameSeq;
+static uint8_t AppAIHaveInferenceFrame;
+static volatile uint8_t AppAIProcessingActive;
+static volatile uint8_t AppAIProcessingBusy;
 
 static uint32_t AppAI_StatusLock(void)
 {
@@ -71,17 +100,90 @@ static void AppAI_StatusUnlock(uint32_t primask)
   }
 }
 
-static ULONG AppAI_AdvanceRunDeadline(ULONG deadline)
+static void AppAI_SetProcessingBusy(uint8_t busy)
 {
-  ULONG next_deadline = deadline + APP_AI_RUN_PERIOD_TICKS;
-  ULONG now = tx_time_get();
+  uint32_t primask = AppAI_StatusLock();
 
-  if ((LONG)(now - next_deadline) >= 0)
+  AppAIProcessingBusy = (busy != 0U) ? 1U : 0U;
+  AppAI_StatusUnlock(primask);
+}
+
+static void AppAI_BundleQueueResetLocked(void)
+{
+  AppAIBundleQueueHead = 0U;
+  AppAIBundleQueueTail = 0U;
+  AppAIBundleQueueCount = 0U;
+  AppAIStatus.output_queue_depth = 0U;
+}
+
+static void AppAI_BundleEnqueue(const uint8_t *raw_frame,
+                                const AD7606_SPI4_RawInfo_t *source_raw_info,
+                                const AD7606_SPI4_RawInfo_t *window_raw_info)
+{
+  App_AI_Bundle_Info_t bundle_info;
+  uint32_t queue_index;
+  uint32_t primask;
+
+  if ((raw_frame == NULL) ||
+      (source_raw_info == NULL) ||
+      (window_raw_info == NULL))
   {
-    next_deadline = now + APP_AI_RUN_PERIOD_TICKS;
+    return;
   }
 
-  return next_deadline;
+  primask = AppAI_StatusLock();
+  if (AppAIBundleConsumerActive == 0U)
+  {
+    AppAI_StatusUnlock(primask);
+    return;
+  }
+  if (AppAIBundleQueueCount >= APP_AI_BUNDLE_QUEUE_DEPTH)
+  {
+    AppAIStatus.output_queue_overflow_count++;
+    AppAI_StatusUnlock(primask);
+    return;
+  }
+  queue_index = AppAIBundleQueueHead;
+  AppAI_StatusUnlock(primask);
+
+  App_AI_GetStatus(&bundle_info.ai_status);
+  bundle_info.source_points = source_raw_info->points;
+  bundle_info.source_channels = source_raw_info->channels;
+  bundle_info.source_bytes_per_sample = source_raw_info->bytes_per_sample;
+  bundle_info.source_sample_bytes = source_raw_info->sample_bytes;
+  bundle_info.source_block_start = source_raw_info->block_start;
+  bundle_info.source_block_end = source_raw_info->block_end;
+  bundle_info.window_points = window_raw_info->points;
+  bundle_info.window_sample_bytes = window_raw_info->sample_bytes;
+  bundle_info.window_block_start = window_raw_info->block_start;
+  bundle_info.window_block_end = window_raw_info->block_end;
+
+  (void)memcpy(AppAIBundleQueue[queue_index].raw_frame,
+               raw_frame,
+               APP_AI_SOURCE_FRAME_BYTES);
+  AppAIBundleQueue[queue_index].bundle_info = bundle_info;
+  __DMB();
+
+  primask = AppAI_StatusLock();
+  AppAIBundleQueueHead =
+    (queue_index + 1U) % APP_AI_BUNDLE_QUEUE_DEPTH;
+  AppAIBundleQueueCount++;
+  AppAIStatus.output_queue_depth = AppAIBundleQueueCount;
+  if (AppAIBundleQueueCount > AppAIStatus.output_queue_high_water)
+  {
+    AppAIStatus.output_queue_high_water = AppAIBundleQueueCount;
+  }
+  AppAI_StatusUnlock(primask);
+}
+
+static void AppAI_YieldAfterBurst(uint32_t *burst_frames)
+{
+  if ((burst_frames != NULL) &&
+      (*burst_frames >= APP_AI_MAX_BURST_FRAMES))
+  {
+    *burst_frames = 0U;
+    tx_thread_sleep(1U);
+  }
 }
 
 static UINT AppAI_ByteAllocate(TX_BYTE_POOL *byte_pool, UCHAR **memory, ULONG size)
@@ -342,6 +444,13 @@ static void AppAI_RecordRun(const AD7606_SPI4_FrameInfo_t *frame_info,
   }
 
   primask = AppAI_StatusLock();
+  if ((AppAIHaveInferenceFrame != 0U) &&
+      (frame_info->frame_seq != (AppAILastInferenceFrameSeq + 1U)))
+  {
+    AppAIStatus.inference_gap_count++;
+  }
+  AppAILastInferenceFrameSeq = frame_info->frame_seq;
+  AppAIHaveInferenceFrame = 1U;
   AppAIStatus.run_count++;
   AppAIStatus.last_frame_seq = frame_info->frame_seq;
   AppAIStatus.last_timestamp_ms = frame_info->timestamp_ms;
@@ -352,7 +461,7 @@ static void AppAI_RecordRun(const AD7606_SPI4_FrameInfo_t *frame_info,
   {
     AppAIStatus.max_inference_ms = inference_ms;
   }
-  if (inference_ms > APP_AI_RUN_TIMEOUT_MS)
+  if (inference_ms > APP_AI_FRAME_BUDGET_MS)
   {
     AppAIStatus.deadline_miss_count++;
   }
@@ -368,12 +477,14 @@ static VOID AppAI_ThreadEntry(ULONG thread_input)
   const LL_Buffer_InfoTypeDef *output_info;
   AD7606_SPI4_FrameInfo_t frame_info;
   AD7606_SPI4_RawInfo_t raw_info;
+  AD7606_SPI4_FrameInfo_t history_frame_info;
+  AD7606_SPI4_RawInfo_t history_raw_info;
+  AD7606_SPI4_RawInfo_t window_raw_info;
   uint32_t copied_bytes;
   uint32_t inference_ms;
+  uint32_t burst_frames = 0U;
   int32_t run_status;
-  uint32_t last_frame_seq = 0U;
-  uint8_t have_last_frame = 0U;
-  ULONG next_run_tick = tx_time_get();
+  uint8_t have_history = 0U;
   int8_t *input_buffer;
   int8_t *output_buffer;
 
@@ -438,47 +549,114 @@ static VOID AppAI_ThreadEntry(ULONG thread_input)
 
   for (;;)
   {
-    ULONG now_tick = tx_time_get();
+    uint8_t *frame_destination = (have_history == 0U) ?
+                                 &AppAIRawSamples[0U] :
+                                 &AppAIRawSamples[APP_AI_FRAME_BYTES];
 
-    if ((LONG)(now_tick - next_run_tick) < 0)
+    if (AppAIProcessingActive == 0U)
     {
-      tx_thread_sleep(next_run_tick - now_tick);
+      have_history = 0U;
+      burst_frames = 0U;
+      tx_thread_sleep(5U);
       continue;
     }
 
-    copied_bytes = AD7606_SPI4_CopyLatestRawWindow(AppAIRawSamples,
-                                                   sizeof(AppAIRawSamples),
-                                                   &frame_info,
-                                                   &raw_info);
-    if ((copied_bytes == 0U) || (raw_info.bytes_per_sample != 2U) ||
+    AppAI_SetProcessingBusy(1U);
+    if (AppAIProcessingActive == 0U)
+    {
+      AppAI_SetProcessingBusy(0U);
+      have_history = 0U;
+      burst_frames = 0U;
+      continue;
+    }
+
+    copied_bytes = AD7606_SPI4_DequeueAIFrame(frame_destination,
+                                              APP_AI_FRAME_BYTES,
+                                              &frame_info,
+                                              &raw_info);
+    if ((copied_bytes == 0U) ||
+        (raw_info.bytes_per_sample != APP_AI_INPUT_SAMPLE_BYTES) ||
         (raw_info.channels != APP_AI_CHANNELS) ||
-        (raw_info.points != APP_AI_WINDOW_SAMPLES))
+        (raw_info.points != APP_AI_FRAME_SAMPLES))
     {
-      tx_thread_sleep(APP_AI_THREAD_SLEEP_TICKS);
-      continue;
-    }
-
-    if ((have_last_frame != 0U) && (frame_info.frame_seq == last_frame_seq))
-    {
-      tx_thread_sleep(APP_AI_THREAD_SLEEP_TICKS);
-      continue;
-    }
-
-    if ((have_last_frame != 0U) && (frame_info.frame_seq != (last_frame_seq + 1U)))
-    {
-      uint32_t frame_delta = frame_info.frame_seq - last_frame_seq;
-      uint32_t primask = AppAI_StatusLock();
-
-      if ((frame_delta > 1U) && (frame_delta < 0x80000000U))
+      if (copied_bytes != 0U)
       {
-        AppAIStatus.skip_count += frame_delta - 1U;
+        uint32_t primask = AppAI_StatusLock();
+        AppAIStatus.copy_error_count++;
+        AppAIStatus.window_reset_count++;
+        AppAI_StatusUnlock(primask);
+        have_history = 0U;
       }
+      AppAI_SetProcessingBusy(0U);
+      tx_thread_sleep(APP_AI_THREAD_SLEEP_TICKS);
+      continue;
+    }
+
+    {
+      uint32_t primask = AppAI_StatusLock();
+      AppAIStatus.input_frame_count++;
       AppAI_StatusUnlock(primask);
     }
-    last_frame_seq = frame_info.frame_seq;
-    have_last_frame = 1U;
+    burst_frames++;
 
-    AppAI_CopyRawWindowToInput(AppAIRawSamples, &raw_info, input_buffer);
+    if (have_history == 0U)
+    {
+      history_frame_info = frame_info;
+      history_raw_info = raw_info;
+      have_history = 1U;
+
+      {
+        uint32_t primask = AppAI_StatusLock();
+        AppAIStatus.warmup_count++;
+        AppAI_StatusUnlock(primask);
+      }
+      AppAI_SetProcessingBusy(0U);
+      AppAI_YieldAfterBurst(&burst_frames);
+      continue;
+    }
+
+    {
+      uint32_t frame_delta = frame_info.frame_seq - history_frame_info.frame_seq;
+      uint8_t continuous = ((frame_delta == 1U) &&
+                            (raw_info.block_start == (history_raw_info.block_end + 1ULL))) ?
+                           1U : 0U;
+
+      if (continuous == 0U)
+      {
+        uint32_t primask = AppAI_StatusLock();
+
+        AppAIStatus.input_source_gap_count++;
+        AppAIStatus.window_reset_count++;
+        if ((frame_delta > 1U) && (frame_delta < 0x80000000U))
+        {
+          AppAIStatus.skip_count += frame_delta - 1U;
+        }
+        AppAI_StatusUnlock(primask);
+
+        (void)memcpy(&AppAIRawSamples[0U],
+                     &AppAIRawSamples[APP_AI_FRAME_BYTES],
+                     APP_AI_FRAME_BYTES);
+        history_frame_info = frame_info;
+        history_raw_info = raw_info;
+        {
+          uint32_t primask = AppAI_StatusLock();
+          AppAIStatus.warmup_count++;
+          AppAI_StatusUnlock(primask);
+        }
+        AppAI_SetProcessingBusy(0U);
+        AppAI_YieldAfterBurst(&burst_frames);
+        continue;
+      }
+    }
+
+    window_raw_info.points = APP_AI_WINDOW_SAMPLES;
+    window_raw_info.channels = APP_AI_CHANNELS;
+    window_raw_info.bytes_per_sample = APP_AI_INPUT_SAMPLE_BYTES;
+    window_raw_info.sample_bytes = APP_AI_INPUT_WINDOW_BYTES;
+    window_raw_info.block_start = history_raw_info.block_start;
+    window_raw_info.block_end = raw_info.block_end;
+
+    AppAI_CopyRawWindowToInput(AppAIRawSamples, &window_raw_info, input_buffer);
     if (AppAI_RunInference(input_buffer, output_buffer, &inference_ms, &run_status) == 0U)
     {
       uint32_t primask = AppAI_StatusLock();
@@ -487,14 +665,23 @@ static VOID AppAI_ThreadEntry(ULONG thread_input)
       AppAIStatus.last_run_error_ms = inference_ms;
       AppAIStatus.last_run_status = run_status;
       AppAI_StatusUnlock(primask);
-      LL_ATON_RT_Reset_Network(&NN_Instance_tiny_temporal_mixer_8ch_int8);
-      next_run_tick = AppAI_AdvanceRunDeadline(next_run_tick);
-      continue;
+    }
+    else
+    {
+      AppAI_RecordRun(&frame_info, output_buffer, inference_ms, run_status);
+      AppAI_BundleEnqueue(&AppAIRawSamples[APP_AI_FRAME_BYTES],
+                          &raw_info,
+                          &window_raw_info);
     }
 
-    AppAI_RecordRun(&frame_info, output_buffer, inference_ms, run_status);
     LL_ATON_RT_Reset_Network(&NN_Instance_tiny_temporal_mixer_8ch_int8);
-    next_run_tick = AppAI_AdvanceRunDeadline(next_run_tick);
+    (void)memcpy(&AppAIRawSamples[0U],
+                 &AppAIRawSamples[APP_AI_FRAME_BYTES],
+                 APP_AI_FRAME_BYTES);
+    history_frame_info = frame_info;
+    history_raw_info = raw_info;
+    AppAI_SetProcessingBusy(0U);
+    AppAI_YieldAfterBurst(&burst_frames);
   }
 }
 
@@ -505,6 +692,14 @@ UINT App_AI_Start(TX_BYTE_POOL *byte_pool)
 
   (void)memset((void *)&AppAIStatus, 0, sizeof(AppAIStatus));
   (void)memset(AppAIRawSamples, 0, sizeof(AppAIRawSamples));
+  AppAIBundleConsumerActive = 0U;
+  AppAIBundleQueueHead = 0U;
+  AppAIBundleQueueTail = 0U;
+  AppAIBundleQueueCount = 0U;
+  AppAILastInferenceFrameSeq = 0U;
+  AppAIHaveInferenceFrame = 0U;
+  AppAIProcessingActive = 1U;
+  AppAIProcessingBusy = 0U;
   AppAIStatus.target_rate_hz = APP_AI_TARGET_RATE_HZ;
 
   status = AppAI_ByteAllocate(byte_pool, &thread_stack, APP_AI_THREAD_STACK_SIZE);
@@ -545,4 +740,95 @@ void App_AI_GetStatus(App_AI_Status_t *status)
   primask = AppAI_StatusLock();
   (void)memcpy(status, (const void *)&AppAIStatus, sizeof(*status));
   AppAI_StatusUnlock(primask);
+}
+
+UINT App_AI_SetProcessingActive(uint8_t active, ULONG wait_ticks)
+{
+  ULONG start_tick;
+  uint32_t primask = AppAI_StatusLock();
+
+  AppAIProcessingActive = (active != 0U) ? 1U : 0U;
+  AppAI_StatusUnlock(primask);
+
+  if (active != 0U)
+  {
+    return TX_SUCCESS;
+  }
+
+  if (AppAIProcessingBusy == 0U)
+  {
+    return TX_SUCCESS;
+  }
+
+  start_tick = tx_time_get();
+  for (;;)
+  {
+    if (AppAIProcessingBusy == 0U)
+    {
+      return TX_SUCCESS;
+    }
+    if ((wait_ticks != TX_WAIT_FOREVER) &&
+        ((tx_time_get() - start_tick) >= wait_ticks))
+    {
+      return TX_NOT_DONE;
+    }
+    tx_thread_sleep(1U);
+  }
+}
+
+void App_AI_SetBundleConsumerActive(uint8_t active)
+{
+  uint32_t primask = AppAI_StatusLock();
+  uint8_t new_active = (active != 0U) ? 1U : 0U;
+
+  if (new_active != AppAIBundleConsumerActive)
+  {
+    AppAIBundleConsumerActive = new_active;
+    AppAI_BundleQueueResetLocked();
+  }
+  AppAI_StatusUnlock(primask);
+}
+
+uint32_t App_AI_CopyLatestBundle(uint8_t *raw_window,
+                                 uint32_t raw_capacity,
+                                 App_AI_Bundle_Info_t *bundle_info)
+{
+  uint32_t queue_index;
+  uint32_t primask;
+
+  if ((raw_window == NULL) || (bundle_info == NULL) ||
+      (raw_capacity < APP_AI_SOURCE_FRAME_BYTES))
+  {
+    return 0U;
+  }
+
+  primask = AppAI_StatusLock();
+  if (AppAIBundleQueueCount == 0U)
+  {
+    AppAI_StatusUnlock(primask);
+    return 0U;
+  }
+  queue_index = AppAIBundleQueueTail;
+  AppAI_StatusUnlock(primask);
+
+  (void)memcpy(raw_window,
+               AppAIBundleQueue[queue_index].raw_frame,
+               APP_AI_SOURCE_FRAME_BYTES);
+  *bundle_info = AppAIBundleQueue[queue_index].bundle_info;
+  __DMB();
+
+  primask = AppAI_StatusLock();
+  if ((AppAIBundleQueueCount == 0U) ||
+      (AppAIBundleQueueTail != queue_index))
+  {
+    AppAI_StatusUnlock(primask);
+    return 0U;
+  }
+  AppAIBundleQueueTail =
+    (queue_index + 1U) % APP_AI_BUNDLE_QUEUE_DEPTH;
+  AppAIBundleQueueCount--;
+  AppAIStatus.output_queue_depth = AppAIBundleQueueCount;
+  AppAI_StatusUnlock(primask);
+
+  return APP_AI_SOURCE_FRAME_BYTES;
 }

@@ -128,6 +128,9 @@ void HAL_XSPI_MspInit(XSPI_HandleTypeDef* xspiHandle)
   if(xspiHandle->Instance==XSPI1)
   {
   /* USER CODE BEGIN XSPI1_MspInit 0 */
+    __HAL_RCC_PWR_CLK_ENABLE();
+    HAL_PWREx_EnableVddIO2();
+    HAL_PWREx_ConfigVddIORange(PWR_VDDIO2, PWR_VDDIO_RANGE_1V8);
 
   /* USER CODE END XSPI1_MspInit 0 */
 

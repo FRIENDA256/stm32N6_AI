@@ -174,6 +174,112 @@ static uint32_t ad_spi_latest_raw_frame_seq;
 static uint16_t ad_spi_latest_raw_window_points;
 static uint8_t ad_spi_latest_raw_have_frame;
 
+typedef struct
+{
+  AD7606_SPI4_FrameInfo_t frame_info;
+  AD7606_SPI4_RawInfo_t raw_info;
+  uint8_t samples[AD7606_SPI4_AI_FRAME_BYTES];
+} AD7606_SPI4_AIQueueSlot_t;
+
+__attribute__((aligned(32), section(".ad7606_ai_queue")))
+static AD7606_SPI4_AIQueueSlot_t ad_spi_ai_queue[AD7606_SPI4_AI_QUEUE_DEPTH];
+static volatile uint32_t ad_spi_ai_queue_head;
+static volatile uint32_t ad_spi_ai_queue_tail;
+static volatile uint32_t ad_spi_ai_queue_count;
+static volatile AD7606_SPI4_AIQueueStatus_t ad_spi_ai_queue_status;
+
+static uint32_t AD7606_SPI4_QueueLock(void)
+{
+  uint32_t primask = __get_PRIMASK();
+
+  __disable_irq();
+  return primask;
+}
+
+static void AD7606_SPI4_QueueUnlock(uint32_t primask)
+{
+  if (primask == 0U)
+  {
+    __enable_irq();
+  }
+}
+
+static void AD7606_SPI4_ResetAIQueue(void)
+{
+  uint32_t primask = AD7606_SPI4_QueueLock();
+
+  ad_spi_ai_queue_head = 0U;
+  ad_spi_ai_queue_tail = 0U;
+  ad_spi_ai_queue_count = 0U;
+  (void)memset((void *)&ad_spi_ai_queue_status, 0, sizeof(ad_spi_ai_queue_status));
+  AD7606_SPI4_QueueUnlock(primask);
+}
+
+static void AD7606_SPI4_EnqueueAIFrame(const AD7606_SPI4_FrameInfo_t *frame_info,
+                                       const AD7606_SPI4_RawInfo_t *raw_info,
+                                       const uint8_t *samples)
+{
+  uint32_t queue_index;
+  uint32_t primask;
+
+  if ((frame_info == NULL) || (raw_info == NULL) || (samples == NULL) ||
+      (raw_info->points != AD7606_SPI4_AI_FRAME_POINTS) ||
+      (raw_info->channels != AD_RAW_MAX_CHANNELS) ||
+      (raw_info->bytes_per_sample != 2U) ||
+      (raw_info->sample_bytes != AD7606_SPI4_AI_FRAME_BYTES))
+  {
+    return;
+  }
+
+  primask = AD7606_SPI4_QueueLock();
+  ad_spi_ai_queue_status.raw_frame_count++;
+  if (ad_spi_ai_queue_status.raw_frame_count > 1U)
+  {
+    uint32_t frame_delta = frame_info->frame_seq -
+                           ad_spi_ai_queue_status.last_frame_seq;
+    if (frame_delta != 1U)
+    {
+      ad_spi_ai_queue_status.source_seq_gap_count++;
+    }
+
+    if (raw_info->block_start != (ad_spi_ai_queue_status.last_block_end + 1ULL))
+    {
+      ad_spi_ai_queue_status.source_block_gap_count++;
+    }
+  }
+  ad_spi_ai_queue_status.last_frame_seq = frame_info->frame_seq;
+  ad_spi_ai_queue_status.last_block_start = raw_info->block_start;
+  ad_spi_ai_queue_status.last_block_end = raw_info->block_end;
+
+  if (ad_spi_ai_queue_count >= AD7606_SPI4_AI_QUEUE_DEPTH)
+  {
+    ad_spi_ai_queue_status.queue_overflow_count++;
+    AD7606_SPI4_QueueUnlock(primask);
+    return;
+  }
+
+  queue_index = ad_spi_ai_queue_head;
+  AD7606_SPI4_QueueUnlock(primask);
+
+  (void)memcpy(ad_spi_ai_queue[queue_index].samples,
+               samples,
+               AD7606_SPI4_AI_FRAME_BYTES);
+  ad_spi_ai_queue[queue_index].frame_info = *frame_info;
+  ad_spi_ai_queue[queue_index].raw_info = *raw_info;
+  __DMB();
+
+  primask = AD7606_SPI4_QueueLock();
+  ad_spi_ai_queue_head = (queue_index + 1U) % AD7606_SPI4_AI_QUEUE_DEPTH;
+  ad_spi_ai_queue_count++;
+  ad_spi_ai_queue_status.queue_enqueued_count++;
+  if (ad_spi_ai_queue_count > ad_spi_ai_queue_status.queue_high_water)
+  {
+    ad_spi_ai_queue_status.queue_high_water = ad_spi_ai_queue_count;
+  }
+  ad_spi_ai_queue_status.queue_depth = ad_spi_ai_queue_count;
+  AD7606_SPI4_QueueUnlock(primask);
+}
+
 void AD7606_SPI4_Init(void)
 {
   uint32_t now_tick = HAL_GetTick();
@@ -201,8 +307,14 @@ void AD7606_SPI4_Init(void)
   ad_spi_latest_raw_frame_seq = 0U;
   ad_spi_latest_raw_window_points = 0U;
   ad_spi_latest_raw_have_frame = 0U;
+  AD7606_SPI4_ResetAIQueue();
 
   HAL_GPIO_WritePin(AD_CS_GPIO_Port, AD_CS_Pin, GPIO_PIN_SET);
+  if (HAL_GPIO_ReadPin(AD_IRQ_GPIO_Port, AD_IRQ_Pin) == GPIO_PIN_SET)
+  {
+    ad_irq_count = 1U;
+    ad_irq_pending = 1U;
+  }
   SPI4_QualityTest_ClearWindow(now_tick);
   SPI4_StatusLED_Init(now_tick);
   UART_WriteString("SPI4 AD7606 DMA receiver start\r\n");
@@ -302,10 +414,23 @@ void AD7606_SPI4_RequestRawDump(void)
 
 void AD7606_SPI4_SetPaused(uint8_t paused)
 {
+  uint8_t resume_ready = 0U;
+
+  if ((paused == 0U) &&
+      (HAL_GPIO_ReadPin(AD_IRQ_GPIO_Port, AD_IRQ_Pin) == GPIO_PIN_SET))
+  {
+    resume_ready = 1U;
+  }
+
   __disable_irq();
   ad_spi_paused = (paused != 0U) ? 1U : 0U;
   /* Never resume from an IRQ edge captured while the receiver was paused. */
   ad_irq_pending = 0U;
+  if (resume_ready != 0U)
+  {
+    ad_irq_count++;
+    ad_irq_pending = 1U;
+  }
   __enable_irq();
 }
 
@@ -497,6 +622,68 @@ uint32_t AD7606_SPI4_CopyLatestRawWindow(uint8_t *dest,
   }
 
   return 0U;
+}
+
+uint32_t AD7606_SPI4_DequeueAIFrame(uint8_t *dest,
+                                    uint32_t dest_len,
+                                    AD7606_SPI4_FrameInfo_t *frame_info,
+                                    AD7606_SPI4_RawInfo_t *raw_info)
+{
+  uint32_t queue_index;
+  uint32_t primask;
+
+  if ((dest == NULL) || (dest_len < AD7606_SPI4_AI_FRAME_BYTES))
+  {
+    return 0U;
+  }
+
+  primask = AD7606_SPI4_QueueLock();
+  if (ad_spi_ai_queue_count == 0U)
+  {
+    AD7606_SPI4_QueueUnlock(primask);
+    return 0U;
+  }
+  queue_index = ad_spi_ai_queue_tail;
+  AD7606_SPI4_QueueUnlock(primask);
+
+  (void)memcpy(dest,
+               ad_spi_ai_queue[queue_index].samples,
+               AD7606_SPI4_AI_FRAME_BYTES);
+  if (frame_info != NULL)
+  {
+    *frame_info = ad_spi_ai_queue[queue_index].frame_info;
+  }
+  if (raw_info != NULL)
+  {
+    *raw_info = ad_spi_ai_queue[queue_index].raw_info;
+  }
+  __DMB();
+
+  primask = AD7606_SPI4_QueueLock();
+  ad_spi_ai_queue_tail = (queue_index + 1U) % AD7606_SPI4_AI_QUEUE_DEPTH;
+  ad_spi_ai_queue_count--;
+  ad_spi_ai_queue_status.queue_dequeued_count++;
+  ad_spi_ai_queue_status.queue_depth = ad_spi_ai_queue_count;
+  AD7606_SPI4_QueueUnlock(primask);
+
+  return AD7606_SPI4_AI_FRAME_BYTES;
+}
+
+void AD7606_SPI4_GetAIQueueStatus(AD7606_SPI4_AIQueueStatus_t *status)
+{
+  uint32_t primask;
+
+  if (status == NULL)
+  {
+    return;
+  }
+
+  primask = AD7606_SPI4_QueueLock();
+  (void)memcpy(status,
+               (const void *)&ad_spi_ai_queue_status,
+               sizeof(*status));
+  status->queue_depth = ad_spi_ai_queue_count;
+  AD7606_SPI4_QueueUnlock(primask);
 }
 
 static void UART_WriteString(const char *text)
@@ -1023,6 +1210,7 @@ static void AD7606_SPI4_SaveLatestFrame(uint32_t irq_count_snapshot,
   uint8_t raw_channels = 0U;
   uint8_t raw_bytes_per_sample = 0U;
   uint8_t raw_format_valid = 0U;
+  AD7606_SPI4_RawInfo_t raw_info;
 
   if ((total_len == 0U) || (total_len > AD_SPI_MAX_FRAME_SIZE))
   {
@@ -1038,6 +1226,7 @@ static void AD7606_SPI4_SaveLatestFrame(uint32_t irq_count_snapshot,
   info.payload_len = payload_len;
   info.frame_type = frame_type;
   info.crc_ok = 1U;
+  (void)memset(&raw_info, 0, sizeof(raw_info));
 
   if ((frame_type == AD_FRAME_TYPE_RAW_SYNC) &&
       (payload_len >= AD_RAW_PAYLOAD_HEADER_SIZE))
@@ -1059,6 +1248,12 @@ static void AD7606_SPI4_SaveLatestFrame(uint32_t irq_count_snapshot,
     {
       raw_payload = &payload[AD_RAW_PAYLOAD_HEADER_SIZE];
       raw_format_valid = 1U;
+      raw_info.points = raw_points;
+      raw_info.channels = raw_channels;
+      raw_info.bytes_per_sample = raw_bytes_per_sample;
+      raw_info.sample_bytes = raw_sample_bytes;
+      raw_info.block_start = raw_block_start;
+      raw_info.block_end = raw_block_end;
     }
   }
 
@@ -1127,6 +1322,14 @@ static void AD7606_SPI4_SaveLatestFrame(uint32_t irq_count_snapshot,
 
   __DMB();
   ad_spi_latest_update_seq++;
+
+  if ((raw_format_valid != 0U) &&
+      (raw_points == AD7606_SPI4_AI_FRAME_POINTS) &&
+      (raw_channels == AD_RAW_MAX_CHANNELS) &&
+      (raw_bytes_per_sample == 2U))
+  {
+    AD7606_SPI4_EnqueueAIFrame(&info, &raw_info, raw_payload);
+  }
 }
 
 static void AD7606_SPI4_ReportDmaError(uint32_t irq_count_snapshot, uint8_t error_code, uint32_t hal_error)

@@ -45,6 +45,7 @@ C_SOURCES =  \
 ../../FSBL/Core/Src/stm32n6xx_it.c \
 ../../FSBL/Core/Src/stm32n6xx_hal_msp.c \
 ../../FSBL/Core/Src/extmem.c \
+../../FSBL/Core/Src/psram_init.c \
 ../../Drivers/BSP/Components/rtl8211/rtl8211.c \
 ../../Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_cortex.c \
 ../../Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_dma.c \

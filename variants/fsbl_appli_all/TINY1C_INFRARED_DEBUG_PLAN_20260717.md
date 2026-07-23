@@ -902,3 +902,7 @@ Flash address: 0x70100000
 diag3 固件完成首轮严格 300 s 验收。测量区间为 300.537 s，温度帧增加 6011 帧，实测 `20.00 fps`；平均采集耗时 43 ms、全局最大值 44 ms，`capture_err_delta=0`、`late_delta=0`、`dma_wait_delta=0`，SPI/DMA 错误保持全零。同期 AD7606 序号增加 13194，AI 推理增加 5262 次且 `run_err_delta=0`，三条链路持续并行运行。全部验收项通过。
 
 本轮 `SUSP resume delta=0`，说明 300 s 内没有产生硬件自动挂起，因此尚未实际覆盖 EOT IRQ 恢复分支；不过与此前 182.026 s 内出现 2 次 DMA wait timeout 的结果相比，当前配置已经取得首个完整的五分钟零错误样本。后续应继续进行至少 30 min 的耐久测试，并以 `susp` 是否增长来区分“始终未挂起”和“发生挂起后成功恢复”。
+
+diag3 固件随后完成 1800 s 严格耐久验收。板端统计区间为 1798.369 s，温度帧增加 35968 帧，实测 `20.00 fps`；平均采集耗时 43 ms、最大值 44 ms。测量期间 `SUSP resume delta=186`，但 `capture_err_delta=0`、`dma_wait_delta=0`、`dma_irq=0`、`spierr=0`，证明 EOT IRQ 在运行中实际清除了 186 次自动挂起，并且每次都成功继续 DMA 传输。同期 AD7606 序号增加 79093，AI 推理增加 30802 次且没有运行错误。
+
+至此，Tiny1C 温度 20 fps、SPI3 50 MHz、RX/TX HPDMA High、master receiver auto-suspend 与 EOT IRQ 恢复的组合通过了五分钟零错误测试和三十分钟恢复路径覆盖测试。此前由自动挂起未清除引发的 DMA wait timeout 可在当前配置下判定为已解决。后续测试转入整机长时间运行和按需图像/网络业务叠加，不再继续调整 SPI3 DMA 基础配置。

@@ -9,6 +9,8 @@
 
 #include "app_camera_imx219.h"
 #include "app_console.h"
+#include "app_ir_capture.h"
+#include "app_media_buffer.h"
 #include "dcmipp.h"
 #include "i2c.h"
 #include "imx219.h"
@@ -42,8 +44,6 @@ static volatile uint32_t AppCameraPipeErrorCount;
 static volatile uint32_t AppCameraCsiErrorCount;
 static volatile uint32_t AppCameraLastError;
 
-static uint8_t AppCameraFrameBuffer[APP_CAMERA_FRAME_BYTES] __attribute__((aligned(8192)));
-
 static void AppCamera_ClearResult(AppCamera_Result_t *result);
 static HAL_StatusTypeDef AppCamera_SetHalError(AppCamera_Result_t *result,
                                                uint32_t stage,
@@ -56,6 +56,7 @@ static void AppCamera_CleanFrameBuffer(void);
 static void AppCamera_InvalidateFrameBuffer(void);
 static void AppCamera_ResetCounters(void);
 static void AppCamera_ReadSensorStatus(AppCamera_Status_t *status);
+static HAL_StatusTypeDef AppCamera_CheckMediaBuffer(AppCamera_Result_t *result);
 
 static void AppCamera_ClearResult(AppCamera_Result_t *result)
 {
@@ -91,6 +92,24 @@ static HAL_StatusTypeDef AppCamera_SetImxError(AppCamera_Result_t *result, uint3
   }
 
   return HAL_ERROR;
+}
+
+static HAL_StatusTypeDef AppCamera_CheckMediaBuffer(AppCamera_Result_t *result)
+{
+  App_IRCapture_Status_t ir_status;
+
+  App_IRCapture_GetStatus(&ir_status);
+  if ((ir_status.running != 0U) && (ir_status.paused == 0U))
+  {
+    if (result != NULL)
+    {
+      result->stage = 38U;
+      result->hal_status = HAL_BUSY;
+    }
+    return HAL_BUSY;
+  }
+
+  return HAL_OK;
 }
 
 static HAL_StatusTypeDef AppCamera_PowerAndRegister(AppCamera_Result_t *result)
@@ -280,15 +299,15 @@ static HAL_StatusTypeDef AppCamera_ConfigSensor(AppCamera_Result_t *result)
 
 static void AppCamera_CleanFrameBuffer(void)
 {
-  SCB_CleanDCache_by_Addr((uint32_t *)AppCameraFrameBuffer,
-                          (int32_t)sizeof(AppCameraFrameBuffer));
+  SCB_CleanDCache_by_Addr((uint32_t *)AppMediaBuffer_GetCamera(),
+                          (int32_t)APP_CAMERA_FRAME_BYTES);
   __DSB();
 }
 
 static void AppCamera_InvalidateFrameBuffer(void)
 {
-  SCB_InvalidateDCache_by_Addr((void *)AppCameraFrameBuffer,
-                               (int32_t)sizeof(AppCameraFrameBuffer));
+  SCB_InvalidateDCache_by_Addr((void *)AppMediaBuffer_GetCamera(),
+                               (int32_t)APP_CAMERA_FRAME_BYTES);
   __DSB();
 }
 
@@ -367,6 +386,11 @@ HAL_StatusTypeDef AppCamera_Config(AppCamera_Result_t *result)
   HAL_StatusTypeDef status;
 
   AppCamera_ClearResult(result);
+  status = AppCamera_CheckMediaBuffer(result);
+  if (status != HAL_OK)
+  {
+    return status;
+  }
   App_Print("CAMCFG start\r\n");
 
   if (AppCamera_PowerAndRegister(result) != HAL_OK)
@@ -399,7 +423,7 @@ HAL_StatusTypeDef AppCamera_Config(AppCamera_Result_t *result)
   }
   AppCameraSensorConfigured = 1U;
 
-  memset(AppCameraFrameBuffer, 0xA5, sizeof(AppCameraFrameBuffer));
+  memset(AppMediaBuffer_GetCamera(), 0xA5, APP_CAMERA_FRAME_BYTES);
   AppCameraConfigured = 1U;
   AppCameraStreaming = 0U;
   App_Print("CAMCFG done\r\n");
@@ -479,6 +503,11 @@ HAL_StatusTypeDef AppCamera_Start(AppCamera_Result_t *result)
   HAL_StatusTypeDef status;
 
   AppCamera_ClearResult(result);
+  status = AppCamera_CheckMediaBuffer(result);
+  if (status != HAL_OK)
+  {
+    return status;
+  }
   App_Print("CAMSTART start\r\n");
 
   if (AppCameraDcmippConfigured == 0U)
@@ -514,7 +543,7 @@ HAL_StatusTypeDef AppCamera_Start(AppCamera_Result_t *result)
   }
 
   AppCamera_ResetCounters();
-  memset(AppCameraFrameBuffer, 0xA5, sizeof(AppCameraFrameBuffer));
+  memset(AppMediaBuffer_GetCamera(), 0xA5, APP_CAMERA_FRAME_BYTES);
   AppCamera_CleanFrameBuffer();
 
   status = HAL_DCMIPP_PIPE_ResetFrameCounter(&hdcmipp, APP_CAMERA_CAPTURE_PIPE);
@@ -526,7 +555,7 @@ HAL_StatusTypeDef AppCamera_Start(AppCamera_Result_t *result)
   status = HAL_DCMIPP_CSI_PIPE_Start(&hdcmipp,
                                      APP_CAMERA_CAPTURE_PIPE,
                                      APP_CAMERA_VIRTUAL_CHANNEL,
-                                     (uint32_t)(uintptr_t)AppCameraFrameBuffer,
+                                     (uint32_t)(uintptr_t)AppMediaBuffer_GetCamera(),
                                      APP_CAMERA_CAPTURE_MODE);
   if (status != HAL_OK)
   {
@@ -623,7 +652,7 @@ void AppCamera_GetStatus(AppCamera_Status_t *status)
   status->width = AppCameraSensor.Width;
   status->height = AppCameraSensor.Height;
   status->frame_bytes = APP_CAMERA_FRAME_BYTES;
-  status->buffer_addr = (uint32_t)(uintptr_t)AppCameraFrameBuffer;
+  status->buffer_addr = (uint32_t)(uintptr_t)AppMediaBuffer_GetCamera();
   status->frame_count = AppCameraFrameCount;
   status->vsync_count = AppCameraVsyncCount;
   status->sof_count = AppCameraSofCount;
@@ -659,12 +688,12 @@ void AppCamera_GetFrameCounters(uint32_t *frame_count, uint32_t *hw_frame_count)
 
 const uint8_t *AppCamera_GetFrameBuffer(void)
 {
-  return AppCameraFrameBuffer;
+  return AppMediaBuffer_GetCamera();
 }
 
 uint32_t AppCamera_GetFrameBufferSize(void)
 {
-  return (uint32_t)sizeof(AppCameraFrameBuffer);
+  return AppMediaBuffer_GetCameraSize();
 }
 
 uint32_t AppCamera_GetFrameBytes(void)

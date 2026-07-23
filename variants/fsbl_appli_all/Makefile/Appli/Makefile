@@ -37,6 +37,10 @@ BUILD_DIR = build
 # C sources
 C_SOURCES =  \
 ../../Appli/X-CUBE-AI/App/tiny_temporal_mixer_8ch_int8.c \
+../../Appli/NetXDuo/App/app_stream_protocol.c \
+../../Appli/NetXDuo/App/app_stream_mode.c \
+../../Appli/NetXDuo/App/app_stream_telemetry.c \
+../../Appli/NetXDuo/App/app_ir_stream.c \
 ../../Appli/NetXDuo/App/app_tcp_command.c \
 ../../Appli/NetXDuo/App/app_udp_echo.c \
 ../../Appli/NetXDuo/App/app_netxduo.c \
@@ -45,6 +49,7 @@ C_SOURCES =  \
 ../../Appli/Core/Src/app_ai.c \
 ../../Appli/Core/Src/app_ir_capture.c \
 ../../Appli/Core/Src/app_callbacks.c \
+../../Appli/Core/Src/app_media_buffer.c \
 ../../Appli/Core/Src/app_camera_imx219.c \
 ../../Appli/Core/Src/app_console.c \
 ../../Appli/Core/Src/app_timebase.c \

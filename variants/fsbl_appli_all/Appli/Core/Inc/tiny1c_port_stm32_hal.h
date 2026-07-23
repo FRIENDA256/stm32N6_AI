@@ -65,6 +65,11 @@ tiny1c_status_t Tiny1C_STM32_ProcessCommand(uint8_t command);
 tiny1c_status_t Tiny1C_STM32_CaptureFrame(uint8_t frame_command);
 tiny1c_status_t Tiny1C_STM32_CaptureFrameBaseline(uint8_t frame_command);
 tiny1c_status_t Tiny1C_STM32_CaptureFrameQuiet(uint8_t frame_command);
+tiny1c_status_t Tiny1C_STM32_CaptureFrameQuietInto(uint8_t frame_command,
+                                                   uint8_t *frame_buffer,
+                                                   uint32_t frame_buffer_len);
+tiny1c_status_t Tiny1C_STM32_SetFrameBuffer(uint8_t *frame_buffer,
+                                            uint32_t frame_buffer_len);
 tiny1c_status_t Tiny1C_STM32_RestartPreview(void);
 tiny1c_status_t Tiny1C_STM32_RunSpi50Test(uint32_t iterations,
                                           Tiny1C_STM32_SpiTestResult_t *result);
@@ -75,6 +80,7 @@ tiny1c_status_t Tiny1C_STM32_GetLatestFrame(const uint8_t **data,
                                             uint8_t *frame_command,
                                             uint32_t *crc32);
 uint32_t Tiny1C_STM32_GetSpiClockHz(void);
+uint32_t Tiny1C_STM32_GetFrameBufferAddress(void);
 void Tiny1C_STM32_GetDmaDiagnostics(Tiny1C_STM32_DmaDiagnostics_t *diagnostics);
 void Tiny1C_STM32_TxRxCpltCallback(SPI_HandleTypeDef *hspi);
 void Tiny1C_STM32_ErrorCallback(SPI_HandleTypeDef *hspi);
